@@ -21,6 +21,8 @@ class _BottomNavLayoutState extends State<BottomNavLayout> {
         final items = cubit.list;
 
         return Scaffold(
+          extendBody: false,
+          extendBodyBehindAppBar: true,
           body: widget.child,
           bottomNavigationBar: BottomNavigationBar(
             // selectedFontSize: 14.0,

@@ -24,30 +24,6 @@ class _BooksScreenState extends State<BooksScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      extendBody: false,
-      extendBodyBehindAppBar: false,
-      // appBar: AppBar(
-      //   backgroundColor: Color(0xFF1565D8),
-      //   title: SvgPicture.asset(
-      //     AppLogos.appLogoWhiteYellow,
-      //     height: 24,
-      //     width: 57.89,
-      //   ),
-      //   actions: [
-      //     Container(
-      //       width: 48,
-      //       height: 48,
-      //       decoration: const BoxDecoration(
-      //         shape: BoxShape.circle,
-      //         color: Color(0xFFD7F205),
-      //       ),
-      //       child: const Center(
-      //         child: Text("DO", style: TextStyle(fontWeight: FontWeight.bold)),
-      //       ),
-      //     ),
-      //     SizedBox(width: 24),
-      //   ],
-      // ),
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -66,19 +42,15 @@ class _BooksScreenState extends State<BooksScreen> {
                   top: 40,
                   left: 24,
                   right: 24,
-                  child: Column(
-                    children: [
-                      DashboardHeader(),
-        
-                      const SizedBox(height: 27),
-        
-                      /// Popular Routes
-                      PoplarRoutesSection(),
-                    ],
-                  ),
+                  child: DashboardHeader(),
                 ),
               ],
             ),
+        
+            const SizedBox(height: 240),
+        
+            /// Popular Routes
+            PoplarRoutesSection(),
           ],
         ),
       ),

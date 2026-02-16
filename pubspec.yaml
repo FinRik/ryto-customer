@@ -39,8 +39,6 @@ dependencies:
 
   calendar_date_picker2: ^2.0.1
 
-  date_picker_plus: ^6.0.0
-
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -68,6 +66,7 @@ flutter:
    - assets/icons/
    - assets/images/
    - assets/logos/
+   - assets/logos/currency/
    - assets/svgs/
 
   # An image asset can refer to one or more resolution-specific "variants", see
