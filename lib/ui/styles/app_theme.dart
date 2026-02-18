@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'app_colors.dart';
 
 class AppTheme {
-  static ThemeData light() {
+  static const String primaryFont = 'HostGrotesk';
+
+  static ThemeData get light {
     final colorScheme = ColorScheme.fromSeed(
       seedColor: AppSeedColors.seedPrimary,
       secondary: AppSeedColors.seedSecondary,
@@ -17,6 +19,7 @@ class AppTheme {
 
     return ThemeData(
       useMaterial3: true,
+      fontFamily: primaryFont,
       colorScheme: colorScheme,
       brightness: Brightness.light,
 
@@ -96,7 +99,7 @@ class AppTheme {
     );
   }
 
-  static ThemeData dark() {
+  static ThemeData get dark {
     final colorScheme = ColorScheme.fromSeed(
       seedColor: AppSeedColors.seedPrimary,
       secondary: AppSeedColors.seedSecondary,
@@ -108,6 +111,7 @@ class AppTheme {
 
     return ThemeData(
       useMaterial3: true,
+      fontFamily: primaryFont,
       colorScheme: colorScheme,
       brightness: Brightness.dark,
       scaffoldBackgroundColor: colorScheme.surface,

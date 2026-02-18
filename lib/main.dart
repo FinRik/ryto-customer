@@ -29,8 +29,8 @@ class MyApp extends StatelessWidget {
         routeInformationParser: router.routeInformationParser,
         routeInformationProvider: router.routeInformationProvider,
 
-        theme: AppTheme.light(),
-        darkTheme: AppTheme.dark(),
+        theme: AppTheme.light,
+        darkTheme: AppTheme.dark,
         themeMode: ThemeMode.light,
 
         builder: (context, child) => child!,
