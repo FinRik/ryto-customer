@@ -7,4 +7,5 @@ class AppImages {
   static const String onboardTwo = "$_imagePath/onboard-2.png";
   static const String onboardThree = "$_imagePath/onboard-3.png";
   static const String onboardFour = "$_imagePath/onboard-4.png";
+  static const String profilePattern = "$_imagePath/profile-pattern.png";
 }
