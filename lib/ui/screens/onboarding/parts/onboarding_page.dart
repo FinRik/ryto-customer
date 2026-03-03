@@ -33,13 +33,13 @@ class _OnboardingPageState extends State<OnboardingPage> {
         children: [
           Column(
             children: [
-              SizedBox(height: 39),
+              SizedBox(height: 30),
               Image.asset(
                 widget.data.image,
                 width: double.maxFinite,
                 fit: BoxFit.contain,
               ),
-              SizedBox(height: 71),
+              // SizedBox(height: 71),
             ],
           ),
           Column(
@@ -61,14 +61,14 @@ class _OnboardingPageState extends State<OnboardingPage> {
                     Text(
                       widget.data.title,
                       style: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
+                        fontSize: 24,
+                        fontWeight: FontWeight.w700,
                       ),
                     ),
                     const SizedBox(height: 16),
                     Text(
                       widget.data.description,
-                      style: const TextStyle(fontSize: 14),
+                      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
                     ),
                     const SizedBox(height: 34),
                     ScButton(

@@ -38,19 +38,19 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       image: AppImages.onboardOne,
       title: "Trips already in motion",
       description:
-          "Ryle connects you with verified drivers already traveling between cities.",
+          "Ryto connects you with verified drivers already traveling between cities, turning existing booking_history into reliable travel and delivery options.",
     ),
     OnboardingData(
       image: AppImages.onboardTwo,
       title: "Plan it. Trust it. Move.",
       description:
-          "Schedule trips in advance, know your route and driver, and travel with confidence.",
+          "Schedule intercity booking_history in advance, know your route and driver, and travel with confidence every time.",
     ),
     OnboardingData(
       image: AppImages.onboardThree,
-      title: "People and packages, together",
+      title: "People and package, together",
       description:
-          "Travel between cities or send small packages using peer-to-peer routes.",
+          "Travel between cities or send small package using the same trusted peer-to-peer routes, all in one app.",
     ),
   ];
 
