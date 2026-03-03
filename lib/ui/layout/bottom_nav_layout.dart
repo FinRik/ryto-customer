@@ -33,8 +33,47 @@ class _BottomNavLayoutState extends State<BottomNavLayout> {
             //   fontSize: 24.0,
             // ),
             // unselectedLabelStyle: TextStyle(color: Colors.black, fontSize: 24),
-            // backgroundColor: Colors.white,
-            // onTap: cubit.moveTo,
+          //   backgroundColor: Colors.white,
+          //   // onTap: cubit.moveTo,
+          //   selectedItemColor: const Color(0xff0A83FF),
+          //   unselectedItemColor: Colors.black,
+          //   selectedLabelStyle: const TextStyle(
+          //     fontSize: 14.0,
+          //   ),
+          //   unselectedLabelStyle: const TextStyle(
+          //     fontSize: 14.0,
+          //     color: Colors.black
+          //   ),
+          //   onTap: cubit.onTap,
+          //   currentIndex: currentIndex,
+          //   items: List.generate(
+          //     items.length,
+          //     (index) => BottomNavigationBarItem(
+          //       icon: Column(
+          //         children: [
+          //           SvgPicture.asset(
+          //             items[index].image,
+          //             height: 24,
+          //             width: 24
+          //           ),
+          //           const SizedBox(height: 2),
+          //         ],
+          //       ),
+          //       activeIcon: Column(
+          //         children: [
+          //           SvgPicture.asset(
+          //             items[index].activeImage,
+          //             height: 24,
+          //             width: 24,
+          //           ),
+          //           const SizedBox(height: 2),
+          //         ],
+          //       ),
+            type: BottomNavigationBarType.fixed,
+            showUnselectedLabels: true,
+            showSelectedLabels: true,
+            elevation: 2,
+            backgroundColor: Colors.white,
             selectedItemColor: const Color(0xff0A83FF),
             unselectedItemColor: Colors.black,
             selectedLabelStyle: const TextStyle(
@@ -42,19 +81,19 @@ class _BottomNavLayoutState extends State<BottomNavLayout> {
             ),
             unselectedLabelStyle: const TextStyle(
               fontSize: 14.0,
-              color: Colors.black
+              color: Colors.black,   // this will now be respected
             ),
             onTap: cubit.onTap,
             currentIndex: currentIndex,
             items: List.generate(
               items.length,
-              (index) => BottomNavigationBarItem(
+                  (index) => BottomNavigationBarItem(
                 icon: Column(
                   children: [
                     SvgPicture.asset(
                       items[index].image,
                       height: 24,
-                      width: 24
+                      width: 24,
                     ),
                     const SizedBox(height: 2),
                   ],

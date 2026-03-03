@@ -61,19 +61,19 @@ class BottomNavLayoutCubit extends Cubit<int> {
   void onTap(int index) {
     switch (index) {
       case 0:
-        router.go(Paths.BOOK);
+        router.go(Paths.HOME);
         break;
       case 1:
         router.go(Paths.PACKAGES);
         break;
       case 2:
-        router.go(Paths.TRIPS);
+        router.go(Paths.BOOKINGHISTORY);
         break;
       case 3:
         router.go(Paths.PROFILE);
         break;
       default:
-        router.go(Paths.BOOK);
+        router.go(Paths.HOME);
         break;
     }
     if (index >= 0 && index < list.length) {
