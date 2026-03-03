@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/routes/router.dart';
 import '../../../../core/routes/routes.dart';
-import '../../../widgets/buttons/arrow_back.dart';
+import '../../../widgets/buttons/back_arrow_button.dart';
 import '../../../widgets/buttons/sc_button.dart';
 import '../../../widgets/inputs/auth_text_field.dart';
 import '../../../widgets/texts/header_text.dart';

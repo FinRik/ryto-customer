@@ -5,7 +5,9 @@ class CustomTileWidget extends StatelessWidget {
   final IconData? leadingIcon;
   final String? svgIcon;
   final String title;
-  final String subtitle;
+  final String? subtitle;
+
+  final Widget? subTitle;
 
   /// Optional trailing widget (Switch, custom icon, etc.)
   final Widget? trailing;
@@ -13,14 +15,24 @@ class CustomTileWidget extends StatelessWidget {
   /// If true, shows default arrow_forward when trailing is null
   final bool showArrow;
 
+  final TextStyle? titleTextStyle;
+
+  final BoxBorder? border;
+
+  final Color? bgColor;
+
   const CustomTileWidget({
     super.key,
     this.leadingIcon,
     required this.title,
-    required this.subtitle,
+    this.subtitle,
     this.svgIcon,
+    this.subTitle,
     this.trailing,
     this.showArrow = true,
+    this.titleTextStyle,
+    this.border,
+    this.bgColor,
   });
 
   @override
@@ -29,8 +41,9 @@ class CustomTileWidget extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 14),
       margin: const EdgeInsets.only(bottom: 10),
       decoration: BoxDecoration(
-        color: Color(0xffF9F9F9),
+        color: bgColor ?? Color(0xffF9F9F9),
         borderRadius: BorderRadius.circular(8),
+        border: border,
       ),
       child: Row(
         children: [
@@ -45,7 +58,7 @@ class CustomTileWidget extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.all(10),
               child: svgIcon != null
-                  ? SvgPicture.asset(svgIcon!, height: 24,width: 24,)
+                  ? SvgPicture.asset(svgIcon!, height: 24, width: 24)
                   : Icon(leadingIcon, color: Colors.blue, size: 24),
             ),
           ),
@@ -62,13 +75,14 @@ class CustomTileWidget extends StatelessWidget {
                   style: const TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.w600,
-                  ),
+                  ).merge(titleTextStyle),
                 ),
                 // const SizedBox(height: 4),
-                Text(
-                  subtitle,
-                  style: TextStyle(fontSize: 12, color: Color(0xff696E7E)),
-                ),
+                subTitle ??
+                    Text(
+                      subtitle!,
+                      style: TextStyle(fontSize: 12, color: Color(0xff696E7E)),
+                    ),
               ],
             ),
           ),

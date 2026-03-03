@@ -20,7 +20,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
     Future.delayed(Duration(seconds: 3), () {
       router.push(Paths.ONBOARDING);
-      // router.push(Paths.BOOK);
+      // router.push(Paths.HOME);
     });
   }
 

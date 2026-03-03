@@ -14,10 +14,24 @@ abstract class Routes {
   static const LOGIN = "login";
 
   //Dashboard layout flow
-  static const BOOK = "trip-booking";
-  static const PACKAGES = "user-packages";
-  static const TRIPS = "trip-history";
+  static const HOME = "user-dashboard";
+  static const PACKAGES = "user-package";
+  static const BOOKINGHISTORY = "user-booking-history";
   static const PROFILE = "user-profile";
+
+  //Trip Booking Route
+  static const AVAILABLETRIPS = "view-available-booking_history";
+  static const BOOKATRIP = "book-a-trip";
+  static const PAYFORTRIP = "pay-for-trip";
+  static const TRIPSUMMARY = "trip-summary";
+
+  //Package Booking Route
+  static const ADDPACKAGEDETAIL = "add-package-detail";
+  static const CONFIRMPACKAGEDETAIL = "confirm-package-detail";
+  static const PACKAGEBOOKINGSUMMARY = "package-booking-summary";
+
+  // Booking history
+  static const BOOKINGHISTORYDETAIL = 'booking-history';
 
   // static const CONFIRMPIN = "confirmpin";
   // static const FORGOTPIN = "forgotPin";
@@ -79,10 +93,24 @@ abstract class Paths {
   static const LOGIN = '/${Routes.LOGIN}';
 
   //Dashboard Layout flow
-  static const BOOK = '/${Routes.BOOK}';
+  static const HOME = '/${Routes.HOME}';
   static const PACKAGES = '/${Routes.PACKAGES}';
-  static const TRIPS = '/${Routes.TRIPS}';
+  static const BOOKINGHISTORY = '/${Routes.BOOKINGHISTORY}';
   static const PROFILE = '/${Routes.PROFILE}';
+
+  //Trip Booking Route
+  static const AVAILABLETRIPS = '/${Routes.AVAILABLETRIPS}';
+  static const BOOKATRIP = "/${Routes.BOOKATRIP}";
+  static const PAYFORTRIP = "/${Routes.PAYFORTRIP}";
+  static const TRIPSUMMARY = "/${Routes.TRIPSUMMARY}";
+
+  //Package Booking Route
+  static const ADDPACKAGEDETAIL = '/${Routes.ADDPACKAGEDETAIL}';
+  static const CONFIRMPACKAGEDETAIL = '/${Routes.CONFIRMPACKAGEDETAIL}';
+  static const PACKAGEBOOKINGSUMMARY = '/${Routes.PACKAGEBOOKINGSUMMARY}';
+
+  // Booking history
+  static const BOOKINGHISTORYDETAIL = '/${Routes.BOOKINGHISTORYDETAIL}';
 
   // static const CONFIRMPIN = '/${Routes.CONFIRMPIN}';
   // static const FORGOTPIN = "/${Routes.FORGOTPIN}";

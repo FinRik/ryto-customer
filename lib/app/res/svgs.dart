@@ -13,4 +13,9 @@ class AppSvgs {
 
   static const String apple = "$_svgPath/apple.svg";
   static const String google = "$_svgPath/google.svg";
+
+  static const String package = "$_svgPath/package.svg";
+  static const String shieldTick = "$_svgPath/shield-tick.svg";
+
+  static const String checkMark = "$_svgPath/check-mark.svg";
 }

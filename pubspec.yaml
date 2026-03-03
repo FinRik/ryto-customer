@@ -1,7 +1,7 @@
 name: ryto_customer
 description: "A new Flutter project."
 # The following line prevents the package from being accidentally published to
-# pub.dev using `flutter pub publish`. This is preferred for private packages.
+# pub.dev using `flutter pub publish`. This is preferred for private package.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
 # The following defines the version and build number for your application.
@@ -39,6 +39,10 @@ dependencies:
 
   calendar_date_picker2: ^2.0.1
 
+  group_list_view: ^1.1.1
+  grouped_list: ^6.0.0
+  intl: ^0.20.2
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -53,7 +57,7 @@ dev_dependencies:
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 
-# The following section is specific to Flutter packages.
+# The following section is specific to Flutter package.
 flutter:
 
   # The following line ensures that the Material Icons font is

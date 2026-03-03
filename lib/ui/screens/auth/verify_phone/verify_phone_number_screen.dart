@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 import '../../../../core/core.dart';
-import '../../../widgets/buttons/arrow_back.dart';
+import '../../../widgets/buttons/back_arrow_button.dart';
 import '../../../widgets/buttons/sc_button.dart';
 import '../../../widgets/inputs/otp_input_field.dart';
 import '../../../widgets/texts/header_text.dart';

@@ -1,17 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
+import 'package:go_router/go_router.dart';
 
-import '../../../../app/res/logos.dart';
+import '../../../../core/models/trip_model.dart';
+import '../../../../core/routes/routes.dart';
 import '../../../widgets/custom_app_bar.dart';
+import '../../../widgets/scrollable/grouped_list_view.dart';
+import 'booking_details_screen.dart';
 
-class TripsScreen extends StatefulWidget {
-  const TripsScreen({super.key});
+class BookingHistoriesScreen extends StatefulWidget {
+  const BookingHistoriesScreen({super.key});
 
   @override
-  State<TripsScreen> createState() => _TripsScreenState();
+  State<BookingHistoriesScreen> createState() => _TripsScreenState();
 }
 
-class _TripsScreenState extends State<TripsScreen>
+class _TripsScreenState extends State<BookingHistoriesScreen>
     with TickerProviderStateMixin {
   late TabController tabController;
 
@@ -70,9 +73,36 @@ class _TripsScreenState extends State<TripsScreen>
                 controller: tabController,
                 physics: NeverScrollableScrollPhysics(),
                 children: [
-                  Container(color: Colors.yellow),
-                  Container(color: Colors.green),
-                  Container(color: Colors.amber),
+                  GroupedTripList(
+                    trips: Trip.mockTrips,
+                    onRebook: (trip) {
+                      debugPrint('Rebook ${trip.from} → ${trip.to}');
+                    },
+                    onTap: (trip) {
+                      debugPrint('Goto ${trip.from} → ${trip.to}');
+                      context.push(Paths.BOOKINGHISTORYDETAIL, extra: trip);
+                    },
+                  ),
+                  GroupedTripList(
+                    trips: Trip.mockUpcomingTrips,
+                    onRebook: (trip) {
+                      debugPrint('Rebook ${trip.from} → ${trip.to}');
+                    },
+                    onTap: (trip) {
+                      debugPrint('Goto ${trip.from} → ${trip.to}');
+                      context.push(Paths.BOOKINGHISTORYDETAIL, extra: trip);
+                    },
+                  ),
+                  GroupedTripList(
+                    trips: Trip.mockPastTrips,
+                    onRebook: (trip) {
+                      debugPrint('Rebook ${trip.from} → ${trip.to}');
+                    },
+                    onTap: (trip) {
+                      debugPrint('Goto ${trip.from} → ${trip.to}');
+                      context.push(Paths.BOOKINGHISTORYDETAIL, extra: trip);
+                    },
+                  ),
                 ],
               ),
             ),

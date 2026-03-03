@@ -8,4 +8,6 @@ class AppImages {
   static const String onboardThree = "$_imagePath/onboard-3.png";
   static const String onboardFour = "$_imagePath/onboard-4.png";
   static const String profilePattern = "$_imagePath/profile-pattern.png";
+  static const String package = "$_imagePath/package.png";
+  static const String car = "$_imagePath/car.png";
 }
