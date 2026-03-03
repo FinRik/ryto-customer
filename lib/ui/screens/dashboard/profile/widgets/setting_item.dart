@@ -51,7 +51,7 @@ class SettingItem extends StatelessWidget {
             ),
             SvgPicture.asset(
               trailingType == TrailingType.chevron
-                  ? AppIcons.arrowRight
+                  ? AppIcons.arrowForwardIOS
                   : trailingType == TrailingType.destructive
                   ? AppIcons.logout
                   : AppIcons.arrowRightUp,
