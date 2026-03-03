@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class GeneralTextField extends StatefulWidget {
-  final String label;
+  final String? label;
   final String? hint;
   final TextEditingController controller;
   final IconData? prefixIcon;
@@ -63,10 +63,11 @@ class _GeneralTextFieldState extends State<GeneralTextField> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        if(widget.label != null)
         Row(
           children: [
             Text(
-              widget.label,
+              widget.label!,
               style: const TextStyle(
                 color: Color(0xff696E7E),
                 fontSize: 14,
@@ -121,15 +122,15 @@ class _GeneralTextFieldState extends State<GeneralTextField> {
                   )
                 : null,
             border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: BorderRadius.circular(100),
               borderSide: BorderSide(width: 1, color: Color(0xffE5E5E6)),
             ),
             enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: BorderRadius.circular(100),
               borderSide: BorderSide(width: 1, color: Color(0xffE5E5E6)),
             ),
             focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: BorderRadius.circular(100),
               borderSide: BorderSide(width: 1, color: Color(0xffE5E5E6)),
             ),
             suffixIcon: widget.suffixIcon ?? suffixIcon(context),
@@ -149,7 +150,7 @@ class _GeneralTextFieldState extends State<GeneralTextField> {
         onTap: () => _selectDate(context),
         child: const Padding(
           padding: EdgeInsets.all(4.0),
-          child: Icon(Icons.calendar_month),
+          child: Icon(Icons.keyboard_arrow_down_sharp),
         ),
       );
     }
