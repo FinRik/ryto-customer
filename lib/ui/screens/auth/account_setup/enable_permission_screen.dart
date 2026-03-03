@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../../app/res/svgs.dart';
 import '../../../../core/routes/router.dart';
 import '../../../../core/routes/routes.dart';
-import '../../../widgets/buttons/arrow_back.dart';
+import '../../../widgets/buttons/back_arrow_button.dart';
 import '../../../widgets/buttons/sc_button.dart';
 import '../../../widgets/customs/custom_tile_widget.dart';
 import '../../../widgets/inputs/auth_text_field.dart';
@@ -83,7 +83,7 @@ class _EnablePermissionScreenState extends State<EnablePermissionScreen> {
               ScButton(
                 btnText: "Continue",
                 onClick: (){
-                  router.push(Paths.BOOK);
+                  router.push(Paths.HOME);
                 },
               ),
             ],
