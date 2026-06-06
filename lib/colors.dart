@@ -52,4 +52,34 @@ class AppColors {
   static const textPrimary = Color(0xff676767);
   static const textSecondary = Color(0xFF8E8E93);
   static const destructive = Color(0xffB11010);
+
+  static const Color grey50 = Color(0xFFFAFAFC);
+  static const Color grey100 = Color(0xFFEFF1F5);
+  static const Color grey200 = Color(0xFFDDE1E6);
+  static const Color grey300 = Color(0xFFCBD2D9);
+  static const Color grey600 = Color(0xFF475467);
+  static const Color grey900 = Color(0xFF101828);
+  static const Color inactiveGrey = Color(0xFFCBD2D9);
+
+  static const LinearGradient primaryButtonGradient = LinearGradient(
+    end: Alignment.bottomRight,
+    begin: Alignment.topLeft,
+    stops: [0.3, 0.7, 1],
+    colors: [
+      Color(0xFFFF5C00),
+      Color(0xFFFF9F69),
+      Color(0xFFCFFF81),
+    ],
+  );
+
+  static const LinearGradient primaryTextGradient = LinearGradient(
+    end: Alignment.bottomRight,
+    begin: Alignment.topLeft,
+    stops: [0.5, 0.9, 1.5],
+    colors: [
+      Color(0xFFFF5C00),
+      Color(0xFFFF9F69),
+      Color(0xFFCFFF81),
+    ],
+  );
 }

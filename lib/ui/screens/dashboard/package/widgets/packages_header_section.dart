@@ -1,24 +1,53 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
-import '../../../../../app/res/icons.dart';
 import '../../../../../app/res/svgs.dart';
 import '../../../../../core/routes/router.dart';
 import '../../../../../core/routes/routes.dart';
+import '../../../../../utils/helpers/date_formatter_utils.dart';
 import '../../../../styles/app_decorations.dart';
-import '../../../../widgets/buttons/sc_button.dart';
-import '../../../../widgets/custom_app_bar.dart';
+import '../../../../widgets/buttons/button.dart';
+import '../../../../widgets/app_bars/custom_app_bar.dart';
 import '../../../../widgets/inputs/general_text_field.dart';
+import '../../../../widgets/inputs/place_suggestion_widget.dart';
 
-class PackagesHeaderSection extends StatelessWidget {
+class PackagesHeaderSection extends StatefulWidget {
   const PackagesHeaderSection({super.key});
+
+  @override
+  State<PackagesHeaderSection> createState() => _PackagesHeaderSectionState();
+}
+
+class _PackagesHeaderSectionState extends State<PackagesHeaderSection> {
+  final _originCity = TextEditingController();
+  final _destinationCity = TextEditingController();
+  final _dateController = TextEditingController();
+
+  @override
+  void dispose() {
+    _originCity.dispose();
+    _destinationCity.dispose();
+    _dateController.dispose();
+    super.dispose();
+  }
+
+  void _onProceed() {
+    context.push(
+      Paths.PACKAGEAVAILABLETRIPS,
+      extra: AvailableTripsArgs(
+        originCity: _originCity.text,
+        destinationCity: _destinationCity.text,
+        departureDate: _dateController.text,
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        /// Top Row
-        CustomAppBar(),
+        const CustomAppBar(),
         const SizedBox(height: 45),
         const Text(
           "Where are you going?",
@@ -33,35 +62,52 @@ class PackagesHeaderSection extends StatelessWidget {
           "Book a scheduled intercity trip.",
           style: TextStyle(color: Colors.white),
         ),
-        SizedBox(height: 12),
+        const SizedBox(height: 12),
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 18),
           decoration: AppDecoration.bookingOverlayDeco,
           child: Column(
             children: [
-              GeneralTextField(
+              PlacesSuggestionWidget(
                 label: "Leaving From?",
                 hint: "Enter a city, Bustop",
-                controller: TextEditingController(),
+                controller: _originCity,
                 prefixSvg: AppSvgs.location,
+                borderRadius: 10,
               ),
-              GeneralTextField(
+              PlacesSuggestionWidget(
                 label: "Going to",
                 hint: "Enter Destination",
-                controller: TextEditingController(),
+                controller: _destinationCity,
                 prefixSvg: AppSvgs.location,
+                borderRadius: 10,
               ),
-              GeneralTextField(
-                label: null,
-                hint: "25 Dec, 2025",
-                controller: TextEditingController(),
-                prefixSvg: AppIcons.calendar,
-                textInputType: TextInputType.datetime,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Expanded(
+                    child: GeneralTextField(
+                      label: "Departure date",
+                      // hint: "25 Dec, 2025",
+                      hint: DateFormatterUtils.departureDate,
+                      controller: _dateController,
+                      // prefixSvg: AppIcons.calendar,
+                      // prefixIconSize: 16,
+                      prefixIcon: Icons.calendar_today,
+                      textInputType: TextInputType.datetime,
+                      isPackageDateSelector: true,
+                      borderRadius: 10,
+                      readOnly: true,
+                    ),
+                  ),
+                  // SizedBox(width: 8),
+                  // Expanded(child: NumberSelectorWidget()),
+                ],
               ),
               const SizedBox(height: 24),
-              ScButton(btnText: "Proceed", onClick: () {
-                router.push(Paths.ADDPACKAGEDETAIL);
-              }),
+
+              Button(text: "Proceed", onTap: _onProceed),
             ],
           ),
         ),

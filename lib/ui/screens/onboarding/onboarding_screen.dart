@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import '../../../app/res/images.dart';
 import 'parts/onboarding_page.dart';
-import 'widgets/dot_indication.dart';
 
 /// ----------------------
 /// MODEL
@@ -36,22 +35,22 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   final List<OnboardingData> pages = [
     OnboardingData(
       image: AppImages.onboardOne,
-      title: "Trips already in motion",
+      title: "Travel or send packages between cities",
       description:
-          "Ryto connects you with verified drivers already traveling between cities, turning existing booking_history into reliable travel and delivery options.",
+          "Ryto connects you with verified drivers already traveling between cities. Book seats or send packages on planned trips — all in one app.",
     ),
-    OnboardingData(
-      image: AppImages.onboardTwo,
-      title: "Plan it. Trust it. Move.",
-      description:
-          "Schedule intercity booking_history in advance, know your route and driver, and travel with confidence every time.",
-    ),
-    OnboardingData(
-      image: AppImages.onboardThree,
-      title: "People and package, together",
-      description:
-          "Travel between cities or send small package using the same trusted peer-to-peer routes, all in one app.",
-    ),
+    // OnboardingData(
+    //   image: AppImages.onboardTwo,
+    //   title: "Plan it. Trust it. Move.",
+    //   description:
+    //       "Schedule intercity booking history in advance, know your route and driver, and travel with confidence every time.",
+    // ),
+    // OnboardingData(
+    //   image: AppImages.onboardThree,
+    //   title: "People and package, together",
+    //   description:
+    //       "Travel between cities or send small package using the same trusted peer-to-peer routes, all in one app.",
+    // ),
   ];
 
   @override
@@ -66,10 +65,12 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             setState(() => _currentIndex = index);
           },
           itemBuilder: (_, index) {
-            return OnboardingPage(
-              data: pages[index],
-              currentIndex: _currentIndex,
-              pageLength: pages.length,
+            return SingleChildScrollView(
+              child: OnboardingPage(
+                data: pages[index],
+                currentIndex: _currentIndex,
+                pageLength: pages.length,
+              ),
             );
           },
         ),

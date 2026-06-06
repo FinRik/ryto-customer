@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/routes/router.dart';
+import '../../../../core/routes/routes.dart';
 import '../../../widgets/buttons/sc_button.dart';
-import '../../auth/register/register_screen.dart';
 import '../onboarding_screen.dart';
 import '../widgets/dot_indication.dart';
 
@@ -44,6 +45,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
           ),
           Column(
             children: [
+              SizedBox(height: 21),
               DotIndicator(
                 currentIndex: widget.currentIndex,
                 total: widget.pageLength,
@@ -68,19 +70,13 @@ class _OnboardingPageState extends State<OnboardingPage> {
                     const SizedBox(height: 16),
                     Text(
                       widget.data.description,
-                      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w400,
+                      ),
                     ),
                     const SizedBox(height: 34),
-                    ScButton(
-                      onClick: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => RegisterScreen(),
-                          ),
-                        );
-                      },
-                    ),
+                    ScButton(onClick: () => router.push(Paths.REGISTERACCOUNT)),
                   ],
                 ),
               ),

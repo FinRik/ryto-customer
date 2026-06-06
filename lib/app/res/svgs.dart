@@ -18,4 +18,5 @@ class AppSvgs {
   static const String shieldTick = "$_svgPath/shield-tick.svg";
 
   static const String checkMark = "$_svgPath/check-mark.svg";
+  static const String hourGlass = "$_svgPath/hour-glass.svg";
 }

@@ -2,21 +2,25 @@ import 'package:flutter/material.dart';
 
 import '../../../app/res/icons.dart';
 import '../../../app/res/svgs.dart';
-import '../../../core/models/ui/trip_item_model.dart';
+import '../../../core/models/ride/driver.dart';
+import '../../../core/models/ride/vehicle.dart';
 import '../../styles/app_decorations.dart';
 import 'svg_widget.dart';
 
 class DriverProfileCard extends StatelessWidget {
   const DriverProfileCard({
     super.key,
-    required this.model,
+    required this.driver,
+    required this.vehicle,
     required this.showVerifiedIcon,
     this.leading,
     this.trailing,
-    this.subtitleWidget, this.titleText,
+    this.subtitleWidget,
+    this.titleText,
   });
 
-  final TripItemModel model;
+  final Driver driver;
+  final Vehicle vehicle;
   final bool showVerifiedIcon;
   final Widget? leading, trailing;
   final String? titleText;
@@ -39,7 +43,7 @@ class DriverProfileCard extends StatelessWidget {
                 radius: 20,
                 backgroundColor: const Color(0xFF0060EB),
                 child: Text(
-                  model.avatarText,
+                  (driver.firstName![0] + driver.lastName![0]).toUpperCase(),
                   style: const TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
@@ -58,16 +62,16 @@ class DriverProfileCard extends StatelessWidget {
                 Row(
                   children: [
                     Text(
-                      titleText??model.title,
+                      titleText ?? driver.firstName!,
                       style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w600,
                         color: Color(0xFF33363E),
                       ),
                     ),
-                    if (model.isVerified && showVerifiedIcon)
+                    if (driver.isVerified! && showVerifiedIcon)
                       SizedBox(width: 4),
-                    if (model.isVerified && showVerifiedIcon)
+                    if (driver.isVerified! && showVerifiedIcon)
                       SvgWidget(assetName: AppSvgs.checkMark),
                   ],
                 ),
@@ -76,31 +80,34 @@ class DriverProfileCard extends StatelessWidget {
 
                 /// Rating
                 subtitleWidget ??
-                Row(
-                  children: [
                     Row(
                       children: [
-                        const Icon(
-                          Icons.star,
-                          size: 16,
-                          color: Color(0xFFFFB853),
+                        Row(
+                          children: [
+                            const Icon(
+                              Icons.star,
+                              size: 16,
+                              color: Color(0xFFFFB853),
+                            ),
+                            const SizedBox(width: 4),
+                            Text(
+                              "${driver.averageRating}",
+                              style: const TextStyle(
+                                fontSize: 13,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ],
                         ),
-                        const SizedBox(width: 4),
-                        Text(
-                          model.rating.toStringAsFixed(1),
-                          style: const TextStyle(
-                            fontSize: 13,
-                            fontWeight: FontWeight.w500,
-                          ),
+                        SizedBox(width: 4),
+                        CircleAvatar(
+                          radius: 2.45,
+                          backgroundColor: Colors.black,
                         ),
+                        SizedBox(width: 4),
+                        Text("${driver.totalTrips} Trips"),
                       ],
                     ),
-                    SizedBox(width: 4),
-                    CircleAvatar(radius: 2.45, backgroundColor: Colors.black),
-                    SizedBox(width: 4),
-                    Text("234 Trips"),
-                  ],
-                ),
               ],
             ),
           ),

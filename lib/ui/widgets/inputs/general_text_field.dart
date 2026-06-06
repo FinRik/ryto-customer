@@ -2,11 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
+import '../../bottom_sheets/date_selection_bottom_sheet.dart';
+
 class GeneralTextField extends StatefulWidget {
   final String? label;
   final String? hint;
-  final TextEditingController controller;
+  final TextEditingController? controller;
   final IconData? prefixIcon;
+  final double? prefixIconSize;
   final TextInputType? textInputType;
   final String? prefixSvg;
   final Widget? suffixIcon;
@@ -16,6 +19,9 @@ class GeneralTextField extends StatefulWidget {
   final List<TextInputFormatter>? inputFormatters;
   final EdgeInsets? margin;
   final TextStyle? labelStyle;
+  final int maxLines;
+  final double? borderRadius;
+  final bool isPackageDateSelector, readOnly;
 
   const GeneralTextField({
     super.key,
@@ -23,8 +29,9 @@ class GeneralTextField extends StatefulWidget {
     this.hint,
     this.onChanged,
     this.labelTip,
-    required this.controller,
+    this.controller,
     this.prefixIcon = Icons.text_increase_rounded,
+    this.prefixIconSize,
     this.textInputType,
     this.prefixSvg,
     this.validator,
@@ -32,6 +39,10 @@ class GeneralTextField extends StatefulWidget {
     this.suffixIcon,
     this.margin,
     this.labelStyle,
+    this.maxLines = 1,
+    this.borderRadius,
+    this.isPackageDateSelector = false,
+    this.readOnly = false,
   });
 
   @override
@@ -40,8 +51,15 @@ class GeneralTextField extends StatefulWidget {
 
 class _GeneralTextFieldState extends State<GeneralTextField> {
   DateTime selectedDate = DateTime.now();
+  late final TextEditingController _controller;
 
-  Future<void> _selectDate(BuildContext context) async {
+  @override
+  void initState() {
+    super.initState();
+    _controller = widget.controller ?? TextEditingController();
+  }
+
+  Future<void> _selectDate() async {
     final DateTime? picked = await showDatePicker(
       context: context,
       initialDate: selectedDate,
@@ -52,8 +70,25 @@ class _GeneralTextFieldState extends State<GeneralTextField> {
     if (picked != null && picked != selectedDate) {
       setState(() {
         selectedDate = picked;
-        widget.controller.text =
-            "${selectedDate.month} / ${selectedDate.day} / ${selectedDate.year}";
+        _controller.text =
+            "${selectedDate.day}/${selectedDate.month}/${selectedDate.year}";
+      });
+    }
+  }
+
+  Future<void> _openCalendar() async {
+    final DateTime? result = await showModalBottomSheet<DateTime>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => const DateSelectionBottomSheet(),
+    );
+
+    if (result != null && result != selectedDate) {
+      setState(() {
+        selectedDate = result;
+        _controller.text =
+            "${selectedDate.day}/${selectedDate.month}/${selectedDate.year}";
       });
     }
   }
@@ -63,34 +98,34 @@ class _GeneralTextFieldState extends State<GeneralTextField> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        if(widget.label != null)
-        Row(
-          children: [
-            Text(
-              widget.label!,
-              style: const TextStyle(
-                color: Color(0xff696E7E),
-                fontSize: 14,
-                fontWeight: FontWeight.w500,
-              ).merge(widget.labelStyle ?? const TextStyle()),
-            ),
-            if (widget.labelTip != null)
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Tooltip(
-                  message: widget.labelTip,
-                  child: const Icon(
-                    Icons.info_outline,
-                    size: 15,
-                    color: Colors.white,
+        if (widget.label != null)
+          Row(
+            children: [
+              Text(
+                widget.label!,
+                style: const TextStyle(
+                  color: Color(0xff696E7E),
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                ).merge(widget.labelStyle ?? const TextStyle()),
+              ),
+              if (widget.labelTip != null)
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Tooltip(
+                    message: widget.labelTip,
+                    child: const Icon(
+                      Icons.info_outline,
+                      size: 15,
+                      color: Colors.white,
+                    ),
                   ),
                 ),
-              ),
-          ],
-        ),
+            ],
+          ),
         SizedBox(height: 4.0),
         TextFormField(
-          controller: widget.controller,
+          controller: _controller,
           keyboardType: widget.textInputType ?? TextInputType.text,
           validator:
               widget.validator ??
@@ -99,9 +134,13 @@ class _GeneralTextFieldState extends State<GeneralTextField> {
                 return null;
               },
           onChanged: (val) {
-            setState(() => widget.onChanged!(val));
+            if (widget.onChanged != null) {
+              setState(() => widget.onChanged!(val));
+            }
           },
+          maxLines: widget.maxLines,
           inputFormatters: widget.inputFormatters,
+          readOnly: widget.readOnly,
           style: TextStyle(fontWeight: FontWeight.w400, fontSize: 16),
           decoration: InputDecoration(
             filled: false,
@@ -111,26 +150,31 @@ class _GeneralTextFieldState extends State<GeneralTextField> {
             hintStyle: TextStyle(fontWeight: FontWeight.w400, fontSize: 16),
             prefixIcon: widget.prefixIcon != null
                 ? Container(
-                    margin: const EdgeInsets.only(
-                      top: 8.0,
-                      bottom: 8.0,
-                      left: 12,
+                    padding: const EdgeInsets.only(
+                      top: 4.0,
+                      bottom: 4.0,
+                      left: 4.0,
                     ),
                     child: widget.prefixSvg != null
-                        ? SvgPicture.asset(widget.prefixSvg!)
-                        : Icon(widget.prefixIcon),
+                        ? SvgPicture.asset(
+                            widget.prefixSvg!,
+                            height: widget.prefixIconSize,
+                            width: widget.prefixIconSize,
+                          )
+                        : Icon(widget.prefixIcon, size: widget.prefixIconSize),
                   )
                 : null,
+
             border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(100),
+              borderRadius: BorderRadius.circular(widget.borderRadius ?? 100),
               borderSide: BorderSide(width: 1, color: Color(0xffE5E5E6)),
             ),
             enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(100),
+              borderRadius: BorderRadius.circular(widget.borderRadius ?? 100),
               borderSide: BorderSide(width: 1, color: Color(0xffE5E5E6)),
             ),
             focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(100),
+              borderRadius: BorderRadius.circular(widget.borderRadius ?? 100),
               borderSide: BorderSide(width: 1, color: Color(0xffE5E5E6)),
             ),
             suffixIcon: widget.suffixIcon ?? suffixIcon(context),
@@ -147,7 +191,7 @@ class _GeneralTextFieldState extends State<GeneralTextField> {
       return InkWell(
         splashFactory: NoSplash.splashFactory,
         splashColor: theme.splashColor,
-        onTap: () => _selectDate(context),
+        onTap: widget.isPackageDateSelector ? _openCalendar : _selectDate,
         child: const Padding(
           padding: EdgeInsets.all(4.0),
           child: Icon(Icons.keyboard_arrow_down_sharp),

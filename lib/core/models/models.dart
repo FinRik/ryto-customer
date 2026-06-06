@@ -1,1 +1,1 @@
-export 'ui/package_size_model.dart';
+export 'ui/package_size.dart';

@@ -1,11 +1,17 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'dart:io';
 
+import 'package:flutter/material.dart';
+
+import 'app/app.dart';
+import 'core/config/multi_blocs_provider.dart';
+import 'core/config/multi_repo_provider.dart';
 import 'core/core.dart';
-import 'ui/layout/cubit/bottom_nav_layout_bloc.dart';
 import 'ui/styles/app_theme.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  HttpOverrides.global = MyHttpOverrides();
+  await App.init();
   runApp(const MyApp());
 }
 
@@ -14,27 +20,32 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider<BottomNavLayoutCubit>(
-          create: (_) => BottomNavLayoutCubit(),
-          lazy: false,
+    return MultiRepoProvider(
+      child: MultiBlocsProvider(
+        child: MaterialApp.router(
+          title: 'Ryto Customer',
+          debugShowCheckedModeBanner: false,
+          routerDelegate: router.routerDelegate,
+          scaffoldMessengerKey: scaffoldMessengerKey,
+          routeInformationParser: router.routeInformationParser,
+          routeInformationProvider: router.routeInformationProvider,
+
+          theme: AppTheme.light,
+          darkTheme: AppTheme.dark,
+          themeMode: ThemeMode.light,
+
+          builder: (context, child) => child!,
         ),
-      ],
-      child: MaterialApp.router(
-        title: 'Ryto Customer',
-        debugShowCheckedModeBanner: false,
-        routerDelegate: router.routerDelegate,
-        scaffoldMessengerKey: scaffoldMessengerKey,
-        routeInformationParser: router.routeInformationParser,
-        routeInformationProvider: router.routeInformationProvider,
-
-        theme: AppTheme.light,
-        darkTheme: AppTheme.dark,
-        themeMode: ThemeMode.light,
-
-        builder: (context, child) => child!,
       ),
     );
+  }
+}
+
+class MyHttpOverrides extends HttpOverrides {
+  @override
+  HttpClient createHttpClient(SecurityContext? context) {
+    return super.createHttpClient(context)
+      ..badCertificateCallback =
+          (X509Certificate cert, String host, int port) => true;
   }
 }

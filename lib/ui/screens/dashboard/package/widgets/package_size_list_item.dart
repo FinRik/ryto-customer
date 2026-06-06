@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../../../../app/res/icons.dart';
-import '../../../../../core/models/ui/package_size_model.dart';
+import '../../../../../core/models/ui/package_size.dart';
 import '../../../../styles/app_decorations.dart';
 
 class PackageSizeListItem extends StatelessWidget {
@@ -13,7 +13,7 @@ class PackageSizeListItem extends StatelessWidget {
   });
 
   final bool isItemSelected;
-  final PackageSizeModel listItem;
+  final PackageSize listItem;
 
   @override
   Widget build(BuildContext context) {
@@ -62,7 +62,7 @@ class PackageSizeListItem extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                listItem.catTitle,
+                listItem.title,
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
@@ -77,15 +77,15 @@ class PackageSizeListItem extends StatelessWidget {
                   color: isItemSelected ? Colors.white : Color(0xff838794),
                 ),
               ),
-              if(listItem.dispPrice != null)
-              Text(
-                listItem.dispPrice!,
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w700,
-                  color: isItemSelected ? Colors.yellow : Colors.black,
-                ),
-              ),
+              // if(listItem.dispPrice != null)
+              // Text(
+              //   listItem.dispPrice!,
+              //   style: TextStyle(
+              //     fontSize: 14,
+              //     fontWeight: FontWeight.w700,
+              //     color: isItemSelected ? Colors.yellow : Colors.black,
+              //   ),
+              // ),
               if(listItem.errorDesc != null)
               Text(
                 listItem.errorDesc!,

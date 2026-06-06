@@ -13,6 +13,7 @@ class CustomCardWidget extends StatelessWidget {
     this.icon,
     this.iconColor,
     this.bottomMargin,
+    this.padding,
   });
 
   final String title;
@@ -22,6 +23,7 @@ class CustomCardWidget extends StatelessWidget {
   final String? icon;
   final Color? iconColor;
   final double? bottomMargin;
+  final EdgeInsets? padding;
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +32,7 @@ class CustomCardWidget extends StatelessWidget {
         color: bgColor,
         border: border,
       ),
-      padding: EdgeInsets.all(16),
+      padding: padding ?? EdgeInsets.all(16),
       margin: EdgeInsets.only(bottom: bottomMargin ?? 16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

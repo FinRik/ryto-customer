@@ -16,22 +16,31 @@ abstract class Routes {
   //Dashboard layout flow
   static const HOME = "user-dashboard";
   static const PACKAGES = "user-package";
-  static const BOOKINGHISTORY = "user-booking-history";
+  static const BOOKINGHISTORY = "user-bookings";
   static const PROFILE = "user-profile";
 
   //Trip Booking Route
-  static const AVAILABLETRIPS = "view-available-booking_history";
-  static const BOOKATRIP = "book-a-trip";
-  static const PAYFORTRIP = "pay-for-trip";
-  static const TRIPSUMMARY = "trip-summary";
+  static const AVAILABLETRIPS = "view-available-trips";
+  static const BOOKATRIP = "book-a-trip_setup";
+  static const PAYFORTRIP = "pay-for-trip_setup";
+  static const TRIPSUMMARY = "trip_setup-summary";
 
   //Package Booking Route
+  static const PACKAGEAVAILABLETRIPS = "view-package-available-route";
   static const ADDPACKAGEDETAIL = "add-package-detail";
   static const CONFIRMPACKAGEDETAIL = "confirm-package-detail";
   static const PACKAGEBOOKINGSUMMARY = "package-booking-summary";
 
   // Booking history
-  static const BOOKINGHISTORYDETAIL = 'booking-history';
+  // static const BOOKINGSTATUS = 'booking-history-status';
+  static const BOOKINGDETAIL = 'booking-history-detail';
+
+  // profile management route
+  static const EDITUSERACCOUNT = 'edit-user-account';
+  static const APPSETTINGS = 'app-settings';
+  static const SUPPORT = 'help-and-support';
+
+  static const WEBVIEW = 'webview';
 
   // static const CONFIRMPIN = "confirmpin";
   // static const FORGOTPIN = "forgotPin";
@@ -105,12 +114,21 @@ abstract class Paths {
   static const TRIPSUMMARY = "/${Routes.TRIPSUMMARY}";
 
   //Package Booking Route
+  static const PACKAGEAVAILABLETRIPS = '/${Routes.PACKAGEAVAILABLETRIPS}';
   static const ADDPACKAGEDETAIL = '/${Routes.ADDPACKAGEDETAIL}';
   static const CONFIRMPACKAGEDETAIL = '/${Routes.CONFIRMPACKAGEDETAIL}';
   static const PACKAGEBOOKINGSUMMARY = '/${Routes.PACKAGEBOOKINGSUMMARY}';
 
   // Booking history
-  static const BOOKINGHISTORYDETAIL = '/${Routes.BOOKINGHISTORYDETAIL}';
+  // static const BOOKINGSTATUS = '/${Routes.BOOKINGSTATUS}';
+  static const BOOKINGDETAIL = '/${Routes.BOOKINGDETAIL}';
+
+  // profile management route
+  static const EDITUSERACCOUNT = '/${Routes.EDITUSERACCOUNT}';
+  static const APPSETTINGS = '/${Routes.APPSETTINGS}';
+  static const SUPPORT = '/${Routes.SUPPORT}';
+
+  static const WEBVIEW = '/${Routes.WEBVIEW}';
 
   // static const CONFIRMPIN = '/${Routes.CONFIRMPIN}';
   // static const FORGOTPIN = "/${Routes.FORGOTPIN}";

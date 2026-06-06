@@ -1,9 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:ryto_customer/app/api_urls.dart';
 
 import '../../../../app/res/icons.dart';
 import '../../../../app/res/images.dart';
+import '../../../../core/routes/router.dart';
+import '../../../../core/routes/routes.dart';
+import '../../../../utils/helpers/socials_helper.dart';
+import '../../../blocs/profile/profile_bloc.dart';
 import '../../../styles/app_spacing.dart';
-import '../../../widgets/custom_app_bar.dart';
+import '../../../widgets/app_bars/custom_app_bar.dart';
+import '../../../widgets/dp_image_widget.dart';
+import '../../../widgets/loaders/circular_indicator.dart';
+import '../../auth/bloc/auth_bloc.dart';
 import 'widgets/setting_item.dart';
 import 'widgets/settings_section.dart';
 
@@ -19,31 +28,64 @@ class ProfileScreen extends StatelessWidget {
         appBar: CustomAppBar(removeHorizPadding: true),
         body: Column(
           children: [
-            Container(
-              padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-              decoration: BoxDecoration(
-                color: Color(0xffE3FB20),
-                image: DecorationImage(
-                  image: AssetImage(AppImages.profilePattern),
-                ),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  CircleAvatar(radius: 30),
-                  SizedBox(height: 12),
-                  Text("Jaiyeoluwa"),
-                  SizedBox(height: 4),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+            BlocConsumer<ProfileBloc, ProfileState>(
+              listener: (context, state) {
+                if (state.status == ProfileStatus.failure) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(state.message ?? "An error occurred"),
+                    ),
+                  );
+                }
+              },
+              builder: (context, state) {
+                // Access the user from the state, providing a fallback if null
+                final user = state.user;
+                final isLoading = state.status == ProfileStatus.loading;
+
+                return Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 24,
+                    vertical: 16,
+                  ),
+                  decoration: BoxDecoration(
+                    color: const Color(0xffE3FB20),
+                    image: DecorationImage(
+                      image: AssetImage(AppImages.profilePattern),
+                      opacity:
+                          0.2, // Added slight opacity to ensure text is readable
+                    ),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Icon(Icons.star),
-                      SizedBox(width: 4),
-                      Text("5.0 (100+)"),
+                      DpImageWidget(imageUrl: user!.imageUrl),
+                      const SizedBox(height: 12),
+                      // Show a loader or the name
+                      isLoading && user == null
+                          ? const CircularIndicator()
+                          : Text(
+                              user?.firstName ?? "Guest",
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 18,
+                              ),
+                            ),
+                      const SizedBox(height: 4),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Icon(Icons.star, size: 16),
+                          const SizedBox(width: 4),
+                          Text(
+                            "${user?.rating ?? '0.0'} (${user?.reviewCount ?? 0}+)",
+                          ),
+                        ],
+                      ),
                     ],
                   ),
-                ],
-              ),
+                );
+              },
             ),
 
             ///body
@@ -58,17 +100,17 @@ class ProfileScreen extends StatelessWidget {
                       SettingItem(
                         icon: AppIcons.editOutlined,
                         title: "Edit Profile",
-                        onTap: () {},
+                        onTap: () => router.push(Paths.EDITUSERACCOUNT),
                       ),
                       SettingItem(
                         icon: AppIcons.notificationStatus,
                         title: "Notifications",
-                        onTap: () {},
+                        onTap: () => router.push(Paths.SUPPORT),
                       ),
                       SettingItem(
                         icon: AppIcons.securityUser,
                         title: "Security",
-                        onTap: () {},
+                        onTap: () => router.push(Paths.APPSETTINGS),
                       ),
                     ],
                   ),
@@ -96,17 +138,20 @@ class ProfileScreen extends StatelessWidget {
                   SettingsSection(
                     title: "Help & Support",
                     children: [
-                      SettingItem(
-                        title: "Help Center / FAQ",
-                        onTap: () {},
-                      ),
+                      SettingItem(title: "Help Center / FAQ", onTap: () {}),
                       SettingItem(
                         title: "Privacy Policy",
-                        onTap: () {},
+                        onTap: () => router.push(
+                          Paths.WEBVIEW,
+                          extra: WebviewArgs(url: ApiUrls.privacy, title: ""),
+                        ),
                       ),
                       SettingItem(
                         title: "Terms & Conditions",
-                        onTap: () {},
+                        onTap: () => router.push(
+                          Paths.WEBVIEW,
+                          extra: WebviewArgs(url: ApiUrls.terms, title: ""),
+                        ),
                       ),
                     ],
                   ),
@@ -120,19 +165,22 @@ class ProfileScreen extends StatelessWidget {
                         icon: AppIcons.global,
                         title: "Website",
                         trailingType: TrailingType.external,
-                        onTap: () {},
+                        onTap: () => router.push(
+                          Paths.WEBVIEW,
+                          extra: WebviewArgs(url: ApiUrls.website, title: ""),
+                        ),
                       ),
                       SettingItem(
                         icon: AppIcons.twitter,
                         title: "X (Twitter)",
                         trailingType: TrailingType.external,
-                        onTap: () {},
+                        onTap: SocialHelper.openTwitter,
                       ),
                       SettingItem(
                         icon: AppIcons.instagram,
                         title: "Instagram",
                         trailingType: TrailingType.external,
-                        onTap: () {},
+                        onTap: SocialHelper.openInstagram,
                       ),
                     ],
                   ),
@@ -145,11 +193,22 @@ class ProfileScreen extends StatelessWidget {
                     onTap: () {},
                   ),
                   const SizedBox(height: 10),
-                  SettingItem(
-                    title: "Log out",
-                    trailingType: TrailingType.destructive,
-                    isDestructive: true,
-                    onTap: () {},
+                  BlocConsumer<AuthBloc, AuthState>(
+                    listener: (context, state) {
+                      if (state is AuthInitial) {
+                        router.go(Paths.LOGIN);
+                      }
+                    },
+                    builder: (context, state) {
+                      return SettingItem(
+                        title: "Log out",
+                        trailingType: TrailingType.destructive,
+                        isDestructive: true,
+                        onTap: () {
+                          context.read<AuthBloc>().add(LogoutRequested());
+                        },
+                      );
+                    },
                   ),
                   const SizedBox(height: 16),
                 ],

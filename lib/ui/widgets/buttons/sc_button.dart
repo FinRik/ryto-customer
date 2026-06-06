@@ -7,12 +7,14 @@ class ScButton extends StatelessWidget {
     this.btnText,
     this.bgColor,
     this.btnTextStyle,
+    this.isLoading = false,
   });
 
   final VoidCallback? onClick;
   final String? btnText;
   final Color? bgColor;
   final TextStyle? btnTextStyle;
+  final bool isLoading;
 
   @override
   Widget build(BuildContext context) {

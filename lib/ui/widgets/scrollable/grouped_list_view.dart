@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:grouped_list/grouped_list.dart';
 import 'package:intl/intl.dart';
-import '../../../core/models/trip_model.dart';
-import '../../screens/dashboard/booking_history/widgets/trip_card.dart';
 
+import '../../../core/models/ride/ride.dart';
+import '../../screens/dashboard/bookings/widgets/trip_card.dart';
 
 class GroupedTripList extends StatelessWidget {
-  final List<Trip> trips;
-  final Function(Trip)? onTap;
-  final Function(Trip)? onRebook;
+  final List<Ride> trips;
+  final Function(Ride)? onTap;
+  final Function(Ride)? onRebook;
 
   const GroupedTripList({
     super.key,
@@ -19,9 +19,9 @@ class GroupedTripList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GroupedListView<Trip, String>(
+    return GroupedListView<Ride, String>(
       elements: trips,
-      groupBy: (trip) => DateFormat('MMMM yyyy').format(trip.date),
+      groupBy: (trip) => DateFormat('MMMM yyyy').format(trip.createdAt!),
       groupSeparatorBuilder: (String groupValue) => Padding(
         padding: const EdgeInsets.symmetric(vertical: 16),
         child: Text(
@@ -36,7 +36,7 @@ class GroupedTripList extends StatelessWidget {
           onRebook: () => onRebook?.call(trip),
         );
       },
-      itemComparator: (a, b) => b.date.compareTo(a.date),
+      itemComparator: (a, b) => b.createdAt!.compareTo(a.createdAt!),
       order: GroupedListOrder.DESC,
       useStickyGroupSeparators: false,
       floatingHeader: false,

@@ -4,7 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 class SocialSignInButton extends StatelessWidget {
   final String text;
   final String? icon;
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
   final TextStyle? btnTextStyle;
   final bool isCenterAligned;
   final Color? borderColor;

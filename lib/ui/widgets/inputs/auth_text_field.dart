@@ -13,8 +13,9 @@ class AuthTextField extends StatefulWidget {
   final String? Function(String?)? validator;
   final void Function(String)? onChanged;
   final List<TextInputFormatter>? inputFormatters;
-  final EdgeInsets? margin;
+  final double? bottomMargin;
   final TextStyle? labelStyle;
+  final bool readOnly;
 
   const AuthTextField({
     super.key,
@@ -29,8 +30,9 @@ class AuthTextField extends StatefulWidget {
     this.validator,
     this.inputFormatters,
     this.suffixIcon,
-    this.margin,
+    this.bottomMargin,
     this.labelStyle,
+    this.readOnly = false,
   });
 
   @override
@@ -97,6 +99,7 @@ class _AuthTextFieldState extends State<AuthTextField> {
         TextFormField(
           controller: widget.controller,
           keyboardType: widget.textInputType,
+          readOnly: widget.readOnly,
           obscureText:
               widget.textInputType == TextInputType.visiblePassword &&
               hidePassword,
@@ -107,7 +110,9 @@ class _AuthTextFieldState extends State<AuthTextField> {
                 return null;
               },
           onChanged: (val) {
-            setState(() => widget.onChanged!(val));
+            if(widget.onChanged != null) {
+              setState(() => widget.onChanged!(val));
+            }
           },
           inputFormatters: widget.inputFormatters,
           style: TextStyle(fontWeight: FontWeight.w400, fontSize: 16),
@@ -149,7 +154,7 @@ class _AuthTextFieldState extends State<AuthTextField> {
             suffixIcon: widget.suffixIcon ?? suffixIcon(context),
           ),
         ),
-        SizedBox(height: 16),
+        SizedBox(height: widget.bottomMargin ?? 16),
       ],
     );
   }

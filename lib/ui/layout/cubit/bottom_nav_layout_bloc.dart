@@ -46,6 +46,8 @@ class BottomNavLayoutCubit extends Cubit<int> {
     onTap(0);
   }
 
+  void moveTo(int index) => onTap(index);
+
   void moveToNext() {
     if (state < list.length - 1) {
       emit(state + 1);
