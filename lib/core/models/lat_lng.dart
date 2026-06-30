@@ -18,4 +18,7 @@ class LatLng {
       _$LatLngFromJson(json);
 
   Map<String, dynamic> toJson() => _$LatLngToJson(this);
+
+  @override
+  String toString() => 'LatLng(lat: $lat, lng: $lng, address: $address)';
 }

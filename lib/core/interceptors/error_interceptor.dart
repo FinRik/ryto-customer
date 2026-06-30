@@ -8,6 +8,8 @@ import 'package:flutter/material.dart';
 import '../../ui/dialogs/error_dialog.dart';
 import '../../utils/logger/logger.dart';
 import '../../utils/storage/token_storage.dart';
+import '../config/paystack_error_extractor.dart';
+import '../config/stripe_error_extractor.dart';
 import '../models/api_error_response.dart';
 import '../routes/router.dart';
 import '../routes/routes.dart';
@@ -23,6 +25,7 @@ class ErrorInterceptor extends Interceptor {
     Response response,
     ResponseInterceptorHandler handler,
   ) async {
+    final path = response.requestOptions.path;
     final statusCode = response.statusCode ?? 0;
     final data = response.data;
 
@@ -30,11 +33,42 @@ class ErrorInterceptor extends Interceptor {
       return handler.next(response);
     }
 
+    // ── 1. STRIPE LEAF ──
+    if (path.contains('api.stripe.com')) {
+      final stripeMessage = StripeErrorExtractor.extractMessage(data);
+      if (stripeMessage != null) {
+        await _showErrorDialog('Stripe Error: $stripeMessage');
+        return handler.reject(
+          DioException(
+            requestOptions: response.requestOptions,
+            response: response,
+            type: DioExceptionType.badResponse,
+            message: stripeMessage,
+          ),
+        );
+      }
+    }
+
+    // ── 2. PAYSTACK LEAF ──
+    if (path.contains('api.paystack.co')) {
+      final paystackMessage = PaystackErrorExtractor.extractMessage(data);
+      if (paystackMessage != null) {
+        await _showErrorDialog('Paystack Error: $paystackMessage');
+        return handler.reject(
+          DioException(
+            requestOptions: response.requestOptions,
+            response: response,
+            type: DioExceptionType.badResponse,
+            message: paystackMessage,
+          ),
+        );
+      }
+    }
+
     // Extract message once, reuse everywhere
     final String message = _extractMessage(data, statusCode);
 
     if (statusCode == 422) {
-      // Show the formatted field errors (not just the top-level message)
       final String displayMessage = _extract422Errors(data) ?? message;
       await _showErrorDialog(displayMessage);
     } else if (_isAuthExpiry(statusCode, data)) {

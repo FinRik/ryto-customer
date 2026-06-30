@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../../../../app/res/icons.dart';
+import '../../../../../colors.dart';
 import '../../../../../core/models/ui/package_size.dart';
 import '../../../../styles/app_decorations.dart';
 
@@ -21,7 +22,9 @@ class PackageSizeListItem extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8.0),
       decoration: !isItemSelected
           ? AppDecoration.roundedOutlinedRadius8
-          : AppDecoration.roundedOutlinedRadius8.copyWith(color: Colors.blue),
+          : AppDecoration.roundedOutlinedRadius8.copyWith(
+              color: AppColors.primary,
+            ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -39,7 +42,7 @@ class PackageSizeListItem extends StatelessWidget {
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   border: Border.all(
-                    color: isItemSelected ? Colors.yellow : Colors.blue,
+                    color: isItemSelected ? Colors.yellow : AppColors.primary,
                   ),
                 ),
                 child: isItemSelected
@@ -69,14 +72,15 @@ class PackageSizeListItem extends StatelessWidget {
                   color: isItemSelected ? Colors.yellow : Colors.black,
                 ),
               ),
-              Text(
-                listItem.catDesc,
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w700,
-                  color: isItemSelected ? Colors.white : Color(0xff838794),
+              if (listItem.catDesc != null)
+                Text(
+                  listItem.catDesc!,
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w700,
+                    color: isItemSelected ? Colors.white : Color(0xff838794),
+                  ),
                 ),
-              ),
               // if(listItem.dispPrice != null)
               // Text(
               //   listItem.dispPrice!,
@@ -86,15 +90,15 @@ class PackageSizeListItem extends StatelessWidget {
               //     color: isItemSelected ? Colors.yellow : Colors.black,
               //   ),
               // ),
-              if(listItem.errorDesc != null)
-              Text(
-                listItem.errorDesc!,
-                style: TextStyle(
-                  fontSize: 10,
-                  fontWeight: FontWeight.w400,
-                  color: Colors.red,
+              if (listItem.errorDesc != null)
+                Text(
+                  listItem.errorDesc!,
+                  style: TextStyle(
+                    fontSize: 10,
+                    fontWeight: FontWeight.w400,
+                    color: Colors.red,
+                  ),
                 ),
-              ),
             ],
           ),
         ],

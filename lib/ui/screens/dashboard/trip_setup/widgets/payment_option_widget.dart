@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:ryto_customer/app/res/icons.dart';
 
 import '../../../../../app/res/svgs.dart';
+import '../../../../styles/app_decorations.dart';
 import '../../../../widgets/customs/custom_tile_widget.dart';
+import '../../../../widgets/inputs/general_text_field.dart';
 
-// enum PaymentOption { none, card, transfer, wallet }
-enum PaymentOption { none, card, transfer }
+enum PaymentOption { none, card, transfer, wallet }
+// enum PaymentOption { none, card, transfer }
 
 class PaymentOptionWidget extends StatefulWidget {
   const PaymentOptionWidget({super.key, required this.onSelected});
@@ -23,7 +26,8 @@ class _HandlingOptionsCardState extends State<PaymentOptionWidget> {
     return Column(
       children: [
         CustomTileWidget(
-          svgIcon: AppSvgs.location, // change to proper icon
+          svgIcon: AppIcons.debitCard,
+          iconHeight: 30,
           border: BoxBorder.all(color: Color(0xffE1E7EF)),
           bgColor: Colors.white,
           title: "Debit/Credit Card",
@@ -44,7 +48,8 @@ class _HandlingOptionsCardState extends State<PaymentOptionWidget> {
           ),
         ),
         CustomTileWidget(
-          svgIcon: AppSvgs.location,
+          svgIcon: AppIcons.bankTransfer,
+          iconHeight: 30,
           border: BoxBorder.all(color: Color(0xffE1E7EF)),
           bgColor: Colors.white,
           title: "Bank Transfer",
@@ -64,7 +69,8 @@ class _HandlingOptionsCardState extends State<PaymentOptionWidget> {
           ),
         ),
         // CustomTileWidget(
-        //   svgIcon: AppSvgs.location,
+        //   svgIcon: AppIcons.wallet,
+        //   iconHeight: 30,
         //   border: BoxBorder.all(color: Color(0xffE1E7EF)),
         //   bgColor: Colors.white,
         //   title: "Ryto Wallet",
@@ -79,6 +85,36 @@ class _HandlingOptionsCardState extends State<PaymentOptionWidget> {
         //     groupValue: _selected,
         //     onChanged: (value) => setState(() => _selected = value!),
         //   ),
+        // ),
+
+        ///Promo code
+        // Row(
+        //   children: [
+        //     Expanded(
+        //       child: GeneralTextField(
+        //         label: null,
+        //         hint: "Enter promo code",
+        //         prefixIcon: Icons.shopping_bag_rounded,
+        //       ),
+        //     ),
+        //     const SizedBox(width: 8),
+        //     Container(
+        //       padding: const EdgeInsets.symmetric(
+        //         horizontal: 24,
+        //         vertical: 14,
+        //       ),
+        //       decoration: AppDecoration.roundedOutlinedRadius16
+        //           .copyWith(color: const Color(0xffECF3FE)),
+        //       child: const Text(
+        //         "Apply",
+        //         style: TextStyle(
+        //           color: Color(0xff0846AA),
+        //           fontWeight: FontWeight.w500,
+        //           fontSize: 14,
+        //         ),
+        //       ),
+        //     ),
+        //   ],
         // ),
       ],
     );

@@ -66,7 +66,7 @@ class MultiRepoProvider extends StatelessWidget {
         ),
         RepositoryProvider<PaymentRepo>(
           create: (_) => PaymentRepoImpl(
-            payStackService: sl<PaystackPaymentService>(),
+            payStackService: sl<PayStackPaymentService>(),
             stripeService: sl<StripePaymentService>(),
           ),
           lazy: true,

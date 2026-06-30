@@ -1,7 +1,7 @@
 import '../../app/app_setup_locator.dart';
 import '../models/booking/booking_request.dart';
 import '../models/booking/booking_response.dart';
-import '../models/booking/booking_summary.dart';
+import '../models/booking/booking_cost.dart';
 import '../models/popular_route.dart';
 import '../models/ride/ride_response.dart';
 import '../services/api_service.dart';
@@ -12,11 +12,19 @@ abstract class TripsRepo {
     String? departureDate,
     String? destinationCity,
     String? originCity,
+    required String currency,
+    required String country,
   });
   Future<List<PopularRoute>?> fetchPopularRoutes(String currency);
-  Future<BookingSummary?> fetchBookingCost(BookingRequest request);
+  Future<BookingCost?> fetchBookingCost(BookingRequest request);
   Future<BookingResponse?> bookPackage(BookingRequest request);
   Future<BookingResponse?> scheduleTrip(BookingRequest request);
+  Future<bool> verifyPayment({
+    required int transactionId,
+    required int bookingId,
+    required String reference,
+  });
+  Future<bool> cancelTrip({required String reason, required int bookingId});
 }
 
 class TripsRepoImpl implements TripsRepo {
@@ -30,12 +38,16 @@ class TripsRepoImpl implements TripsRepo {
     String? departureDate,
     String? destinationCity,
     String? originCity,
+    required String currency,
+    required String country,
   }) async {
     final res = await _service.fetchAvailableTrips(
       passengerSeats: passengerSeats,
       departureDate: departureDate,
       destinationCity: destinationCity,
       originCity: originCity,
+      country: country,
+      currency: currency,
     );
     return res.data;
   }
@@ -47,7 +59,7 @@ class TripsRepoImpl implements TripsRepo {
   }
 
   @override
-  Future<BookingSummary?> fetchBookingCost(BookingRequest request) async {
+  Future<BookingCost?> fetchBookingCost(BookingRequest request) async {
     final res = await _service.fetchBookingCost(request);
     return res.data;
   }
@@ -62,5 +74,28 @@ class TripsRepoImpl implements TripsRepo {
   Future<BookingResponse?> scheduleTrip(BookingRequest request) async {
     final res = await _service.scheduleTrip(request);
     return res.data;
+  }
+
+  @override
+  Future<bool> verifyPayment({
+    required int transactionId,
+    required int bookingId,
+    required String reference,
+  }) async {
+    final res = await _service.verifyPayment(
+      transactionId,
+      bookingId,
+      reference,
+    );
+    return res.data;
+  }
+
+  @override
+  Future<bool> cancelTrip({
+    required String reason,
+    required int bookingId,
+  }) async {
+    final res = await _service.cancelTrip(reason, bookingId);
+    return res.code == 200;
   }
 }

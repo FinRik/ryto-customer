@@ -8,7 +8,7 @@ import '../config/custom_dio_exception.dart';
 import '../models/auth/auth_response.dart';
 import '../models/booking/booking_request.dart';
 import '../models/booking/booking_response.dart';
-import '../models/booking/booking_summary.dart';
+import '../models/booking/booking_cost.dart';
 import '../models/popular_route.dart';
 import '../models/ride/ride_response.dart';
 import '../models/base.dart';
@@ -79,22 +79,38 @@ abstract class ApiService {
     @Query("departureDate") String? departureDate,
     @Query("destinationCity") String? destinationCity,
     @Query("originCity") String? originCity,
+    @Query("currency") String? currency,
+    @Query("country") String? country,
   });
   @GET(ApiUrls.popularRoutes)
   Future<BaseModel<List<PopularRoute>>> fetchPopularRoutes(
     @Query("currency") String currency,
   );
   @POST(ApiUrls.bookingCost)
-  Future<BaseModel<BookingSummary>> fetchBookingCost(
+  Future<BaseModel<BookingCost>> fetchBookingCost(
     @Body() BookingRequest request,
   );
   @POST(ApiUrls.scheduleTrip)
   Future<BaseModel<BookingResponse>> scheduleTrip(
     @Body() BookingRequest request,
   );
+
   @POST(ApiUrls.bookPackage)
   Future<BaseModel<BookingResponse>> bookPackage(
     @Body() BookingRequest request,
+  );
+
+  @POST(ApiUrls.verifyPayment)
+  Future<BaseModel> verifyPayment(
+    @Field("transactionId") int transactionId,
+    @Field("bookingId") int bookingId,
+    @Field("reference") String reference,
+  );
+
+  @PATCH(ApiUrls.cancelTrip)
+  Future<BaseModel> cancelTrip(
+    @Field("reason") String reason,
+    @Field("bookingId") int bookingId,
   );
 }
 

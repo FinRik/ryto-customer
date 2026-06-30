@@ -39,7 +39,6 @@ class ProfileScreen extends StatelessWidget {
                 }
               },
               builder: (context, state) {
-                // Access the user from the state, providing a fallback if null
                 final user = state.user;
                 final isLoading = state.status == ProfileStatus.loading;
 
@@ -52,8 +51,7 @@ class ProfileScreen extends StatelessWidget {
                     color: const Color(0xffE3FB20),
                     image: DecorationImage(
                       image: AssetImage(AppImages.profilePattern),
-                      opacity:
-                          0.2, // Added slight opacity to ensure text is readable
+                      opacity: 0.2,
                     ),
                   ),
                   child: Column(
@@ -61,11 +59,10 @@ class ProfileScreen extends StatelessWidget {
                     children: [
                       DpImageWidget(imageUrl: user!.imageUrl),
                       const SizedBox(height: 12),
-                      // Show a loader or the name
                       isLoading && user == null
                           ? const CircularIndicator()
                           : Text(
-                              user?.firstName ?? "Guest",
+                              user.firstName ?? "Guest",
                               style: const TextStyle(
                                 fontWeight: FontWeight.bold,
                                 fontSize: 18,
@@ -77,9 +74,7 @@ class ProfileScreen extends StatelessWidget {
                         children: [
                           const Icon(Icons.star, size: 16),
                           const SizedBox(width: 4),
-                          Text(
-                            "${user?.rating ?? '0.0'} (${user?.reviewCount ?? 0}+)",
-                          ),
+                          Text("${user.rating} (${user.reviewCount}+)"),
                         ],
                       ),
                     ],
@@ -102,11 +97,11 @@ class ProfileScreen extends StatelessWidget {
                         title: "Edit Profile",
                         onTap: () => router.push(Paths.EDITUSERACCOUNT),
                       ),
-                      SettingItem(
-                        icon: AppIcons.notificationStatus,
-                        title: "Notifications",
-                        onTap: () => router.push(Paths.SUPPORT),
-                      ),
+                      // SettingItem(
+                      //   icon: AppIcons.notificationStatus,
+                      //   title: "Notifications",
+                      //   onTap: () => router.push(Paths.SUPPORT),
+                      // ),
                       SettingItem(
                         icon: AppIcons.securityUser,
                         title: "Security",
@@ -115,42 +110,48 @@ class ProfileScreen extends StatelessWidget {
                     ],
                   ),
 
+                  // const SizedBox(height: AppSpacing.sectionSpacing),
+                  // SettingsSection(
+                  //   title: "Location",
+                  //   children: [
+                  //     SettingItem(
+                  //       icon: AppIcons.send,
+                  //       title: "Saved Addresses",
+                  //       onTap: () {},
+                  //     ),
+                  //     SettingItem(
+                  //       icon: AppIcons.mapOutlined,
+                  //       title: "Default Pickup Location",
+                  //       onTap: () {},
+                  //     ),
+                  //   ],
+                  // ),
                   const SizedBox(height: AppSpacing.sectionSpacing),
-
-                  SettingsSection(
-                    title: "Location",
-                    children: [
-                      SettingItem(
-                        icon: AppIcons.send,
-                        title: "Saved Addresses",
-                        onTap: () {},
-                      ),
-                      SettingItem(
-                        icon: AppIcons.mapOutlined,
-                        title: "Default Pickup Location",
-                        onTap: () {},
-                      ),
-                    ],
-                  ),
-
-                  const SizedBox(height: AppSpacing.sectionSpacing),
-
                   SettingsSection(
                     title: "Help & Support",
                     children: [
-                      SettingItem(title: "Help Center / FAQ", onTap: () {}),
+                      SettingItem(
+                        title: "Help Center / FAQ",
+                        onTap: () => router.push(Paths.SUPPORT),
+                      ),
                       SettingItem(
                         title: "Privacy Policy",
                         onTap: () => router.push(
                           Paths.WEBVIEW,
-                          extra: WebviewArgs(url: ApiUrls.privacy, title: ""),
+                          extra: WebviewArgs(
+                            url: ApiUrls.privacy,
+                            title: "Privacy Policy",
+                          ),
                         ),
                       ),
                       SettingItem(
                         title: "Terms & Conditions",
                         onTap: () => router.push(
                           Paths.WEBVIEW,
-                          extra: WebviewArgs(url: ApiUrls.terms, title: ""),
+                          extra: WebviewArgs(
+                            url: ApiUrls.terms,
+                            title: "Terms & Conditions",
+                          ),
                         ),
                       ),
                     ],
@@ -185,13 +186,13 @@ class ProfileScreen extends StatelessWidget {
                     ],
                   ),
 
-                  SizedBox(height: AppSpacing.sectionSpacing),
+                  // SizedBox(height: AppSpacing.sectionSpacing),
+                  // SettingItem(
+                  //   title: "Delete Ryto Account",
+                  //   trailingType: TrailingType.external,
+                  //   onTap: () {},
+                  // ),
 
-                  SettingItem(
-                    title: "Delete WakaMi account",
-                    trailingType: TrailingType.external,
-                    onTap: () {},
-                  ),
                   const SizedBox(height: 10),
                   BlocConsumer<AuthBloc, AuthState>(
                     listener: (context, state) {

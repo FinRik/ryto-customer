@@ -51,6 +51,7 @@ class UserEntity extends Equatable {
     required this.licenseVerified,
   });
 
+  @JsonKey(includeFromJson: false, includeToJson: false)
   String get fullname {
     if ((firstName == null || firstName!.isEmpty) &&
         (lastName == null || lastName!.isEmpty)) {
@@ -59,8 +60,11 @@ class UserEntity extends Equatable {
     return "${firstName ?? ''} ${lastName ?? ''}".trim();
   }
 
+  @JsonKey(includeFromJson: false, includeToJson: false)
   double get rating => 0;
+  @JsonKey(includeFromJson: false, includeToJson: false)
   int get reviewCount => 0;
+  @JsonKey(includeFromJson: false, includeToJson: false)
   String get imageUrl => "${ApiUrls.baseUrl}$profilePicture";
 
   factory UserEntity.fromJson(Map<String, dynamic> json) =>

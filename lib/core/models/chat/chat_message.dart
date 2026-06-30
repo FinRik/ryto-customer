@@ -1,3 +1,4 @@
+import '../../../utils/helpers/date_time_helper.dart';
 import 'chat_participant.dart';
 
 enum MessageType { TEXT, LOCATION, IMAGE }
@@ -18,6 +19,21 @@ class ChatMessage {
     this.conversationId,
     required this.createdAt,
   });
+
+  String get departureDate {
+    if (createdAt == null) return "--:--";
+    return DateTimeHelper.extractDate(createdAt.toString());
+  }
+
+  String get departureTime24 {
+    if (createdAt == null) return "--:--";
+    return DateTimeHelper.extractTime(createdAt.toString());
+  }
+
+  String get formattedTime {
+    if (createdAt == null) return "--:--";
+    return DateTimeHelper.extractTime12Hour(createdAt.toString());
+  }
 
   factory ChatMessage.fromJson(Map<String, dynamic> json) {
     return ChatMessage(

@@ -119,12 +119,14 @@ class _TripRouteMapState extends State<TripRouteMap> {
         : _currentLocation;
 
     return GoogleMap(
-      // Key helps Flutter rebuild map properly if initial target defaults switch
       key: ValueKey('${initialTarget.latitude}_${initialTarget.longitude}'),
       initialCameraPosition: CameraPosition(target: initialTarget, zoom: 12),
       mapType: MapType.normal,
       myLocationEnabled: true,
-      myLocationButtonEnabled: true,
+      myLocationButtonEnabled: false,
+      zoomControlsEnabled: false,
+      trafficEnabled: true,
+      mapToolbarEnabled: false,
       markers: _getMarkers(),
       polylines: widget.polylines,
       onMapCreated: (GoogleMapController controller) {

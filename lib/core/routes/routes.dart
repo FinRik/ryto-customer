@@ -19,26 +19,27 @@ abstract class Routes {
   static const BOOKINGHISTORY = "user-bookings";
   static const PROFILE = "user-profile";
 
-  //Trip Booking Route
+  /// Booking flow
   static const AVAILABLETRIPS = "view-available-trips";
+
+  //Trip Booking Route
   static const BOOKATRIP = "book-a-trip_setup";
   static const PAYFORTRIP = "pay-for-trip_setup";
   static const TRIPSUMMARY = "trip_setup-summary";
 
   //Package Booking Route
-  static const PACKAGEAVAILABLETRIPS = "view-package-available-route";
   static const ADDPACKAGEDETAIL = "add-package-detail";
   static const CONFIRMPACKAGEDETAIL = "confirm-package-detail";
   static const PACKAGEBOOKINGSUMMARY = "package-booking-summary";
 
   // Booking history
-  // static const BOOKINGSTATUS = 'booking-history-status';
   static const BOOKINGDETAIL = 'booking-history-detail';
 
   // profile management route
   static const EDITUSERACCOUNT = 'edit-user-account';
   static const APPSETTINGS = 'app-settings';
   static const SUPPORT = 'help-and-support';
+  // static const CHATSUPPORT = 'help-and-support-chat';
 
   static const WEBVIEW = 'webview';
 
@@ -107,73 +108,26 @@ abstract class Paths {
   static const BOOKINGHISTORY = '/${Routes.BOOKINGHISTORY}';
   static const PROFILE = '/${Routes.PROFILE}';
 
-  //Trip Booking Route
+  ///Booking flow
   static const AVAILABLETRIPS = '/${Routes.AVAILABLETRIPS}';
+  //Trip Booking Route
   static const BOOKATRIP = "/${Routes.BOOKATRIP}";
   static const PAYFORTRIP = "/${Routes.PAYFORTRIP}";
   static const TRIPSUMMARY = "/${Routes.TRIPSUMMARY}";
 
   //Package Booking Route
-  static const PACKAGEAVAILABLETRIPS = '/${Routes.PACKAGEAVAILABLETRIPS}';
   static const ADDPACKAGEDETAIL = '/${Routes.ADDPACKAGEDETAIL}';
   static const CONFIRMPACKAGEDETAIL = '/${Routes.CONFIRMPACKAGEDETAIL}';
   static const PACKAGEBOOKINGSUMMARY = '/${Routes.PACKAGEBOOKINGSUMMARY}';
 
   // Booking history
-  // static const BOOKINGSTATUS = '/${Routes.BOOKINGSTATUS}';
   static const BOOKINGDETAIL = '/${Routes.BOOKINGDETAIL}';
 
   // profile management route
   static const EDITUSERACCOUNT = '/${Routes.EDITUSERACCOUNT}';
   static const APPSETTINGS = '/${Routes.APPSETTINGS}';
   static const SUPPORT = '/${Routes.SUPPORT}';
+  // static const CHATSUPPORT = '/${Routes.CHATSUPPORT}';
 
   static const WEBVIEW = '/${Routes.WEBVIEW}';
-
-  // static const CONFIRMPIN = '/${Routes.CONFIRMPIN}';
-  // static const FORGOTPIN = "/${Routes.FORGOTPIN}";
-  // static const FORGETPASSWORD = "/${Routes.FORGETPASSWORD}";
-  // static const NEWPASSWORD = '/${Routes.NEWPASSWORD}';
-  // static const SETAVATAR = "/${Routes.SETAVATAR}";
-  // static const FINGERPRINT = "/${Routes.FINGERPRINT}";
-  // static const ENABLENOTIF = "/${Routes.ENABLENOTIF}";
-  //
-  // static const SUCCESSPAGE = '/${Routes.SUCCESSPAGE}';
-  //
-  // //homes
-  // static const NOTIFICATION = "/${Routes.NOTIFICATION}";
-  //
-  // //transactions
-  // static const TRANSACTIONS = "/${Routes.TRANSACTIONS}";
-  // static const FILTERTRANSATIONSCREEN = "/${Routes.FILTERTRANSATIONSCREEN}";
-  // static const RECEIPT = "/${Routes.RECEIPT}";
-  //
-  // // profile screens
-  // static const PROFILESUBMENU = "/${Routes.PROFILESUBMENU}";
-  // static const REPORTISSUES = "/${Routes.REPORTISSUES}";
-  // static const REFERRAL = "/${Routes.REFERRAL}";
-  // static const SUPPORT = "/${Routes.SUPPORT}";
-  // // static const LEGAL = "/${Routes.LEGAL}";
-  //
-  // // profile management
-  // static const MANAGEACCOUNT = "/${Routes.MANAGEACCOUNT}";
-  //
-  // // settings
-  // static const SECURITY = "/${Routes.SECURITY}";
-  // static const NOTIFICATIONSETTINGS = "/${Routes.NOTIFICATIONSETTINGS}";
-  // static const RATING = "/${Routes.RATING}";
-  // static const DELETEACCOUNT = "/${Routes.DELETEACCOUNT}";
-  // //security screen
-  // static const CHANGEPASSWORD = "/${Routes.CHANGEPASSWORD}";
-  //
-  // //kyc
-  // static const VERIFYBVN = "/${Routes.VERIFYBVN}";
-  // static const VERIFYID = "/${Routes.VERIFYID}";
-  // static const KYCSTATUS = "/${Routes.KYCSTATUS}";
-  //
-  // //faq
-  // static const FAQ = "/${Routes.FAQ}";
-  // static const FAQDETAILS = "/${Routes.FAQDETAILS}";
-  //
-  // static const WEBVIEW = "/${Routes.WEBVIEW}";
 }

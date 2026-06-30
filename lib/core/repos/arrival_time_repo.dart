@@ -7,8 +7,7 @@ abstract class ArrivalTimeRepo {
     required double sLng,
     required double eLat,
     required double eLng,
-    DateTime? departureDate,
-    String? departureTime,
+    DateTime? departureDateTime,
   });
 }
 
@@ -23,39 +22,14 @@ class ArrivalTimeRepoImpl implements ArrivalTimeRepo {
     required double sLng,
     required double eLat,
     required double eLng,
-    DateTime? departureDate,
-    String? departureTime,
+    DateTime? departureDateTime,
   }) async {
-    // 1. Start with the provided date or fall back to today
-    DateTime baseDate = departureDate ?? DateTime.now();
-    DateTime finalStart = baseDate;
-
-    // 2. Overwrite the time portion if a string like "08:00" is provided
-    if (departureTime != null && departureTime.contains(':')) {
-      try {
-        final parts = departureTime.split(':');
-        final hours = int.parse(parts[0]);
-        final minutes = int.parse(parts[1]);
-
-        finalStart = DateTime(
-          baseDate.year,
-          baseDate.month,
-          baseDate.day,
-          hours,
-          minutes,
-        );
-      } catch (e) {
-        print("Time parsing failed, using base date: $e");
-      }
-    }
-
-    // 3. Call the service with the accurate merged start time
     return await _service.fetchEstimate(
       sLat: sLat,
       sLng: sLng,
       eLat: eLat,
       eLng: eLng,
-      startTime: finalStart,
+      startTime: departureDateTime,
     );
   }
 }

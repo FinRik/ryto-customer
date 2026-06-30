@@ -39,7 +39,7 @@ class TripDetailCard extends StatelessWidget {
   final String destinationAddress;
   final String date;
   final String passengers;
-  final bool isPremium;
+  final String serviceTier;
 
   const TripDetailCard({
     super.key,
@@ -50,7 +50,7 @@ class TripDetailCard extends StatelessWidget {
     required this.destinationAddress,
     required this.date,
     required this.passengers,
-    this.isPremium = false,
+    required this.serviceTier,
   });
 
   @override
@@ -96,24 +96,23 @@ class TripDetailCard extends StatelessWidget {
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        if (isPremium)
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 8,
-                              vertical: 4,
-                            ),
-                            decoration: BoxDecoration(
-                              color: const Color(0xFFE2FF54),
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            child: const Text(
-                              "Premium",
-                              style: TextStyle(
-                                fontSize: 10,
-                                fontWeight: FontWeight.bold,
-                              ),
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 4,
+                          ),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFE2FF54),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Text(
+                            serviceTier,
+                            style: const TextStyle(
+                              fontSize: 10,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
+                        ),
                       ],
                     ),
                     const SizedBox(height: 20),
@@ -156,11 +155,11 @@ class TripDetailCard extends StatelessWidget {
   }
 
   Widget _buildRoutePoint(
-      IconData icon,
-      LatLng coord,
-      String address,
-      Color color,
-      ) {
+    IconData icon,
+    LatLng coord,
+    String address,
+    Color color,
+  ) {
     return Row(
       children: [
         Icon(icon, size: 22, color: color),

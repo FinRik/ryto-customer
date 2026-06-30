@@ -21,6 +21,8 @@ class CustomTileWidget extends StatelessWidget {
 
   final Color? bgColor;
 
+  final double? iconHeight;
+
   const CustomTileWidget({
     super.key,
     this.leadingIcon,
@@ -33,6 +35,7 @@ class CustomTileWidget extends StatelessWidget {
     this.titleTextStyle,
     this.border,
     this.bgColor,
+    this.iconHeight,
   });
 
   @override
@@ -49,8 +52,8 @@ class CustomTileWidget extends StatelessWidget {
         children: [
           /// Leading Icon Container
           Container(
-            width: 44,
-            height: 44,
+            width: iconHeight ?? 44,
+            height: iconHeight ?? 44,
             decoration: BoxDecoration(
               color: Color(0xffE6EFFD),
               shape: BoxShape.circle,

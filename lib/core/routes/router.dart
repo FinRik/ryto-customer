@@ -5,21 +5,19 @@ import '../../ui/layout/bottom_nav_layout.dart';
 import '../../ui/screens/account_setup/account_setup_screen.dart';
 import '../../ui/screens/account_setup/email_setup_screen.dart';
 import '../../ui/screens/account_setup/enable_permission_screen.dart';
-import '../../ui/screens/dashboard/bookings/parts/pending_status_widget.dart';
 import '../../ui/screens/dashboard/bookings/bookings_screen.dart';
 import '../../ui/screens/dashboard/bookings/booking_details_screen.dart';
-import '../../ui/screens/dashboard/package/01_available_trips_screen.dart';
-import '../../ui/screens/dashboard/package/04_package_booking_summary_screen.dart';
+import '../../ui/screens/dashboard/package/package_booking_summary_screen.dart';
 import '../../ui/screens/auth/ui/verify_phone/verify_phone_number_screen.dart';
-import '../../ui/screens/dashboard/package/02_add_package_detail_screen.dart';
-import '../../ui/screens/dashboard/package/03_confirm_package_select_screen.dart';
+import '../../ui/screens/dashboard/package/add_package_detail_screen.dart';
+import '../../ui/screens/dashboard/package/confirm_package_select_screen.dart';
 import '../../ui/screens/dashboard/package/packages_screen.dart';
 import '../../ui/screens/dashboard/profile/app_settings_screen.dart';
 import '../../ui/screens/dashboard/profile/edit_user_profile.dart';
 import '../../ui/screens/dashboard/profile/help_support_screen.dart';
 import '../../ui/screens/dashboard/profile/profile_screen.dart';
 import '../../ui/screens/auth/ui/register/register_screen.dart';
-import '../../ui/screens/dashboard/trip_setup/available_trips_screen.dart';
+import '../../ui/screens/dashboard/available_trips_screen.dart';
 import '../../ui/screens/dashboard/trip_setup/book_a_trip_screen.dart';
 import '../../ui/screens/dashboard/trip_setup/pay_for_trip_screen.dart';
 import '../../ui/screens/dashboard/trip_setup/trip_booking_summary_screen.dart';
@@ -28,10 +26,10 @@ import '../../ui/screens/onboarding/onboarding_screen.dart';
 import '../../ui/screens/auth/ui/login/login_screen.dart';
 import '../../ui/screens/splash/splash_screen.dart';
 import '../../ui/screens/app_webview.dart';
+import '../models/booking/booking_request.dart';
 import '../models/booking/booking_response.dart';
-import '../models/booking/booking_summary.dart';
+import '../models/booking/booking_cost.dart';
 import '../models/ride/ride.dart';
-import '../models/ui/package_size.dart';
 import 'routes.dart';
 
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
@@ -130,7 +128,7 @@ final router = GoRouter(
       ],
     ),
 
-    //Trip Booking Route
+    /// Booking flow
     GoRoute(
       parentNavigatorKey: _rootNavigatorKey,
       path: Paths.AVAILABLETRIPS,
@@ -138,6 +136,8 @@ final router = GoRouter(
       builder: (context, state) =>
           AvailableTripsScreen(args: state.extra as AvailableTripsArgs),
     ),
+
+    //Trip Booking Route
     GoRoute(
       parentNavigatorKey: _rootNavigatorKey,
       path: Paths.BOOKATRIP,
@@ -162,13 +162,6 @@ final router = GoRouter(
     //Package Booking Route
     GoRoute(
       parentNavigatorKey: _rootNavigatorKey,
-      path: Paths.PACKAGEAVAILABLETRIPS,
-      name: Routes.PACKAGEAVAILABLETRIPS,
-      builder: (context, state) =>
-          PackagesAvailableTripsScreen(args: state.extra as AvailableTripsArgs),
-    ),
-    GoRoute(
-      parentNavigatorKey: _rootNavigatorKey,
       path: Paths.ADDPACKAGEDETAIL,
       name: Routes.ADDPACKAGEDETAIL,
       builder: (context, state) =>
@@ -179,7 +172,7 @@ final router = GoRouter(
       path: Paths.CONFIRMPACKAGEDETAIL,
       name: Routes.CONFIRMPACKAGEDETAIL,
       builder: (context, state) => ConfirmPackageSelectScreen(
-        args: state.extra as ConfirmPackageSelectArgs,
+        args: state.extra as TripBookingSummaryArgs,
       ),
     ),
     GoRoute(
@@ -187,18 +180,11 @@ final router = GoRouter(
       path: Paths.PACKAGEBOOKINGSUMMARY,
       name: Routes.PACKAGEBOOKINGSUMMARY,
       builder: (context, state) => PackageBookingSummaryScreen(
-        ride: state.extra as Ride,
+        args: state.extra as TripBookingSummaryArgs,
       ),
     ),
 
     //Booking history Route
-    // GoRoute(
-    //   parentNavigatorKey: _rootNavigatorKey,
-    //   path: Paths.BOOKINGSTATUS,
-    //   name: Routes.BOOKINGSTATUS,
-    //   builder: (context, state) =>
-    //       BookingStatusScreen(trip: state.extra as Ride),
-    // ),
     GoRoute(
       parentNavigatorKey: _rootNavigatorKey,
       path: Paths.BOOKINGDETAIL,
@@ -226,85 +212,19 @@ final router = GoRouter(
       name: Routes.SUPPORT,
       builder: (context, state) => const HelpSupportScreen(),
     ),
+    // GoRoute(
+    //   parentNavigatorKey: _rootNavigatorKey,
+    //   path: Paths.CHATSUPPORT,
+    //   name: Routes.CHATSUPPORT,
+    //   builder: (context, state) =>
+    //       SupportChatScreen(args: state.extra as TicketChatMessages),
+    // ),
     GoRoute(
       parentNavigatorKey: _rootNavigatorKey,
       path: Paths.WEBVIEW,
       name: Routes.WEBVIEW,
       builder: (context, state) => AppWebview(args: state.extra as WebviewArgs),
     ),
-    // GoRoute(
-    //   parentNavigatorKey: _rootNavigatorKey,
-    //   path: Paths.SECURITYPIN,
-    //   name: Routes.SECURITYPIN,
-    //   builder: (context, state) =>
-    //       SecurityPinScreen(args: state.extra as PinArgs),
-    // ),
-    // GoRoute(
-    //   parentNavigatorKey: _rootNavigatorKey,
-    //   path: Paths.CONFIRMPIN,
-    //   name: Routes.CONFIRMPIN,
-    //   builder: (context, state) =>
-    //       ConfirmPinScreen(args: state.extra as PinArgs),
-    // ),
-    // GoRoute(
-    //   parentNavigatorKey: _rootNavigatorKey,
-    //   path: Paths.FORGOTPIN,
-    //   name: Routes.FORGOTPIN,
-    //   builder: (context, state) => const ForgotPinScreen(),
-    // ),
-    // GoRoute(
-    //   parentNavigatorKey: _rootNavigatorKey,
-    //   path: Paths.NEWPASSWORD,
-    //   name: Routes.NEWPASSWORD,
-    //   builder: (context, state) =>
-    //       ResetPasswordScreen(args: state.extra as ResetPassArgs),
-    // ),
-    // GoRoute(
-    //   path: Paths.SETAVATAR,
-    //   name: Routes.SETAVATAR,
-    //   builder: (context, state) => const AvatarScreen(),
-    // ),
-    // GoRoute(
-    //   path: Paths.FINGERPRINT,
-    //   name: Routes.FINGERPRINT,
-    //   builder: (context, state) => const EnableFingerprintScreen(),
-    // ),
-    // GoRoute(
-    //   path: Paths.ENABLENOTIF,
-    //   name: Routes.ENABLENOTIF,
-    //   builder: (context, state) => const EnableNotificationScreen(),
-    // ),
-    //
-    //
-    // //notification screens
-    // GoRoute(
-    //   parentNavigatorKey: _rootNavigatorKey,
-    //   path: Paths.NOTIFICATION,
-    //   name: Routes.NOTIFICATION,
-    //   builder: (context, state) => const NotificationScreen(),
-    // ),
-    //
-    // //transaction histories
-    // GoRoute(
-    //   parentNavigatorKey: _rootNavigatorKey,
-    //   path: Paths.TRANSACTIONS,
-    //   name: Routes.TRANSACTIONS,
-    //   builder: (context, state) => const TransactionHistory(),
-    // ),
-    //
-    // GoRoute(
-    //   parentNavigatorKey: _rootNavigatorKey,
-    //   path: Paths.FILTERTRANSATIONSCREEN,
-    //   name: Routes.FILTERTRANSATIONSCREEN,
-    //   builder: (context, state) => const FilterTransactionScreen(),
-    // ),
-    //
-    // GoRoute(
-    //   parentNavigatorKey: _rootNavigatorKey,
-    //   path: Paths.RECEIPT,
-    //   name: Routes.RECEIPT,
-    //   builder: (context, state) => TransactionReceipt(item: state.extra),
-    // ),
   ],
 );
 
@@ -332,28 +252,29 @@ class AvailableTripsArgs {
   final String? originCity;
   final String? departureDate;
   final int? passengerSeats;
+  final String path;
 
   AvailableTripsArgs({
     this.destinationCity,
     this.originCity,
     this.departureDate,
     this.passengerSeats,
+    required this.path,
   });
 }
 
 class TripBookingSummaryArgs {
   final Ride? ride;
-  final BookingSummary? summary;
+  final BookingCost? summary;
   final BookingResponse? bookingResponse;
+  final BookingRequest? bookingRequest;
 
-  TripBookingSummaryArgs({this.ride, this.summary, this.bookingResponse});
-}
-
-class ConfirmPackageSelectArgs {
-  final PackageSize packageSize;
-  final Ride ride;
-
-  ConfirmPackageSelectArgs({required this.packageSize, required this.ride});
+  TripBookingSummaryArgs({
+    this.ride,
+    this.summary,
+    this.bookingResponse,
+    this.bookingRequest,
+  });
 }
 
 class WebviewArgs {
@@ -363,59 +284,6 @@ class WebviewArgs {
   WebviewArgs({this.title, required this.url});
 }
 
-//
-// class OtpArgs {
-//   const OtpArgs({
-//     required this.email,
-//     required this.route,
-//     this.isVerify = false,
-//   });
-//
-//   final String email;
-//   final AuthRoute route;
-//   final bool isVerify;
-// }
-//
-// class PinArgs {
-//   const PinArgs({
-//     this.isVerify = false,
-//     this.model,
-//     required this.route,
-//     this.password,
-//   });
-//
-//   final bool isVerify;
-//   final PinRoute route;
-//   final PinViewModel? model;
-//   final String? password;
-// }
-//
-// class EmptyStateArgs {
-//   const EmptyStateArgs({this.title, this.subtitle, this.image, this.btnText});
-//
-//   final String? title;
-//   final String? image;
-//   final String? subtitle;
-//   final String? btnText;
-// }
-//
-// // class ServiceArgs {
-// //   const ServiceArgs({
-// //     required this.title,
-// //     required this.model,
-// //   });
-// //
-// //   final String title;
-// //   final ServiceViewModel model;
-// // }
-//
-// class ProfileSubMenuArgs {
-//   final String title;
-//   final List<ActionModel>? list;
-//
-//   ProfileSubMenuArgs({required this.title, this.list});
-// }
-//
 // class TransactionArgs<T> {
 //   final T data;
 //

@@ -12,6 +12,7 @@ class BookingRequest {
   final String? bookingLocation;
   final int? vehicleId;
   final int? seats;
+  final bool noBaggage;
 
   // start package
   final String? packageSize;
@@ -35,6 +36,7 @@ class BookingRequest {
     this.bookingLocation,
     this.vehicleId,
     this.seats,
+    this.noBaggage = false,
     this.packageSize,
     this.packageWeight,
     this.packageHandlingOptions,
@@ -52,6 +54,7 @@ class BookingRequest {
     String? bookingLocation,
     int? vehicleId,
     int? seats,
+    bool? noBaggage,
     String? packageSize,
     int? packageWeight,
     List<String>? packageHandlingOptions,
@@ -68,6 +71,7 @@ class BookingRequest {
       bookingLocation: bookingLocation ?? this.bookingLocation,
       vehicleId: vehicleId ?? this.vehicleId,
       seats: seats ?? this.seats,
+      noBaggage: noBaggage ?? this.noBaggage,
       packageSize: packageSize ?? this.packageSize,
       packageWeight: packageWeight ?? this.packageWeight,
       packageHandlingOptions:
@@ -86,4 +90,9 @@ class BookingRequest {
       _$BookingRequestFromJson(json);
 
   Map<String, dynamic> toJson() => _$BookingRequestToJson(this);
+
+  @override
+  String toString() {
+    return 'BookingRequest(tripId: $tripId, bookingLocation: $bookingLocation, vehicleId: $vehicleId, seats: $seats, noBaggage: $noBaggage, packageSize: $packageSize, packageWeight: $packageWeight, packageHandlingOptions: $packageHandlingOptions, packageContent: $packageContent, packageRecipientName: $packageRecipientName, packageRecipientPhone: $packageRecipientPhone, originLocation: $originLocation, pickupLocation: $pickupLocation, dropoffLocation: $dropoffLocation, destinationLocation: $destinationLocation)';
+  }
 }

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:ryto_customer/ui/widgets/currency_formatter_widget.dart';
 
-import '../../../../../core/models/booking/booking_summary.dart';
+import '../../../../../core/models/booking/booking_cost.dart';
 
 class PriceBreakdownWidget extends StatelessWidget {
-  final BookingSummary summary;
+  final BookingCost summary;
   final bool isTripBooking;
   final int? seats;
   const PriceBreakdownWidget({

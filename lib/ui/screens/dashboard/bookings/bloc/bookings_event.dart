@@ -7,10 +7,12 @@ abstract class BookingsEvent extends Equatable {
 
 class LoadUserTrips extends BookingsEvent {
   final String status;
-  LoadUserTrips(this.status);
+  final Map<String, dynamic> searchParams;
+
+  LoadUserTrips({required this.status, required this.searchParams});
 
   @override
-  List<Object?> get props => [status];
+  List<Object?> get props => [status, searchParams];
 }
 
 class LoadTripSummary extends BookingsEvent {
@@ -19,4 +21,21 @@ class LoadTripSummary extends BookingsEvent {
 
   @override
   List<Object?> get props => [id];
+}
+
+class LoadBookingCost extends BookingsEvent {
+  final BookingRequest request;
+  LoadBookingCost(this.request);
+
+  @override
+  List<Object?> get props => [request];
+}
+
+class CancelBooking extends BookingsEvent {
+  final String reason;
+  final int bookingId;
+  CancelBooking({required this.reason, required this.bookingId});
+
+  @override
+  List<Object?> get props => [reason, bookingId];
 }

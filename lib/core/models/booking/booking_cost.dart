@@ -126,7 +126,7 @@
 //   }
 // }
 
-class BookingSummary {
+class BookingCost {
   final double? offsetDistanceRaw;
   final double? offsetDistanceFormatted;
 
@@ -144,7 +144,7 @@ class BookingSummary {
   final double? surgePercentageRaw;
   final String? surgePercentageFormatted;
 
-  BookingSummary({
+  BookingCost({
     this.offsetDistanceRaw,
     this.offsetDistanceFormatted,
     this.tripDistanceRaw,
@@ -160,7 +160,7 @@ class BookingSummary {
     this.surgePercentageFormatted,
   });
 
-  factory BookingSummary.fromJson(Map<String, dynamic> json) {
+  factory BookingCost.fromJson(Map<String, dynamic> json) {
     final raw = json['rawValues'] as Map<String, dynamic>? ?? {};
     final formatted = json['formattedValues'] as Map<String, dynamic>? ?? {};
 
@@ -171,7 +171,7 @@ class BookingSummary {
       return double.tryParse(value.toString());
     }
 
-    return BookingSummary(
+    return BookingCost(
       // Distances
       offsetDistanceRaw: toDouble(raw['offsetDistance']),
       offsetDistanceFormatted: toDouble(formatted['offsetDistance']),

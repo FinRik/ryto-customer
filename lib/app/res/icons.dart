@@ -47,4 +47,8 @@ class AppIcons {
   static const String call = "$_iconsPath/call.svg";
   static const String chat = "$_iconsPath/chat.svg";
 
+  static const String bankTransfer = "$_iconsPath/bank-transfer.svg";
+  static const String debitCard = "$_iconsPath/debit-card.svg";
+  static const String wallet = "$_iconsPath/wallet.svg";
+
 }

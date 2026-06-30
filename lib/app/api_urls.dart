@@ -3,7 +3,8 @@ class ApiUrls {
 
   static const String baseUrl = "https://api.getryto.com";
   static const String countryBaseUrl = "https://countriesnow.space/api/v0.1";
-  static const String paystackBaseUrl = "https://api.paystack.co";
+  static const String paystackUrl = "https://api.paystack.co";
+  static const String stripeBaseUrl = "https://api.stripe.com/v1";
 
   static const String states = "/countries/states";
   static const String cities = "/countries";
@@ -45,6 +46,8 @@ class ApiUrls {
   static const String bookingCost = "/booking/summary";
   static const String bookPackage = "/booking";
   static const String scheduleTrip = "/booking";
+  static const String verifyPayment = "/booking/verify-payment";
+  static const String cancelTrip = "/booking/cancel";
 
   // Onboarding flow
   static const String verifyNin = "/kyc/driver/identity";

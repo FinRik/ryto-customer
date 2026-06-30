@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 
 import '../../../../app/api_urls.dart';
+import '../../../../core/models/tickets/ticket_chat_messages.dart';
 import '../../../../core/routes/router.dart';
 import '../../../../core/routes/routes.dart';
+import '../../../../utils/helpers/socials_helper.dart';
 import '../../../widgets/buttons/back_arrow_header.dart';
 import '../../../widgets/layouts/base_scaffold_widget.dart';
 import 'widgets/support_action_tile.dart';
@@ -60,50 +62,77 @@ class HelpSupportScreen extends StatelessWidget {
                   icon: Icons.person_outline,
                   label: "Account & Profile",
                   iconColor: Colors.blue,
-                  onTap: () {},
+                  onTap: () => SocialHelper.sendEmail("support@getryto.com"),
+                  // onTap: () => router.push(
+                  //   Paths.CHATSUPPORT,
+                  //   extra: TicketChatMessages(
+                  //     channel: "account_profile",
+                  //     title: "Account & Profile",
+                  //   ),
+                  // ),
                 ),
-                SupportCategoryCard(
-                  icon: Icons.account_balance_wallet_outlined,
-                  label: "Earnings & Payouts",
-                  iconColor: Colors.green,
-                  onTap: () {},
-                ),
+                // SupportCategoryCard(
+                //   icon: Icons.account_balance_wallet_outlined,
+                //   label: "Earnings & Payouts",
+                //   iconColor: Colors.green,
+                //   onTap: () {},
+                // ),
                 SupportCategoryCard(
                   icon: Icons.car_rental,
                   label: "Trip Issues",
                   iconColor: Colors.orange,
-                  onTap: () {},
+                  onTap: () => SocialHelper.sendEmail("support@getryto.com"),
+                  // onTap: () => router.push(
+                  //   Paths.CHATSUPPORT,
+                  //   extra: TicketChatMessages(
+                  //     channel: "trip_issues",
+                  //     title: "Trip Issues",
+                  //   ),
+                  // ),
                 ),
                 SupportCategoryCard(
                   icon: Icons.phonelink_setup,
                   label: "App Technical Support",
                   iconColor: Colors.purple,
-                  onTap: () {},
+                  onTap: () => SocialHelper.sendEmail("support@getryto.com"),
+                  // onTap: () => router.push(
+                  //   Paths.CHATSUPPORT,
+                  //   extra: TicketChatMessages(
+                  //     channel: "technical_support",
+                  //     title: "App Technical Support",
+                  //   ),
+                  // ),
                 ),
               ],
             ),
-
             const SizedBox(height: 32),
 
             // Action Tiles
-            SupportActionTile(
-              icon: Icons.chat_bubble_outline,
-              title: "Live Chat with Support",
-              subtitle: "Average wait time: 2 mins",
-              backgroundColor: const Color(0xFF0061FF),
-              contentColor: Colors.white,
-              onTap: () {},
-            ),
-            const SizedBox(height: 12),
-            SupportActionTile(
-              icon: Icons.report_problem_outlined,
-              title: "Call Emergency Support",
-              subtitle: "Safety issues only",
-              backgroundColor: const Color(0xFFFFF2F2),
-              contentColor: Colors.red,
-              showChevron: false,
-              onTap: () {},
-            ),
+            // SupportActionTile(
+            //   icon: Icons.chat_bubble_outline,
+            //   title: "Live Chat with Support",
+            //   subtitle: "Average wait time: 2 mins",
+            //   backgroundColor: const Color(0xFF0061FF),
+            //   contentColor: Colors.white,
+            //   onTap: () => SocialHelper.sendEmail("support@getryto.com"),
+            //   // onTap: () => router.push(
+            //   //   Paths.CHATSUPPORT,
+            //   //   extra: TicketChatMessages(
+            //   //     channel: "live_chat",
+            //   //     title: "Live Chat with Support",
+            //   //   ),
+            //   // ),
+            // ),
+            // const SizedBox(height: 12),
+            // SupportActionTile(
+            //   icon: Icons.report_problem_outlined,
+            //   title: "Call Emergency Support",
+            //   subtitle: "Safety issues only",
+            //   backgroundColor: const Color(0xFFFFF2F2),
+            //   contentColor: Colors.red,
+            //   showChevron: false,
+            //   onTap: () {},
+            // ),
 
             const SizedBox(height: 32),
             const Divider(),

@@ -34,8 +34,8 @@ Future<void> setupDependencies() async {
   sl.registerLazySingleton<ArrivalTimeService>(
     () => ArrivalTimeService(sl<DioService>().client),
   );
-  sl.registerLazySingleton<PaystackPaymentService>(
-    () => PaystackPaymentService(sl<DioService>().client),
+  sl.registerLazySingleton<PayStackPaymentService>(
+    () => PayStackPaymentService(sl<DioService>().client),
   );
   sl.registerLazySingleton<StripePaymentService>(
     () => StripePaymentService(sl<DioService>().client),

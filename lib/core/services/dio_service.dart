@@ -26,16 +26,10 @@ class DioService {
     // Or if you only want to handle 4xx errors:
     // return status! < 500;
     _dio.options.validateStatus = (status) => true;
-    // _dio.interceptors.addAll([
-    //   ApiInterceptor(),
-    //   ConnectionInterceptor(),
-    //   InterceptorWrappers(),
-    //   LoggingInterceptor(),
-    // ]);
     _dio.interceptors.addAll([
+      LoggingInterceptor(),
       ApiInterceptor(),
       ErrorInterceptor(_dio),
-      LoggingInterceptor(),
     ]);
     print("Done setting client");
   }

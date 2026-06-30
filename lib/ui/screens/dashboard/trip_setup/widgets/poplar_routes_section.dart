@@ -53,16 +53,14 @@ class PoplarRoutesSection extends StatelessWidget {
                   titleTextStyle: TextStyle(fontSize: 18),
                   subtitle: "Estimated time unavailable",
                   svgIcon: AppSvgs.location,
-                  onTap: () {
-                    context.push(
-                      Paths.AVAILABLETRIPS,
-                      extra: AvailableTripsArgs(
-                        originCity: route.originCity,
-                        destinationCity: route.destinationCity,
-                        passengerSeats: 1,
-                      ),
-                    );
-                  },
+                  onTap: () => context.push(
+                    Paths.AVAILABLETRIPS,
+                    extra: AvailableTripsArgs(
+                      originCity: route.originCity,
+                      destinationCity: route.destinationCity,
+                      path: Paths.BOOKATRIP,
+                    ),
+                  ),
                 );
               },
             ),

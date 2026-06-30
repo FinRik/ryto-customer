@@ -140,7 +140,7 @@ class GApiServiceImpl implements GApiService {
         queryParameters: {
           'input': input,
           'components': country != null ? 'country:$country' : null,
-          'key': dotenv.env['SERVER_API_KEY'],
+          'key': dotenv.env['LOCATION_PREDICTION_KEY'],
         },
       );
 
@@ -179,7 +179,7 @@ class GApiServiceImpl implements GApiService {
         queryParameters: {
           'place_id': placeId,
           'fields': 'geometry',
-          'key': dotenv.env['SERVER_API_KEY'],
+          'key': dotenv.env['LOCATION_PREDICTION_KEY'],
         },
       );
 

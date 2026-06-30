@@ -21,19 +21,6 @@ class _AppWebviewState extends State<AppWebview> {
 
   @override
   Widget build(BuildContext context) {
-    // return WillPopScope(
-    //   onWillPop: () async {
-    //     return await showModalBottomSheet(
-    //       context: context,
-    //       isScrollControlled: true,
-    //       isDismissible: false,
-    //       shape: const RoundedRectangleBorder(
-    //         borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),
-    //       ),
-    //       builder: (context) => const ExitAppBottomSheet(),
-    //     ) ??
-    //         false;
-    //   },
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,

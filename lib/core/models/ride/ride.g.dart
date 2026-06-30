@@ -11,23 +11,22 @@ Ride _$RideFromJson(Map<String, dynamic> json) => Ride(
   createdAt: json['createdAt'] == null
       ? null
       : DateTime.parse(json['createdAt'] as String),
-  departureDate: json['departureDate'] == null
-      ? null
-      : DateTime.parse(json['departureDate'] as String),
-  departureTime: json['departureTime'] as String?,
-  destinationCity: json['destinationCity'] as String?,
-  destinationLat: (json['destinationLat'] as num?)?.toDouble(),
-  destinationLng: (json['destinationLng'] as num?)?.toDouble(),
-  dropoffLat: (json['dropoffLat'] as num?)?.toDouble(),
-  dropoffLng: (json['dropoffLng'] as num?)?.toDouble(),
+  departureDateTime: Ride._dateTimeFromJson(
+    Ride._readDateTimeFields(json, 'departureDateTime') as String,
+  ),
+  destinationCity: json['destinationCity'] as String,
+  destinationLat: (json['destinationLat'] as num).toDouble(),
+  destinationLng: (json['destinationLng'] as num).toDouble(),
+  dropoffLat: (json['dropoffLat'] as num).toDouble(),
+  dropoffLng: (json['dropoffLng'] as num).toDouble(),
   notes: json['notes'] as String?,
-  originCity: json['originCity'] as String?,
-  originLat: (json['originLat'] as num?)?.toDouble(),
-  originLng: (json['originLng'] as num?)?.toDouble(),
+  originCity: json['originCity'] as String,
+  originLat: (json['originLat'] as num).toDouble(),
+  originLng: (json['originLng'] as num).toDouble(),
   packagesAllowed: json['packagesAllowed'] as bool?,
   passengerSeats: (json['passengerSeats'] as num?)?.toInt(),
-  pickupLat: (json['pickupLat'] as num?)?.toDouble(),
-  pickupLng: (json['pickupLng'] as num?)?.toDouble(),
+  pickupLat: (json['pickupLat'] as num).toDouble(),
+  pickupLng: (json['pickupLng'] as num).toDouble(),
   status: json['status'] as String?,
   updatedAt: json['updatedAt'] == null
       ? null
@@ -41,14 +40,11 @@ Ride _$RideFromJson(Map<String, dynamic> json) => Ride(
   passengers: (json['passengers'] as List<dynamic>?)
       ?.map((e) => Passenger.fromJson(e as Map<String, dynamic>))
       .toList(),
-  // pricePerSeat: (json['pricePerSeat'] as num?)?.toInt(),
 );
 
 Map<String, dynamic> _$RideToJson(Ride instance) => <String, dynamic>{
   'id': instance.id,
   'createdAt': instance.createdAt?.toIso8601String(),
-  'departureDate': instance.departureDate?.toIso8601String(),
-  'departureTime': instance.departureTime,
   'destinationCity': instance.destinationCity,
   'destinationLat': instance.destinationLat,
   'destinationLng': instance.destinationLng,
@@ -67,5 +63,4 @@ Map<String, dynamic> _$RideToJson(Ride instance) => <String, dynamic>{
   'driver': instance.driver,
   'vehicle': instance.vehicle,
   'passengers': instance.passengers,
-  // 'pricePerSeat': instance.pricePerSeat,
 };

@@ -10,14 +10,19 @@ class ArrivalTimeCubit extends Cubit<AsyncSnapshot<ArrivalEstimate>> {
   ArrivalTimeCubit(this.repo) : super(const AsyncSnapshot.waiting());
 
   void fetchArrivalData({
-    required double sLat, required double sLng,
-    required double eLat, required double eLng,
-    required String departureTime, required DateTime departureDate,
+    required double sLat,
+    required double sLng,
+    required double eLat,
+    required double eLng,
+    required DateTime departureDate,
   }) async {
     try {
       final data = await repo.getArrivalData(
-        sLat: sLat, sLng: sLng, eLat: eLat, eLng: eLng,
-        departureTime: departureTime, departureDate: departureDate,
+        sLat: sLat,
+        sLng: sLng,
+        eLat: eLat,
+        eLng: eLng,
+        departureDateTime: departureDate,
       );
       emit(AsyncSnapshot.withData(ConnectionState.done, data));
     } catch (e) {

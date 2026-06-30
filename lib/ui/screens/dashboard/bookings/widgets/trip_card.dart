@@ -1,27 +1,26 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../../app/app_setup_locator.dart';
 import '../../../../../app/res/icons.dart';
-import '../../../../../core/models/booking/booking_request.dart';
 import '../../../../../core/models/ride/ride.dart';
-import '../../../../../core/setups/region_identity_setup.dart';
-import '../../../../widgets/booking_cost_selector.dart';
 import '../../../../widgets/currency_formatter_widget.dart';
 import '../../../../widgets/customs/svg_widget.dart';
+import '../bloc/bookings_bloc.dart';
 
 class TripCard extends StatelessWidget {
   final Ride trip;
   final VoidCallback? onTap;
-  final VoidCallback? onRebook;
+  // final VoidCallback? onRebook;
 
-  const TripCard({super.key, required this.trip, this.onTap, this.onRebook});
+  const TripCard({
+    super.key,
+    required this.trip,
+    this.onTap,
+    // this.onRebook
+  });
 
   @override
   Widget build(BuildContext context) {
-    final dateFormat = DateFormat('dd MMM');
-    final region = sl<RegionIdentity>();
-
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -50,7 +49,7 @@ class TripCard extends StatelessWidget {
                   Row(
                     children: [
                       Text(
-                        dateFormat.format(trip.departureDate!),
+                        (trip.departureDate),
                         style: Theme.of(context).textTheme.bodySmall,
                       ),
                       Text(
@@ -65,30 +64,34 @@ class TripCard extends StatelessWidget {
                     style: Theme.of(context).textTheme.titleMedium,
                   ),
                   const SizedBox(height: 4),
-                  BookingCostSelector(
-                    request: BookingRequest(
-                      vehicleId: trip.vehicle?.id,
-                      tripId: trip.id,
-                      seats: trip.passengerSeats,
-                      pickupLocation: trip.pickupCoord,
-                      dropoffLocation: trip.dropOffCoord,
-                      originLocation: trip.originCoord,
-                      destinationLocation: trip.destCoord,
-                      bookingLocation: region.country,
+                  if (trip.status == 'SCHEDULED')
+                    BlocBuilder<BookingsBloc, BookingsState>(
+                      buildWhen: (prev, curr) =>
+                          prev.tripCosts[trip.id] != curr.tripCosts[trip.id],
+                      builder: (context, state) {
+                        final costResponse = state.tripCosts[trip.id];
+                        if (costResponse == null) {
+                          return const SizedBox(
+                            width: 14,
+                            height: 14,
+                            child: CircularProgressIndicator(strokeWidth: 1.5),
+                          );
+                        }
+                        return CurrencyFormatterWidget(
+                          amount: costResponse.surgePercentageFormatted != null
+                              ? "${costResponse.finalPrice?.formatted}"
+                              : "${costResponse.totalPrice?.formatted}",
+                        );
+                      },
                     ),
-                    builder: (context, response) => CurrencyFormatterWidget(
-                      amount: "${response.seatPrice?.formatted}",
-                      // style: Theme.of(context).textTheme.bodyMedium,
-                    ),
-                  ),
                 ],
               ),
             ),
 
-            IconButton(
-              onPressed: onRebook,
-              icon: SvgWidget(assetName: AppIcons.refresh),
-            ),
+            // IconButton(
+            //   onPressed: onRebook,
+            //   icon: SvgWidget(assetName: AppIcons.refresh),
+            // ),
           ],
         ),
       ),

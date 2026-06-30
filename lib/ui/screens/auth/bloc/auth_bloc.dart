@@ -23,7 +23,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           emit(const AuthFailure("Login failed"));
         }
       } catch (e) {
-        emit(AuthFailure(e.toString()));
+        emit(AuthFailure("Something went wrong. Please try again later."));
       }
     });
 
@@ -39,7 +39,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           emit(const AuthFailure("Registration failed"));
         }
       } catch (e) {
-        emit(AuthFailure(e.toString()));
+        emit(AuthFailure("Something went wrong. Please try again later."));
       }
     });
 
@@ -47,26 +47,20 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       emit(AuthLoading());
 
       try {
-        // If successful, this will complete. If it fails, it throws an exception.
         await repo.verifyLogin(event.phone, event.code);
 
         // If no exception was thrown, it's a guaranteed success
         emit(AuthSuccess());
-
       } on ExceptionNotACustomer catch (e) {
         // Catches role restriction issues
         emit(AuthFailure(e.message));
-
       } on ExceptionUnverifiedAccount catch (e) {
         // Catches unverified accounts
         emit(AuthFailure(e.message));
-
       } on ExceptionInvalidCredentials catch (e) {
         // Catches invalid OTP / 400 bad requests
         emit(AuthFailure(e.message));
-
       } catch (e) {
-        // Generic fallback for network timeouts, server crashes (500), etc.
         emit(AuthFailure("Something went wrong. Please try again later."));
       }
     });
@@ -83,7 +77,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           emit(const AuthFailure("OTP verification failed"));
         }
       } catch (e) {
-        emit(AuthFailure(e.toString()));
+        emit(AuthFailure("Something went wrong. Please try again later."));
       }
     });
 
@@ -99,7 +93,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           emit(const AuthFailure("Failed to resend OTP"));
         }
       } catch (e) {
-        emit(AuthFailure(e.toString()));
+        emit(AuthFailure("Something went wrong. Please try again later."));
       }
     });
 
@@ -115,7 +109,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           emit(const AuthFailure("Logout failed"));
         }
       } catch (e) {
-        emit(AuthFailure(e.toString()));
+        emit(AuthFailure("Something went wrong. Please try again later."));
       }
     });
   }

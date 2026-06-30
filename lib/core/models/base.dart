@@ -3,7 +3,7 @@ import 'package:json_annotation/json_annotation.dart';
 import 'auth/auth_response.dart';
 import 'auth/kyc_status_response.dart';
 import 'booking/booking_response.dart';
-import 'booking/booking_summary.dart';
+import 'booking/booking_cost.dart';
 import 'popular_route.dart';
 import 'ride/ride.dart';
 import 'ride/ride_response.dart';
@@ -116,7 +116,7 @@ class _Converter<T> implements JsonConverter<T?, Object?> {
           return KycResponse.fromJson(json) as T?;
         } else if (json.containsKey('formattedValues') &&
             json.containsKey('rawValues')) {
-          return BookingSummary.fromJson(json) as T?;
+          return BookingCost.fromJson(json) as T?;
         } else if (json.containsKey('bookingSafetyPin') &&
             json.containsKey('transactionId')) {
           return BookingResponse.fromJson(json) as T?;

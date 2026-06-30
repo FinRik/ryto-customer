@@ -3,11 +3,5 @@ enum BottomSheetType {
   fetchStates,
   fetchCities,
   chat,
-  // transactionType,
-  // transactionStatus,
-  // transactionTime,
-  // verifyNumber,
-  // transferPin,
-  // manualAccounts,
-  // strings,
+  paystackPayment,
 }

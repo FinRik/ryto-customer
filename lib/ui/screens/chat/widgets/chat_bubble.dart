@@ -38,7 +38,7 @@ class ChatBubble extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.only(top: 4),
             child: Text(
-              _formatTime(message.createdAt),
+              (message.formattedTime),
               style: const TextStyle(fontSize: 10, color: Colors.grey),
             ),
           ),
@@ -158,7 +158,4 @@ class ChatBubble extends StatelessWidget {
       ),
     );
   }
-
-  String _formatTime(DateTime time) =>
-      "${time.hour}:${time.minute.toString().padLeft(2, '0')}";
 }

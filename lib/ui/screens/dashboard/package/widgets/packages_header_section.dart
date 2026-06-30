@@ -4,7 +4,7 @@ import 'package:go_router/go_router.dart';
 import '../../../../../app/res/svgs.dart';
 import '../../../../../core/routes/router.dart';
 import '../../../../../core/routes/routes.dart';
-import '../../../../../utils/helpers/date_formatter_utils.dart';
+import '../../../../../utils/helpers/date_time_helper.dart';
 import '../../../../styles/app_decorations.dart';
 import '../../../../widgets/buttons/button.dart';
 import '../../../../widgets/app_bars/custom_app_bar.dart';
@@ -32,12 +32,14 @@ class _PackagesHeaderSectionState extends State<PackagesHeaderSection> {
   }
 
   void _onProceed() {
+    final date = DateTimeHelper.parseBackendFormat(_dateController.text);
     context.push(
-      Paths.PACKAGEAVAILABLETRIPS,
+      Paths.AVAILABLETRIPS,
       extra: AvailableTripsArgs(
         originCity: _originCity.text,
         destinationCity: _destinationCity.text,
-        departureDate: _dateController.text,
+        departureDate: date,
+        path: Paths.ADDPACKAGEDETAIL
       ),
     );
   }
@@ -90,7 +92,7 @@ class _PackagesHeaderSectionState extends State<PackagesHeaderSection> {
                     child: GeneralTextField(
                       label: "Departure date",
                       // hint: "25 Dec, 2025",
-                      hint: DateFormatterUtils.departureDate,
+                      hint: DateTimeHelper.departureDate,
                       controller: _dateController,
                       // prefixSvg: AppIcons.calendar,
                       // prefixIconSize: 16,

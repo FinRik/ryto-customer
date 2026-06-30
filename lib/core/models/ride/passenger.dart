@@ -28,6 +28,7 @@ class Passenger {
     this.passengerDropoffLng,
   });
 
+  @JsonKey(includeFromJson: false, includeToJson: false)
   String get fullname {
     if ((firstName == null || firstName!.isEmpty) &&
         (lastName == null || lastName!.isEmpty)) {

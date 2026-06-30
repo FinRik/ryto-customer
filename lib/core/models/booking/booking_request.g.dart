@@ -12,6 +12,7 @@ BookingRequest _$BookingRequestFromJson(Map<String, dynamic> json) =>
       bookingLocation: json['bookingLocation'] as String?,
       vehicleId: (json['vehicleId'] as num?)?.toInt(),
       seats: (json['seats'] as num?)?.toInt(),
+      noBaggage: (json['noBaggage'] as bool),
       packageSize: json['packageSize'] as String?,
       packageWeight: (json['packageWeight'] as num?)?.toInt(),
       packageHandlingOptions: (json['packageHandlingOptions'] as List<dynamic>?)
@@ -42,6 +43,7 @@ Map<String, dynamic> _$BookingRequestToJson(BookingRequest instance) =>
       'bookingLocation': instance.bookingLocation,
       'vehicleId': instance.vehicleId,
       'seats': instance.seats,
+      'noBaggage': instance.noBaggage,
       'packageSize': instance.packageSize,
       'packageWeight': instance.packageWeight,
       'packageHandlingOptions': instance.packageHandlingOptions,

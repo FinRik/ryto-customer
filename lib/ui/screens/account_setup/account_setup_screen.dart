@@ -9,7 +9,7 @@ import '../../../app/app_setup_locator.dart';
 import '../../../core/models/user/profile_request.dart';
 import '../../../core/repos/regional_manager_repo.dart';
 import '../../../core/setups/region_identity_setup.dart';
-import '../../../utils/helpers/date_formatter_utils.dart';
+import '../../../utils/helpers/date_time_helper.dart';
 import '../../widgets/buttons/back_arrow_button.dart';
 import '../../widgets/buttons/button.dart';
 import '../../widgets/inputs/auth_text_field.dart';
@@ -239,7 +239,7 @@ class _AccountSetupScreenState extends State<AccountSetupScreen> {
 
     // 2. Trigger Form Validation
     if (_formKey.currentState!.validate()) {
-      final dob = DateFormatterUtils.parseBackendFormat(
+      final dob = DateTimeHelper.parseBackendFormat(
         _dobController.text.trim(),
       );
 

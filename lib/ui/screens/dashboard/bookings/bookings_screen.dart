@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../app/app_setup_locator.dart';
 import '../../../../core/models/ride/ride.dart';
 import '../../../../core/routes/routes.dart';
+import '../../../../core/setups/region_identity_setup.dart';
 import '../../../widgets/app_bars/custom_app_bar.dart';
 import '../../../widgets/loaders/circular_indicator.dart';
 import '../../../widgets/scrollable/grouped_list_view.dart';
@@ -19,6 +21,7 @@ class BookingsScreen extends StatefulWidget {
 
 class _TripsScreenState extends State<BookingsScreen>
     with TickerProviderStateMixin {
+  final region = sl<RegionIdentity>();
   late TabController tabController;
 
   @override
@@ -38,7 +41,12 @@ class _TripsScreenState extends State<BookingsScreen>
 
   void _fetchTrips(int index) {
     final statuses = ["SCHEDULED", "COMPLETED", "CANCELED"];
-    context.read<BookingsBloc>().add(LoadUserTrips(statuses[index]));
+    context.read<BookingsBloc>().add(
+      LoadUserTrips(
+        status: statuses[index],
+        searchParams: {'country': region.country},
+      ),
+    );
   }
 
   @override
@@ -117,7 +125,7 @@ class _TripsScreenState extends State<BookingsScreen>
                           // PENDING/SCHEDULED
                           _TripList(trips: state.trips),
 
-                          // UPCOMING/COMPLETED (Adjust string if your API expects different keys)
+                          // UPCOMING/COMPLETED
                           _TripList(trips: state.trips),
 
                           // PAST/CANCELED
@@ -177,7 +185,7 @@ class _TripList extends StatelessWidget {
     return GroupedTripList(
       trips: trips,
       onTap: (trip) => context.push(Paths.BOOKINGDETAIL, extra: "${trip.id}"),
-      onRebook: (trip) => debugPrint('Rebook logic here'),
+      // onRebook: (trip) => debugPrint('Rebook logic here'),
     );
   }
 }

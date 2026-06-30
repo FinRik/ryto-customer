@@ -66,6 +66,32 @@ class _VerifyPhoneNumberScreenState extends State<VerifyPhoneNumberScreen> {
     return seconds;
   }
 
+  Future<void> _showError(
+    BuildContext context, {
+    required String message,
+    String title = 'Error',
+    String buttonText = 'OK',
+  }) {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(title),
+          content: Text(message),
+          actions: <Widget>[
+            TextButton(
+              child: Text(buttonText),
+              onPressed: () {
+                Navigator.of(context).pop(); // Closes the dialog
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -77,15 +103,9 @@ class _VerifyPhoneNumberScreenState extends State<VerifyPhoneNumberScreen> {
             } else {
               router.push(Paths.ACCOUNTSETUP);
             }
+          } else if (state is AuthFailure) {
+            _showError(context, message: state.message);
           }
-          // else if (state is AuthFailure) {
-          //   ScaffoldMessenger.of(context).showSnackBar(
-          //     SnackBar(
-          //       content: Text(state.message),
-          //       backgroundColor: Theme.of(context).colorScheme.error,
-          //     ),
-          //   );
-          // }
         },
         builder: (context, state) {
           final isLoading = state is AuthLoading;

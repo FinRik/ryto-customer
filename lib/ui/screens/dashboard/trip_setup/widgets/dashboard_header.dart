@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../../../app/res/icons.dart';
 import '../../../../../app/res/svgs.dart';
 import '../../../../../core/routes/router.dart';
 import '../../../../../core/routes/routes.dart';
-import '../../../../../utils/helpers/date_formatter_utils.dart';
+import '../../../../../utils/helpers/date_time_helper.dart';
 import '../../../../styles/app_decorations.dart';
 import '../../../../widgets/buttons/button.dart';
 import '../../../../widgets/app_bars/custom_app_bar.dart';
@@ -27,13 +26,15 @@ class _DashboardHeaderState extends State<DashboardHeader> {
   int passengerSeats = 1;
 
   void _onProceed() {
+    final date = DateTimeHelper.parseBackendFormat(dateCtr.text);
     context.push(
       Paths.AVAILABLETRIPS,
       extra: AvailableTripsArgs(
         originCity: originCity.text,
         destinationCity: destinationCity.text,
-        departureDate: dateCtr.text,
+        departureDate: date,
         passengerSeats: passengerSeats,
+        path: Paths.BOOKATRIP,
       ),
     );
   }
@@ -88,7 +89,7 @@ class _DashboardHeaderState extends State<DashboardHeader> {
                       label: "Departure date",
                       readOnly: true,
                       // hint: "25 Dec, 2025",
-                      hint: DateFormatterUtils.departureDate,
+                      hint: DateTimeHelper.departureDate,
                       controller: dateCtr,
                       // prefixSvg: AppIcons.calendar,
                       prefixIcon: Icons.calendar_today,

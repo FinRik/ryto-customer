@@ -1,19 +1,19 @@
 class BookingResponse {
    final String? bookingSafetyPin;
   final int? transactionId;
-  final String? paymentUrl;
+  final String? bookingId;
 
   BookingResponse({
     this.bookingSafetyPin,
     this.transactionId,
-    this.paymentUrl,
+    this.bookingId,
   });
 
   factory BookingResponse.fromJson(Map<String, dynamic> json) {
     return BookingResponse(
       bookingSafetyPin: json['bookingSafetyPin'] as String?,
       transactionId: json['transactionId'] as int?,
-      paymentUrl: json["paymentUrl"] as String?
+      bookingId: (json["bookingId"]).toString(),
     );
   }
 
@@ -21,7 +21,7 @@ class BookingResponse {
     return {
       "bookingSafetyPin": bookingSafetyPin,
       "transactionId": transactionId,
-      "paymentUrl": paymentUrl,
+      "bookingId": bookingId,
     };
   }
 }

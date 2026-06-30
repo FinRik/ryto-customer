@@ -54,16 +54,14 @@ class PackagesRoutesSection extends StatelessWidget {
                   titleTextStyle: TextStyle(fontSize: 16),
                   subtitle: "Estimated time unavailable",
                   svgIcon: AppSvgs.location,
-                  onTap: () {
-                    context.push(
-                      Paths.PACKAGEAVAILABLETRIPS,
-                      extra: AvailableTripsArgs(
-                        originCity: route.originCity,
-                        destinationCity: route.destinationCity,
-                        passengerSeats: 1,
-                      ),
-                    );
-                  },
+                  onTap: () => context.push(
+                    Paths.AVAILABLETRIPS,
+                    extra: AvailableTripsArgs(
+                      originCity: route.originCity,
+                      destinationCity: route.destinationCity,
+                      path: Paths.ADDPACKAGEDETAIL,
+                    ),
+                  ),
                 );
               },
             ),

@@ -9,7 +9,7 @@ class ArrivalTimeService {
 
   ArrivalTimeService(Dio dio) : _dio = dio;
 
-  final String? _apiKey = dotenv.env['SERVER_API_KEY'];
+  final String? _apiKey = dotenv.env['LOCATION_PREDICTION_KEY'];
 
   Future<ArrivalEstimate> fetchEstimate({
     required double sLat,

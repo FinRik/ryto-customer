@@ -1,27 +1,35 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter/material.dart';
 
 import '../../../core/models/booking/booking_request.dart';
-import '../../../core/models/booking/booking_summary.dart';
+import '../../../core/models/booking/booking_cost.dart';
 import '../../../core/repos/trips_repo.dart';
 
-part 'booking_cost_state.dart';
-
-class BookingCostCubit extends Cubit<BookingCostState> {
+class BookingCostCubit extends Cubit<AsyncSnapshot<BookingCost>> {
   final TripsRepo tripsRepo;
 
-  BookingCostCubit(this.tripsRepo) : super(BookingCostLoading());
+  BookingCostCubit(this.tripsRepo) : super(const AsyncSnapshot.waiting());
 
   void calculateCost(BookingRequest request) async {
-    emit(BookingCostLoading());
     try {
-      final summary = await tripsRepo.fetchBookingCost(request);
-      if (summary != null) {
-        emit(BookingCostLoaded(summary));
+      final cost = await tripsRepo.fetchBookingCost(request);
+      if (cost != null) {
+        emit(AsyncSnapshot.withData(ConnectionState.done, cost));
       } else {
-        emit(BookingCostError("Could not calculate cost. Check connection."));
+        emit(
+          AsyncSnapshot.withError(
+            ConnectionState.done,
+            "Could not calculate cost. Pleas try again.",
+          ),
+        );
       }
     } catch (e) {
-      emit(BookingCostError(e.toString()));
+      emit(
+        AsyncSnapshot.withError(
+          ConnectionState.done,
+          "Could not calculate cost. Check connection.",
+        ),
+      );
     }
   }
 }
