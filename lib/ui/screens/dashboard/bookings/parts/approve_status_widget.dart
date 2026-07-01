@@ -125,16 +125,18 @@ class ApproveStatusWidget extends StatelessWidget {
                                     title: "Departure",
                                     value: summary.departureTime,
                                   ),
-                                  TripInfo(
-                                    title: "Price",
-                                    value:
-                                        bookingCost!.surgePercentageFormatted !=
-                                            null
-                                        ? "${bookingCost?.finalPrice?.formatted}"
-                                        : "${bookingCost?.totalPrice?.formatted}",
-                                    isAmount: true,
-                                    alignment: Alignment.center,
-                                  ),
+                                  if (bookingCost != null)
+                                    TripInfo(
+                                      title: "Price",
+                                      value:
+                                          bookingCost!
+                                                  .surgePercentageFormatted !=
+                                              null
+                                          ? "${bookingCost?.finalPrice?.formatted}"
+                                          : "${bookingCost?.totalPrice?.formatted}",
+                                      isAmount: true,
+                                      alignment: Alignment.center,
+                                    ),
                                   TripInfo(
                                     title: "Seats",
                                     value: "${summary.passengerSeats ?? 0}",

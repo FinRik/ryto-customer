@@ -52,11 +52,10 @@ class RideSummary extends Ride {
   @JsonKey(includeFromJson: false, includeToJson: false)
   bool get isTripStarted => status == "TRIP_STARTED";
   @JsonKey(includeFromJson: false, includeToJson: false)
-  bool get isTripCompleted => status == "TRIP_COMPLETED";
+  bool get isTripCompleted => status == "COMPLETED";
 
   @JsonKey(includeFromJson: false, includeToJson: false)
-  bool get isBookingPending =>
-      booking?.status == "PENDING" || booking?.status == "SCHEDULED";
+  bool get isBookingPending => booking?.status == "PENDING";
   @JsonKey(includeFromJson: false, includeToJson: false)
   bool get isBookingBooked => booking?.status == "BOOKED";
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -64,8 +63,7 @@ class RideSummary extends Ride {
   @JsonKey(includeFromJson: false, includeToJson: false)
   bool get isBookingRejected => booking?.status == "DRIVER_REJECTED";
   @JsonKey(includeFromJson: false, includeToJson: false)
-  bool get isBookingCanceled =>
-      booking?.status == "CUSTOMER_CANCELED" || booking?.status == "CANCELED";
+  bool get isBookingCanceled => booking?.status == "CUSTOMER_CANCELED";
   @JsonKey(includeFromJson: false, includeToJson: false)
   bool get isBookingStarted => booking?.status == "TRIP_STARTED";
   @JsonKey(includeFromJson: false, includeToJson: false)

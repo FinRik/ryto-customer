@@ -70,7 +70,7 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen>
   }
 
   void _fetchBookingCost(RideSummary summary) {
-    if (mounted) {
+    if (mounted && summary.isTripPending) {
       context.read<BookingsBloc>().add(
         LoadBookingCost(
           BookingRequest(
@@ -252,17 +252,18 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen>
     required BookingsState state,
     required bool isBusy,
   }) {
-    if (summary.isBookingCanceled) {
+    if (summary.isBookingCanceled || summary.isBookingRejected) {
       return CanceledStatusWidget(
         summary: summary,
-        bookingCost: state.bookingCost,
+        // bookingCost: state.bookingCost,
         isCostLoading: state.costStatus == CostStatus.loading,
       );
     }
-    if (summary.isBookingPending || summary.isBookingRejected) {
+
+    if (summary.isBookingPending) {
       return PendingStatusWidget(
         summary: summary,
-        bookingCost: state.bookingCost,
+        bookingCost: summary.isTripCanceled ? null : state.bookingCost,
         isCostLoading: state.costStatus == CostStatus.loading,
         isActionLoading: isBusy,
       );
@@ -270,7 +271,7 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen>
 
     return ApproveStatusWidget(
       summary: summary,
-      bookingCost: state.bookingCost,
+      bookingCost: summary.isTripCompleted  ? null : state.bookingCost,
       isCostLoading: state.costStatus == CostStatus.loading,
     );
   }

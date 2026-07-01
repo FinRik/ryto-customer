@@ -50,6 +50,7 @@ class PendingStatusWidget extends StatelessWidget {
       body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 24),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             StatusIndicatorHeader(
               statusText: (summary.friendlyHeaderStatus),
