@@ -52,7 +52,7 @@ class _PackagesHeaderSectionState extends State<PackagesHeaderSection> {
         const CustomAppBar(),
         const SizedBox(height: 45),
         const Text(
-          "Where are you going?",
+          "Send a Package",
           style: TextStyle(
             fontSize: 24,
             fontWeight: FontWeight.bold,
@@ -61,7 +61,7 @@ class _PackagesHeaderSectionState extends State<PackagesHeaderSection> {
         ),
         const SizedBox(height: 4),
         const Text(
-          "Book a scheduled intercity trip.",
+          "Find drivers already traveling your route or schedule your package delivery.",
           style: TextStyle(color: Colors.white),
         ),
         const SizedBox(height: 12),

@@ -16,8 +16,8 @@ class BottomSheetService {
     _sheetBuilders = {...?_sheetBuilders, ...builders};
   }
 
-  Future<SheetResponse<T>?> showCustomBottomSheet<T, R>({
-    R? data,
+  Future<SheetResponse<R>?> showCustomBottomSheet<R, D>({
+    D? data,
     String? title,
     String? desc,
     String? btnText,
@@ -36,7 +36,7 @@ class BottomSheetService {
       throw Exception("No builder registered for BottomSheetType: $variant");
     }
 
-    final result = await showModalBottomSheet<SheetResponse<T>>(
+    final result = await showModalBottomSheet<SheetResponse<R>>(
       context: context,
       useSafeArea: true,
       isDismissible: true,
@@ -45,7 +45,7 @@ class BottomSheetService {
       enableDrag: true,
       useRootNavigator: true,
       builder: (context) => builder(
-        SheetRequest<R>(
+        SheetRequest<D>(
           data: data,
           desc: desc,
           title: title,
@@ -55,7 +55,7 @@ class BottomSheetService {
         (response) => _completeSheet(context, response),
       ),
     );
-    return result ?? SheetResponse<T>(confirmed: false);
+    return result ?? SheetResponse<R>(confirmed: false);
   }
 
   /// Completes the dialog and passes the [response] to the caller
