@@ -57,7 +57,7 @@ class _DashboardHeaderState extends State<DashboardHeader> {
         ),
         const SizedBox(height: 4),
         const Text(
-          "Book a scheduled intercity trip.",
+          "Search trips already created by drivers or book your intercity ride.",
           style: TextStyle(color: Colors.white),
         ),
         SizedBox(height: 12),
