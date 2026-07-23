@@ -38,7 +38,7 @@ class LocationDetailCard extends StatelessWidget {
           ),
           const SizedBox(height: 4),
           LocationFetchBuilder(
-            address: coord,
+            coordinates: coord,
             builder: (context, LatLng? p2) {
               return Text(
                 p2!.address!,

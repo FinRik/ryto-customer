@@ -4,4 +4,5 @@ enum BottomSheetType {
   fetchCities,
   chat,
   paystackPayment,
+  cancelTrip,
 }

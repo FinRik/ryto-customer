@@ -51,6 +51,18 @@ abstract class ApiService {
   Future<BaseModel<UserEntity>> verifyOtp(@Field("code") String code);
   @POST(ApiUrls.resendOtp)
   Future<BaseModel> resendOtp();
+  @POST(ApiUrls.sso)
+  Future<BaseModel<UserEntity>> googleSignIn({
+    @Field("token") required String token,
+    @Field("role") required String role,
+  });
+  @PUT(ApiUrls.updateFCMToken)
+  Future<BaseModel> updateFCMToken({
+    @Field("token") required String token,
+    @Field("platform") required String platform,
+  });
+  @DELETE(ApiUrls.deleteFCMToken)
+  Future<BaseModel> deleteFCMToken({@Field("token") required String token});
 
   // Profile Flow
   @GET(ApiUrls.fetchProfile)

@@ -3,6 +3,30 @@ import 'package:flutter/material.dart';
 import '../../../../../core/models/ui/trip_stop.dart';
 import '../../../../widgets/location_fetch_builder.dart';
 
+class TripStopTimeline extends StatelessWidget {
+  final List<TripStop> stops;
+  final String duration;
+
+  const TripStopTimeline({
+    super.key,
+    required this.stops,
+    required this.duration,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        /// Stops
+        ...List.generate(
+          stops.length,
+              (index) =>
+              TripStopTimelineItem(stop: stops[index], duration: duration),
+        ),
+      ],
+    );
+  }
+}
 class TripStopTimelineItem extends StatelessWidget {
   final TripStop stop;
   final String duration;
@@ -80,7 +104,7 @@ class TripStopTimelineItem extends StatelessWidget {
 
                       Expanded(
                         child: LocationFetchBuilder(
-                          address: stop.location,
+                          coordinates: stop.location,
                           builder: (context,  address) {
                             return Text(
                               address?.address ?? "",

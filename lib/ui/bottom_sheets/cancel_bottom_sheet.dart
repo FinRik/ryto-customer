@@ -94,7 +94,7 @@ class _CancelBookingBottomSheetState extends State<CancelBookingBottomSheet> {
               spacing: 8.0,
               runSpacing: 4.0,
               children: _cancelReasons.map((reason) {
-                final isSelected = _selectedReason == reason;
+                final isSelected = _selectedReason == reason.name;
                 return ChoiceChip(
                   label: Text(reason.name),
                   selected: isSelected,
@@ -104,12 +104,8 @@ class _CancelBookingBottomSheetState extends State<CancelBookingBottomSheet> {
                   selectedColor: const Color(0xFF1B2559).withOpacity(0.12),
                   backgroundColor: const Color(0xFFF4F7FE),
                   labelStyle: TextStyle(
-                    color: isSelected
-                        ? const Color(0xFF1B2559)
-                        : Colors.black87,
-                    fontWeight: isSelected
-                        ? FontWeight.bold
-                        : FontWeight.normal,
+                    color: isSelected ? const Color(0xFF1B2559) : Colors.black87,
+                    fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
                   ),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),

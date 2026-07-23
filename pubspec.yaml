@@ -77,6 +77,12 @@ dependencies:
   # Payment
   flutter_stripe: ^12.6.0
 
+  # Auth/SSO
+  google_sign_in: ^7.2.0
+  firebase_core: ^4.12.1
+  firebase_messaging: ^16.4.3
+  flutter_local_notifications: ^20.1.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

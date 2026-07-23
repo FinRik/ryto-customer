@@ -12,7 +12,7 @@ BookingRequest _$BookingRequestFromJson(Map<String, dynamic> json) =>
       bookingLocation: json['bookingLocation'] as String?,
       vehicleId: (json['vehicleId'] as num?)?.toInt(),
       seats: (json['seats'] as num?)?.toInt(),
-      noBaggage: (json['noBaggage'] as bool),
+      noBaggage: json['noBaggage'] as bool? ?? false,
       packageSize: json['packageSize'] as String?,
       packageWeight: (json['packageWeight'] as num?)?.toInt(),
       packageHandlingOptions: (json['packageHandlingOptions'] as List<dynamic>?)

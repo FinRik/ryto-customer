@@ -30,6 +30,7 @@ class _BooksScreenState extends State<TripsSetupScreen> {
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<ProfileBloc>().add(const FetchUserProfile());
+      context.read<ProfileBloc>().add(const FCMTokenRequested());
     });
   }
 

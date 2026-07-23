@@ -7,6 +7,8 @@ import '../../app/api_urls.dart';
 import '../../utils/storage/token_storage.dart';
 import '../models/chat/chat_message.dart';
 import '../models/chat/conversation.dart';
+import '../models/rider_notification.dart';
+import 'push_notification_service.dart';
 
 class ChatService {
   final Dio _dio;
@@ -15,6 +17,9 @@ class ChatService {
   // Stream to broadcast new messages as they arrive via socket
   final _messageController = StreamController<ChatMessage>.broadcast();
   Stream<ChatMessage> get onNewMessage => _messageController.stream;
+
+  final _notificationController = StreamController<RiderNotification>.broadcast();
+  Stream<RiderNotification> get onNotification => _notificationController.stream;
 
   ChatService(Dio dio) : _dio = dio {
     _initSocket();
@@ -54,6 +59,22 @@ class ChatService {
       'chat:error',
       (data) => print('Socket Error: ${data['message']}'),
     );
+
+    _socket!.on('rider:notification', (data) {
+      try {
+        if (data is Map<String, dynamic>) {
+          final notification = RiderNotification.fromJson(data);
+
+          // 1. Push to in-app stream subscribers (e.g. Blocs, SnackBar overlays)
+          _notificationController.add(notification);
+
+          // 2. Trigger native heads-up system notification using your PushNotificationManager
+          PushNotificationService().showSocketNotification(notification);
+        }
+      } catch (e) {
+        print('Error handling driver socket notification: $e');
+      }
+    });
 
     _socket!.onConnectError((err) => print('Connect Error: $err'));
 
@@ -110,5 +131,6 @@ class ChatService {
   void dispose() {
     _socket?.dispose();
     _messageController.close();
+    _notificationController.close();
   }
 }

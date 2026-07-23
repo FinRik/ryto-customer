@@ -1,10 +1,13 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:google_map_dynamic_key/google_map_dynamic_key.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:path_provider/path_provider.dart';
 
+import '../core/services/push_notification_service.dart';
 import '../core/services/stripe_payment_service.dart';
 import '../core/setups/bottom_sheet_setup.dart';
+import '../firebase_options.dart';
 import 'app_setup_locator.dart';
 
 class App {
@@ -12,8 +15,12 @@ class App {
 
   static Future<void> init() async {
     await dotenv.load(fileName: ".env");
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
     await setupDependencies();
     await setupBottomSheetUi();
+    await PushNotificationService().initNotification();
     await initGoogleMapKey();
     StripePaymentService.initPublishKey();
     HydratedBloc.storage = await HydratedStorage.build(

@@ -4,8 +4,6 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../app/app_setup_locator.dart';
 import '../../../../core/models/booking/booking_request.dart';
-import '../../../../core/models/lat_lng.dart';
-import '../../../../core/models/ride/ride.dart';
 import '../../../../core/models/ui/package_size.dart';
 import '../../../../core/models/ui/trip_stop.dart';
 import '../../../../core/routes/router.dart';
@@ -27,11 +25,11 @@ import '../package/widgets/handling_options_card.dart';
 import '../package/widgets/package_size_list_item.dart';
 import '../package/widgets/package_content_selector.dart';
 import 'widgets/seat_selector_widget.dart';
-import 'widgets/trip_stop_timeline.dart';
+import 'widgets/trip_stop_timeline_item.dart';
 
 class BookATripScreen extends StatefulWidget {
-  const BookATripScreen({super.key, required this.ride});
-  final Ride ride;
+  const BookATripScreen({super.key, required this.args});
+  final BookingDetailsArgs args;
 
   @override
   State<BookATripScreen> createState() => _BookATripScreenState();
@@ -87,8 +85,8 @@ class _BookATripScreenState extends State<BookATripScreen> {
     final roundedWeight = Helpers.autoExtractAndRound(_weightInput);
 
     final bookingPayload = BookingRequest(
-      tripId: widget.ride.id,
-      vehicleId: widget.ride.vehicle?.id,
+      tripId: widget.args.ride.id,
+      vehicleId: widget.args.ride.vehicle?.id,
       seats: _seats,
       noBaggage: (hasPackageSelected && _selectedPackageSize != "None")
           ? true
@@ -100,22 +98,10 @@ class _BookATripScreenState extends State<BookATripScreen> {
       packageRecipientName: _recipientNameCtr.text,
       packageRecipientPhone: _recipientPhoneCtr.text,
       bookingLocation: region.country,
-      originLocation: LatLng(
-        lat: widget.ride.originLat,
-        lng: widget.ride.originLng,
-      ),
-      destinationLocation: LatLng(
-        lat: widget.ride.destinationLat,
-        lng: widget.ride.destinationLng,
-      ),
-      pickupLocation: LatLng(
-        lat: widget.ride.pickupLat,
-        lng: widget.ride.pickupLng,
-      ),
-      dropoffLocation: LatLng(
-        lat: widget.ride.dropoffLat,
-        lng: widget.ride.dropoffLng,
-      ),
+      originLocation: widget.args.ride.originCoord,
+      destinationLocation: widget.args.ride.destCoord,
+      pickupLocation: widget.args.pickup,
+      dropoffLocation: widget.args.dropOff,
     );
 
     context.read<CheckoutBloc>().add(CalculateCheckoutCost(bookingPayload));
@@ -142,8 +128,8 @@ class _BookATripScreenState extends State<BookATripScreen> {
         if (state.status == CheckoutStatus.pricingSuccess &&
             state.costSummary != null) {
           final finalPayload = BookingRequest(
-            tripId: widget.ride.id,
-            vehicleId: widget.ride.vehicle?.id,
+            tripId: widget.args.ride.id,
+            vehicleId: widget.args.ride.vehicle?.id,
             seats: _seats,
             noBaggage: (hasPackageSelected && _selectedPackageSize != "None")
                 ? true
@@ -155,28 +141,16 @@ class _BookATripScreenState extends State<BookATripScreen> {
             packageRecipientName: _recipientNameCtr.text,
             packageRecipientPhone: _recipientPhoneCtr.text,
             bookingLocation: region.country,
-            originLocation: LatLng(
-              lat: widget.ride.originLat,
-              lng: widget.ride.originLng,
-            ),
-            destinationLocation: LatLng(
-              lat: widget.ride.destinationLat,
-              lng: widget.ride.destinationLng,
-            ),
-            pickupLocation: LatLng(
-              lat: widget.ride.pickupLat,
-              lng: widget.ride.pickupLng,
-            ),
-            dropoffLocation: LatLng(
-              lat: widget.ride.dropoffLat,
-              lng: widget.ride.dropoffLng,
-            ),
+            originLocation: widget.args.ride.originCoord,
+            destinationLocation: widget.args.ride.destCoord,
+            pickupLocation: widget.args.pickup,
+            dropoffLocation: widget.args.dropOff,
           );
 
           context.push(
             Paths.PAYFORTRIP,
             extra: TripBookingSummaryArgs(
-              ride: widget.ride,
+              ride: widget.args.ride,
               summary: state.costSummary,
               bookingRequest: finalPayload,
             ),
@@ -275,7 +249,7 @@ class _BookATripScreenState extends State<BookATripScreen> {
               padding: EdgeInsets.zero,
               label: "Trip Details",
               subText:
-                  "${widget.ride.originCity} → ${widget.ride.destinationCity}",
+                  "${widget.args.ride.originCity} → ${widget.args.ride.destinationCity}",
               labelStyle: const TextStyle(
                 fontWeight: FontWeight.w600,
                 fontSize: 16,
@@ -298,29 +272,23 @@ class _BookATripScreenState extends State<BookATripScreen> {
     return Column(
       children: [
         ArrivalTimeWidget(
-          sourceLat: widget.ride.originLat,
-          sourceLng: widget.ride.originLng,
-          destLat: widget.ride.destinationLat,
-          destLng: widget.ride.destinationLng,
-          departureDateTime: widget.ride.departureDateTime,
+          sourceLat: widget.args.pickup.lat,
+          sourceLng: widget.args.pickup.lng,
+          destLat: widget.args.dropOff.lat,
+          destLng: widget.args.dropOff.lng,
+          departureDateTime: widget.args.ride.departureDateTime,
           builder: (cxt, response) => TripStopTimeline(
             duration: response.formattedDuration,
             stops: [
               TripStop(
-                location: LatLng(
-                  lat: widget.ride.pickupLat,
-                  lng: widget.ride.pickupLng,
-                ),
-                city: widget.ride.originCity,
-                time: widget.ride.departureTime,
+                location: widget.args.pickup,
+                city: widget.args.ride.originCity,
+                time: widget.args.ride.departureTime,
                 indicatorColor: Colors.blue,
               ),
               TripStop(
-                location: LatLng(
-                  lat: widget.ride.dropoffLat,
-                  lng: widget.ride.dropoffLng,
-                ),
-                city: widget.ride.destinationCity,
+                location: widget.args.dropOff,
+                city: widget.args.ride.destinationCity,
                 time: response.formattedArrivalTime,
                 indicatorColor: Colors.green,
                 isLast: true,
@@ -333,10 +301,10 @@ class _BookATripScreenState extends State<BookATripScreen> {
           child: Divider(height: 1, color: Color(0xffE7E8E9)),
         ),
         DriverScoreCard(
-          tripId: widget.ride.id,
-          vehicle: widget.ride.vehicle!,
-          driver: widget.ride.driver!,
-          showTruckCapacity: true,
+          tripId: widget.args.ride.id,
+          vehicle: widget.args.ride.vehicle!,
+          driver: widget.args.ride.driver!,
+          showTruckCapacity: false,
         ),
       ],
     );
@@ -397,7 +365,7 @@ class _BookATripScreenState extends State<BookATripScreen> {
             title: "What’s Inside?",
             border: Border.all(color: const Color(0xffE7E8E9)),
             child: PackageContentSelector(
-              allowed: widget.ride.packagesAllowed ?? false,
+              allowed: widget.args.ride.packagesAllowed ?? false,
               selectedSize: _packageContent,
               onSelected: (size) {
                 setState(() {

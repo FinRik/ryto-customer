@@ -111,7 +111,7 @@ class PendingStatusWidget extends StatelessWidget {
                       Expanded(
                         child: Text.rich(
                           TextSpan(
-                            text: "Your Safety PIN is ",
+                            text: "Your Safety PIN is: ",
                             children: [
                               TextSpan(
                                 text: "${summary.safetyPin} ",
@@ -122,7 +122,7 @@ class PendingStatusWidget extends StatelessWidget {
                               ),
                               TextSpan(
                                 text:
-                                "Share with driver when boarding.",
+                                "Share this PIN with your driver to begin your trip.",
                               ),
                             ],
                           ),

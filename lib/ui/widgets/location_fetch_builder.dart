@@ -7,14 +7,14 @@ import 'loaders/circular_indicator.dart';
 typedef LocationWidgetBuilder = Widget Function(BuildContext, LatLng?);
 
 class LocationFetchBuilder extends StatefulWidget {
-  final LatLng address;
+  final LatLng coordinates;
   final LocationWidgetBuilder builder;
   final Widget? loadingWidget;
   final Widget? errorWidget;
 
   const LocationFetchBuilder({
     super.key,
-    required this.address,
+    required this.coordinates,
     required this.builder,
     this.loadingWidget,
     this.errorWidget,
@@ -30,17 +30,22 @@ class _LocationFetchBuilderState extends State<LocationFetchBuilder> {
   @override
   void initState() {
     super.initState();
-    _locationFuture = LocationUtils.getAddressFromCoordinate(widget.address);
+    _locationFuture = LocationUtils.getAddressFromCoordinate(
+      widget.coordinates,
+    );
   }
 
-  // @override
-  // void didUpdateWidget(LocationFetchBuilder oldWidget) {
-  //   super.didUpdateWidget(oldWidget);
-  //   // Refresh the future if the address changes
-  //   if (oldWidget.address != widget.address) {
-  //     _locationFuture = LocationUtils.getAddressFromCoordinate(widget.address);
-  //   }
-  // }
+  @override
+  void didUpdateWidget(LocationFetchBuilder oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.coordinates != widget.coordinates) {
+      setState(() {
+        _locationFuture = LocationUtils.getAddressFromCoordinate(
+          widget.coordinates,
+        );
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -48,15 +53,27 @@ class _LocationFetchBuilderState extends State<LocationFetchBuilder> {
       future: _locationFuture,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return widget.loadingWidget ?? const Center(child: CircularIndicator());
+          return widget.loadingWidget ??
+              const Text(
+                "Resolving address...",
+                style: TextStyle(color: Colors.grey, fontSize: 14),
+              );
         }
 
-        if (snapshot.hasError) {
-          return widget.errorWidget ?? const Center(child: Text('Error loading location'));
+//         if (snapshot.connectionState == ConnectionState.waiting) {
+//           return widget.loadingWidget ?? const Center(child: CircularIndicator());
+//         }
+
+        if (snapshot.hasError || !snapshot.hasData || snapshot.data == null) {
+          // Fallback gracefully to the coordinate string if reverse-geocoding fails
+          return widget.errorWidget ??
+              Text(
+                "${widget.coordinates.lat.toStringAsFixed(4)}, ${widget.coordinates.lng.toStringAsFixed(4)}",
+                style: const TextStyle(fontSize: 14, color: Colors.grey),
+              );
         }
 
-        // Pass the result (which could be null) to your custom builder
-        return widget.builder(context, snapshot.data);
+        return widget.builder(context, snapshot.data!);
       },
     );
   }

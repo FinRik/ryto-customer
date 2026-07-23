@@ -2,57 +2,22 @@ import 'package:flutter/material.dart';
 
 class RouteStopTimeline {
   final String title;
-  final String? subtitle;
-
-  /// Color of the circle indicator
+  final String subtitle;
   final Color indicatorColor;
-
-  /// Whether the circle is filled or hollow
   final bool isFilled;
 
-  /// Optional trailing widget (e.g. "Short stop" badge)
+  // Keep the raw components attached for contextual map deep-linking or modal usage
+  final double latitude;
+  final double longitude;
   final Widget? trailing;
 
   const RouteStopTimeline({
     required this.title,
-    this.subtitle,
+    required this.subtitle,
     required this.indicatorColor,
+    required this.latitude,
+    required this.longitude,
     this.isFilled = true,
     this.trailing,
   });
-
-  static final List<RouteStopTimeline> routeSteps = [
-    RouteStopTimeline(
-      title: 'Ojota Motor Park',
-      subtitle: '08:00 AM',
-      indicatorColor: Colors.blue,
-    ),
-    RouteStopTimeline(
-      title: 'Sagamu Interchange',
-      subtitle: '08:45 AM',
-      indicatorColor: Colors.orange,
-      trailing: Container(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 10,
-          vertical: 4,
-        ),
-        decoration: BoxDecoration(
-          color: Colors.orange.withOpacity(0.15),
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: const Text(
-          'Short stop',
-          style: TextStyle(
-            fontSize: 12,
-            color: Colors.orange,
-          ),
-        ),
-      ),
-    ),
-    RouteStopTimeline(
-      title: 'Iwo Road, Ibadan',
-      subtitle: '10:30 AM',
-      indicatorColor: Colors.green,
-    ),
-  ];
 }

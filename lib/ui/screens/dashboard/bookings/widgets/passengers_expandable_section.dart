@@ -7,13 +7,11 @@ import 'passenger_tile.dart';
 
 class PassengersExpandableSection extends StatefulWidget {
   final List<Passenger> passengers;
-  // final Driver driver;
   final int passengerCount;
 
   const PassengersExpandableSection({
     super.key,
     required this.passengers,
-    // required this.driver,
     required this.passengerCount,
   });
 
@@ -63,7 +61,7 @@ class _PassengersExpandableSectionState
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: Text(
-                    '${widget.passengers.length}/${widget.passengerCount} on ride',
+                    '${widget.passengers.length} passenger(s) on ride',
                     style: const TextStyle(
                       color: Color(0xff16A249),
                       fontSize: 12,

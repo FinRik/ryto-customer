@@ -22,3 +22,10 @@ class UpdateProfileRequested extends ProfileEvent {
   @override
   List<Object?> get props => [request];
 }
+
+class FCMTokenRequested extends ProfileEvent {
+  const FCMTokenRequested();
+
+  @override
+  List<Object?> get props => [];
+}

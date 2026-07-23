@@ -168,7 +168,7 @@ class TripDetailCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             LocationFetchBuilder(
-              address: coord,
+              coordinates: coord,
               builder: (context, latlng) => Text(
                 latlng?.address ?? "",
                 style: const TextStyle(

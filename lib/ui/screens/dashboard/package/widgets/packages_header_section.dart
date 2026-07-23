@@ -9,7 +9,6 @@ import '../../../../styles/app_decorations.dart';
 import '../../../../widgets/buttons/button.dart';
 import '../../../../widgets/app_bars/custom_app_bar.dart';
 import '../../../../widgets/inputs/general_text_field.dart';
-import '../../../../widgets/inputs/place_suggestion_widget.dart';
 
 class PackagesHeaderSection extends StatefulWidget {
   const PackagesHeaderSection({super.key});
@@ -70,14 +69,14 @@ class _PackagesHeaderSectionState extends State<PackagesHeaderSection> {
           decoration: AppDecoration.bookingOverlayDeco,
           child: Column(
             children: [
-              PlacesSuggestionWidget(
+              GeneralTextField(
                 label: "Leaving From?",
                 hint: "Enter a city, Bustop",
                 controller: _originCity,
                 prefixSvg: AppSvgs.location,
                 borderRadius: 10,
               ),
-              PlacesSuggestionWidget(
+              GeneralTextField(
                 label: "Going to",
                 hint: "Enter Destination",
                 controller: _destinationCity,

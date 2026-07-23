@@ -59,7 +59,10 @@ class MultiBlocsProvider extends StatelessWidget {
         ),
         BlocProvider<ProfileBloc>(
           lazy: true,
-          create: (cxt) => ProfileBloc(cxt.read<UserRepo>()),
+          create: (cxt) => ProfileBloc(
+            userRepo: cxt.read<UserRepo>(),
+            authRepo: cxt.read<AuthRepo>(),
+          ),
         ),
         BlocProvider<ChatBloc>(
           lazy: true,

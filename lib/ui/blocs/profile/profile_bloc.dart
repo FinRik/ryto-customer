@@ -3,17 +3,22 @@ import 'package:hydrated_bloc/hydrated_bloc.dart';
 
 import '../../../core/models/user/profile_request.dart';
 import '../../../core/models/user/user_entity.dart';
+import '../../../core/repos/auth_repo.dart';
 import '../../../core/repos/user_repo.dart';
+import '../../../utils/storage/fcm_token_storage.dart';
 
 part 'profile_event.dart';
 part 'profile_state.dart';
 
 class ProfileBloc extends HydratedBloc<ProfileEvent, ProfileState> {
-  final UserRepo repo;
+  final UserRepo userRepo;
+  final AuthRepo authRepo;
 
-  ProfileBloc(this.repo) : super(const ProfileState()) {
+  ProfileBloc({required this.userRepo, required this.authRepo})
+    : super(const ProfileState()) {
     on<FetchUserProfile>(_onFetchProfile);
     on<UpdateProfileRequested>(_onUpdateProfile);
+    on<FCMTokenRequested>(_onSetFCMToken);
   }
 
   Future<void> _onFetchProfile(
@@ -22,7 +27,7 @@ class ProfileBloc extends HydratedBloc<ProfileEvent, ProfileState> {
   ) async {
     emit(state.copyWith(status: ProfileStatus.loading));
     try {
-      final res = await repo.fetchProfile();
+      final res = await userRepo.fetchProfile();
       if (res != null) {
         emit(
           state.copyWith(
@@ -53,7 +58,7 @@ class ProfileBloc extends HydratedBloc<ProfileEvent, ProfileState> {
     emit(state.copyWith(status: ProfileStatus.loading));
     try {
       print("Profile Update Request: ${event.request.toJson()}");
-      final result = await repo.updateProfile(event.request);
+      final result = await userRepo.updateProfile(event.request);
       if (result != null) {
         emit(
           state.copyWith(
@@ -73,6 +78,43 @@ class ProfileBloc extends HydratedBloc<ProfileEvent, ProfileState> {
     } catch (e) {
       emit(
         state.copyWith(status: ProfileStatus.failure, message: e.toString()),
+      );
+    }
+  }
+
+  Future<void> _onSetFCMToken(
+    FCMTokenRequested event,
+    Emitter<ProfileState> emit,
+  ) async {
+    emit(state.copyWith(status: ProfileStatus.loading));
+    try {
+      final token = await FcmTokenStorage.getFCMToken();
+      if (token == null) {
+        return;
+      }
+
+      final result = await authRepo.updateFCMToken(token);
+      if (result) {
+        emit(
+          state.copyWith(
+            tokenStatus: TokenStatus.success,
+            message: "Token upload successful",
+          ),
+        );
+      } else {
+        emit(
+          state.copyWith(
+            tokenStatus: TokenStatus.failure,
+            message: "Token upload failed",
+          ),
+        );
+      }
+    } catch (e) {
+      emit(
+        state.copyWith(
+          tokenStatus: TokenStatus.failure,
+          message: "Token upload failed",
+        ),
       );
     }
   }

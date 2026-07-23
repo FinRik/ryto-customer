@@ -9,7 +9,6 @@ import '../../../../styles/app_decorations.dart';
 import '../../../../widgets/buttons/button.dart';
 import '../../../../widgets/app_bars/custom_app_bar.dart';
 import '../../../../widgets/inputs/general_text_field.dart';
-import '../../../../widgets/inputs/place_suggestion_widget.dart';
 import 'number_selector_widget.dart';
 
 class DashboardHeader extends StatefulWidget {
@@ -66,14 +65,14 @@ class _DashboardHeaderState extends State<DashboardHeader> {
           decoration: AppDecoration.bookingOverlayDeco,
           child: Column(
             children: [
-              PlacesSuggestionWidget(
+              GeneralTextField(
                 label: "Leaving From?",
                 hint: "Enter a city, Bustop",
                 controller: originCity,
                 prefixSvg: AppSvgs.location,
                 borderRadius: 10,
               ),
-              PlacesSuggestionWidget(
+              GeneralTextField(
                 label: "Going to",
                 hint: "Enter Destination",
                 controller: destinationCity,

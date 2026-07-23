@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 
 import '../../../app/app_setup_locator.dart';
 import '../../../core/models/ride/ride.dart';
 import '../../../core/routes/router.dart';
+import '../../../core/routes/routes.dart';
 import '../../../core/setups/region_identity_setup.dart';
 import '../../blocs/available_routes/available_routes_bloc.dart';
 import '../../widgets/buttons/back_arrow_button.dart';
@@ -99,14 +99,17 @@ class _AvailableTripsScreenState extends State<AvailableTripsScreen> {
         return TripListItem(
           ride: trip,
           cost: cost,
-          onTap: () => _handleTripSelection(context, trip),
+          onTap: () => _handleTripSelection(trip),
         );
       },
     );
   }
 
-  void _handleTripSelection(BuildContext context, Ride trip) {
-    context.push(widget.args.path, extra: trip);
+  void _handleTripSelection(Ride trip) {
+    router.push(
+      Paths.SETBOOKINGROUTE,
+      extra: BookingRouteArgs(ride: trip, path: widget.args.path),
+    );
   }
 
   Widget _buildHeaderRouteCard(BuildContext context) {

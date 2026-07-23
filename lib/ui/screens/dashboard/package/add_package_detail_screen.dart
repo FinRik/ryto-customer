@@ -5,7 +5,6 @@ import 'package:go_router/go_router.dart';
 import '../../../../app/app_setup_locator.dart';
 import '../../../../core/models/booking/booking_request.dart';
 import '../../../../core/models/lat_lng.dart';
-import '../../../../core/models/ride/ride.dart';
 import '../../../../core/models/ui/package_size.dart';
 import '../../../../core/routes/router.dart';
 import '../../../../core/routes/routes.dart';
@@ -24,10 +23,9 @@ import 'widgets/handling_options_card.dart';
 import 'widgets/package_size_list_item.dart';
 import 'widgets/package_content_selector.dart';
 
-
 class AddPackageDetailScreen extends StatefulWidget {
-  const AddPackageDetailScreen({super.key, required this.ride});
-  final Ride ride;
+  const AddPackageDetailScreen({super.key, required this.args});
+  final BookingDetailsArgs args;
 
   @override
   State<AddPackageDetailScreen> createState() => _AddPackageDetailScreenState();
@@ -68,14 +66,17 @@ class _AddPackageDetailScreenState extends State<AddPackageDetailScreen> {
 
     if (validationError != null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(validationError), backgroundColor: Colors.orange),
+        SnackBar(
+          content: Text(validationError),
+          backgroundColor: Colors.orange,
+        ),
       );
       return;
     }
 
     final packageRequest = BookingRequest(
-      tripId: widget.ride.id,
-      vehicleId: widget.ride.vehicle?.id,
+      tripId: widget.args.ride.id,
+      vehicleId: widget.args.ride.vehicle?.id,
       seats: seats,
       noBaggage: false,
       packageSize: _selectedPackageSize,
@@ -85,10 +86,10 @@ class _AddPackageDetailScreenState extends State<AddPackageDetailScreen> {
       packageRecipientName: _recipientNameCtr.text,
       packageRecipientPhone: _recipientPhoneCtr.text,
       bookingLocation: region.country,
-      originLocation: LatLng(lat: widget.ride.originLat, lng: widget.ride.originLng),
-      destinationLocation: LatLng(lat: widget.ride.destinationLat, lng: widget.ride.destinationLng),
-      pickupLocation: LatLng(lat: widget.ride.pickupLat, lng: widget.ride.pickupLng),
-      dropoffLocation: LatLng(lat: widget.ride.dropoffLat, lng: widget.ride.dropoffLng),
+      originLocation: widget.args.ride.originCoord,
+      destinationLocation: widget.args.ride.destCoord,
+      pickupLocation: widget.args.pickup,
+      dropoffLocation: widget.args.dropOff,
     );
 
     context.read<CheckoutBloc>().add(CalculateCheckoutCost(packageRequest));
@@ -103,10 +104,11 @@ class _AddPackageDetailScreenState extends State<AddPackageDetailScreen> {
     return BlocConsumer<CheckoutBloc, CheckoutState>(
       listenWhen: (prev, curr) => prev.status != curr.status,
       listener: (context, state) {
-        if (state.status == CheckoutStatus.pricingSuccess && state.costSummary != null) {
+        if (state.status == CheckoutStatus.pricingSuccess &&
+            state.costSummary != null) {
           final finalPayload = BookingRequest(
-            tripId: widget.ride.id,
-            vehicleId: widget.ride.vehicle?.id,
+            tripId: widget.args.ride.id,
+            vehicleId: widget.args.ride.vehicle?.id,
             seats: seats,
             noBaggage: false,
             packageSize: _selectedPackageSize,
@@ -116,23 +118,25 @@ class _AddPackageDetailScreenState extends State<AddPackageDetailScreen> {
             packageRecipientName: _recipientNameCtr.text,
             packageRecipientPhone: _recipientPhoneCtr.text,
             bookingLocation: region.country,
-            originLocation: LatLng(lat: widget.ride.originLat, lng: widget.ride.originLng),
-            destinationLocation: LatLng(lat: widget.ride.destinationLat, lng: widget.ride.destinationLng),
-            pickupLocation: LatLng(lat: widget.ride.pickupLat, lng: widget.ride.pickupLng),
-            dropoffLocation: LatLng(lat: widget.ride.dropoffLat, lng: widget.ride.dropoffLng),
+            originLocation: widget.args.ride.originCoord,
+            destinationLocation: widget.args.ride.destCoord,
+            pickupLocation: widget.args.pickup,
+            dropoffLocation: widget.args.dropOff,
           );
 
           context.push(
             Paths.CONFIRMPACKAGEDETAIL,
             extra: TripBookingSummaryArgs(
-              ride: widget.ride,
+              ride: widget.args.ride,
               summary: state.costSummary,
               bookingRequest: finalPayload,
             ),
           );
         } else if (state.status == CheckoutStatus.failure) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(state.errorMessage ?? "Calculation error occurred")),
+            SnackBar(
+              content: Text(state.errorMessage ?? "Calculation error occurred"),
+            ),
           );
         }
       },
@@ -202,9 +206,10 @@ class _AddPackageDetailScreenState extends State<AddPackageDetailScreen> {
                       CustomCardWidget(
                         title: "What’s Inside?",
                         child: PackageContentSelector(
-                          allowed: widget.ride.packagesAllowed ?? true,
+                          allowed: widget.args.ride.packagesAllowed ?? true,
                           selectedSize: _packageContent,
-                          onSelected: (size) => setState(() => _packageContent = size?.name),
+                          onSelected: (size) =>
+                              setState(() => _packageContent = size?.name),
                         ),
                       ),
                       CustomCardWidget(
@@ -220,7 +225,8 @@ class _AddPackageDetailScreenState extends State<AddPackageDetailScreen> {
                             ),
                             GeneralTextField(
                               label: "Description (Optional)",
-                              hint: "Describe your package for easy identification",
+                              hint:
+                                  "Describe your package for easy identification",
                               maxLines: 5,
                               borderRadius: 10,
                               prefixIcon: null,
@@ -241,7 +247,7 @@ class _AddPackageDetailScreenState extends State<AddPackageDetailScreen> {
                               controller: _recipientNameCtr,
                             ),
                             CountryPhoneInputField(
-                              onChanged: (val) => _recipientPhoneCtr.text = val
+                              onChanged: (val) => _recipientPhoneCtr.text = val,
                             ),
                           ],
                         ),
@@ -250,7 +256,8 @@ class _AddPackageDetailScreenState extends State<AddPackageDetailScreen> {
                         title: "Handling Options",
                         child: HandlingOptionsCard(
                           selectedOptions: _handlingOptions,
-                          onChanged: (optionsList) => setState(() => _handlingOptions = optionsList),
+                          onChanged: (optionsList) =>
+                              setState(() => _handlingOptions = optionsList),
                         ),
                       ),
                     ],
@@ -264,7 +271,7 @@ class _AddPackageDetailScreenState extends State<AddPackageDetailScreen> {
     );
   }
 
-  Widget _buildHeaderWidget (){
+  Widget _buildHeaderWidget() {
     return Container(
       padding: EdgeInsets.symmetric(vertical: 11, horizontal: 24),
       decoration: BoxDecoration(
@@ -284,7 +291,7 @@ class _AddPackageDetailScreenState extends State<AddPackageDetailScreen> {
                     SizedBox(
                       width: 110,
                       child: Text(
-                        widget.ride.originCity,
+                        widget.args.ride.originCity,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
@@ -295,15 +302,13 @@ class _AddPackageDetailScreenState extends State<AddPackageDetailScreen> {
                       ),
                     ),
                     const Padding(
-                      padding: EdgeInsets.only(
-                        right: 8.0,
-                      ),
+                      padding: EdgeInsets.only(right: 8.0),
                       child: Text(" → "),
                     ),
                     SizedBox(
                       width: 110,
                       child: Text(
-                        widget.ride.destinationCity,
+                        widget.args.ride.destinationCity,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(

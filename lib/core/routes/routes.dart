@@ -21,6 +21,7 @@ abstract class Routes {
 
   /// Booking flow
   static const AVAILABLETRIPS = "view-available-trips";
+  static const SETBOOKINGROUTE = "set-booking-route";
 
   //Trip Booking Route
   static const BOOKATRIP = "book-a-trip_setup";
@@ -110,6 +111,7 @@ abstract class Paths {
 
   ///Booking flow
   static const AVAILABLETRIPS = '/${Routes.AVAILABLETRIPS}';
+  static const SETBOOKINGROUTE = '/${Routes.SETBOOKINGROUTE}';
   //Trip Booking Route
   static const BOOKATRIP = "/${Routes.BOOKATRIP}";
   static const PAYFORTRIP = "/${Routes.PAYFORTRIP}";

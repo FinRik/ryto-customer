@@ -5,6 +5,7 @@ import '../../ui/layout/bottom_nav_layout.dart';
 import '../../ui/screens/account_setup/account_setup_screen.dart';
 import '../../ui/screens/account_setup/email_setup_screen.dart';
 import '../../ui/screens/account_setup/enable_permission_screen.dart';
+import '../../ui/screens/dashboard/booking_route_screen.dart';
 import '../../ui/screens/dashboard/bookings/bookings_screen.dart';
 import '../../ui/screens/dashboard/bookings/booking_details_screen.dart';
 import '../../ui/screens/dashboard/package/package_booking_summary_screen.dart';
@@ -29,6 +30,7 @@ import '../../ui/screens/app_webview.dart';
 import '../models/booking/booking_request.dart';
 import '../models/booking/booking_response.dart';
 import '../models/booking/booking_cost.dart';
+import '../models/lat_lng.dart';
 import '../models/ride/ride.dart';
 import 'routes.dart';
 
@@ -137,12 +139,21 @@ final router = GoRouter(
           AvailableTripsScreen(args: state.extra as AvailableTripsArgs),
     ),
 
+    GoRoute(
+      parentNavigatorKey: _rootNavigatorKey,
+      path: Paths.SETBOOKINGROUTE,
+      name: Routes.SETBOOKINGROUTE,
+      builder: (context, state) =>
+          BookingRouteScreen(args: state.extra as BookingRouteArgs),
+    ),
+
     //Trip Booking Route
     GoRoute(
       parentNavigatorKey: _rootNavigatorKey,
       path: Paths.BOOKATRIP,
       name: Routes.BOOKATRIP,
-      builder: (context, state) => BookATripScreen(ride: state.extra as Ride),
+      builder: (context, state) =>
+          BookATripScreen(args: state.extra as BookingDetailsArgs),
     ),
     GoRoute(
       parentNavigatorKey: _rootNavigatorKey,
@@ -165,7 +176,7 @@ final router = GoRouter(
       path: Paths.ADDPACKAGEDETAIL,
       name: Routes.ADDPACKAGEDETAIL,
       builder: (context, state) =>
-          AddPackageDetailScreen(ride: state.extra as Ride),
+          AddPackageDetailScreen(args: state.extra as BookingDetailsArgs),
     ),
     GoRoute(
       parentNavigatorKey: _rootNavigatorKey,
@@ -260,6 +271,24 @@ class AvailableTripsArgs {
     this.departureDate,
     this.passengerSeats,
     required this.path,
+  });
+}
+
+class BookingRouteArgs {
+  final Ride ride;
+  final String path;
+
+  BookingRouteArgs({required this.ride, required this.path});
+}
+
+class BookingDetailsArgs {
+  final Ride ride;
+  final LatLng pickup, dropOff;
+
+  BookingDetailsArgs({
+    required this.ride,
+    required this.pickup,
+    required this.dropOff,
   });
 }
 

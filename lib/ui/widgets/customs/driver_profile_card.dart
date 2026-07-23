@@ -62,7 +62,7 @@ class DriverProfileCard extends StatelessWidget {
                 Row(
                   children: [
                     Text(
-                      titleText ?? driver.firstName!,
+                      titleText ?? driver.firstName! +" "+ driver.lastName!,
                       style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w600,

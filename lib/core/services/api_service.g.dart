@@ -198,6 +198,130 @@ class _ApiService implements ApiService {
     return ErrorAdapter<BaseModel<dynamic>>().adapt(() => _resendOtp());
   }
 
+  Future<BaseModel<UserEntity>> _googleSignIn({
+    required String token,
+    required String role,
+  }) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = {'token': token, 'role': role};
+    final _options = _setStreamType<BaseModel<UserEntity>>(
+      Options(method: 'POST', headers: _headers, extra: _extra)
+          .compose(
+            _dio.options,
+            '/auth/customer/verify-google-token',
+            queryParameters: queryParameters,
+            data: _data,
+          )
+          .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
+    );
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late BaseModel<UserEntity> _value;
+    try {
+      _value = BaseModel<UserEntity>.fromJson(
+        _result.data!,
+        (json) => UserEntity.fromJson(json as Map<String, dynamic>),
+      );
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options, response: _result);
+      rethrow;
+    }
+    return _value;
+  }
+
+  @override
+  Future<BaseModel<UserEntity>> googleSignIn({
+    required String token,
+    required String role,
+  }) {
+    return ErrorAdapter<BaseModel<UserEntity>>().adapt(
+      () => _googleSignIn(token: token, role: role),
+    );
+  }
+
+  Future<BaseModel<dynamic>> _updateFCMToken({
+    required String token,
+    required String platform,
+  }) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = {'token': token, 'platform': platform};
+    final _options = _setStreamType<BaseModel<dynamic>>(
+      Options(method: 'PUT', headers: _headers, extra: _extra)
+          .compose(
+            _dio.options,
+            '/auth/customer/push-token',
+            queryParameters: queryParameters,
+            data: _data,
+          )
+          .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
+    );
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late BaseModel<dynamic> _value;
+    try {
+      _value = BaseModel<dynamic>.fromJson(
+        _result.data!,
+        (json) => json as dynamic,
+      );
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options, response: _result);
+      rethrow;
+    }
+    return _value;
+  }
+
+  @override
+  Future<BaseModel<dynamic>> updateFCMToken({
+    required String token,
+    required String platform,
+  }) {
+    return ErrorAdapter<BaseModel<dynamic>>().adapt(
+      () => _updateFCMToken(token: token, platform: platform),
+    );
+  }
+
+  Future<BaseModel<dynamic>> _deleteFCMToken({
+    required String token,
+  }) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = {'token': token};
+    final _options = _setStreamType<BaseModel<dynamic>>(
+      Options(method: 'DELETE', headers: _headers, extra: _extra)
+          .compose(
+            _dio.options,
+            '/auth/customer/push-token',
+            queryParameters: queryParameters,
+            data: _data,
+          )
+          .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
+    );
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late BaseModel<dynamic> _value;
+    try {
+      _value = BaseModel<dynamic>.fromJson(
+        _result.data!,
+        (json) => json as dynamic,
+      );
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options, response: _result);
+      rethrow;
+    }
+    return _value;
+  }
+
+  @override
+  Future<BaseModel<dynamic>> deleteFCMToken({
+    required String token,
+  }) {
+    return ErrorAdapter<BaseModel<dynamic>>().adapt(
+      () => _deleteFCMToken(token: token),
+    );
+  }
+
   Future<BaseModel<UserEntity>> _fetchProfile() async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};

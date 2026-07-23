@@ -27,9 +27,9 @@ class DioService {
     // return status! < 500;
     _dio.options.validateStatus = (status) => true;
     _dio.interceptors.addAll([
-      LoggingInterceptor(),
       ApiInterceptor(),
       ErrorInterceptor(_dio),
+      LoggingInterceptor(),
     ]);
     print("Done setting client");
   }

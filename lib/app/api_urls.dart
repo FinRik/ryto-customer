@@ -31,6 +31,9 @@ class ApiUrls {
   static const String register = "/auth/customer/signup/phone";
   static const String verifyOtp = "/auth/customer/verify/phone";
   static const String resendOtp = "/auth/customer/resend-phone-verification";
+  static const String sso = "/auth/customer/verify-google-token";
+  static const String updateFCMToken = "/auth/customer/push-token";
+  static const String deleteFCMToken = "/auth/customer/push-token";
 
   // Profile
   static const String fetchProfile = "/auth/customer/user";

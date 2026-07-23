@@ -6,7 +6,6 @@ import '../../../../../app/res/icons.dart';
 import '../../../../../core/enums/bottom_sheet_type.dart';
 import '../../../../../core/models/booking/booking_cost.dart';
 import '../../../../../core/models/ride/ride_summary.dart';
-import '../../../../../core/models/ui/route_stop_timeline.dart';
 import '../../../../../core/models/ui/timeline_step.dart';
 import '../../../../../core/services/bottom_sheet_service.dart';
 import '../../../../../utils/helpers/socials_helper.dart';
@@ -120,30 +119,30 @@ class ApproveStatusWidget extends StatelessWidget {
                         isCostLoading && bookingCost == null
                             ? CircularIndicator()
                             : TripInfoCard(
-                                tripInfos: [
-                                  TripInfo(
-                                    title: "Departure",
-                                    value: summary.departureTime,
-                                  ),
-                                  if (bookingCost != null)
-                                    TripInfo(
-                                      title: "Price",
-                                      value:
-                                          bookingCost!
-                                                  .surgePercentageFormatted !=
-                                              null
-                                          ? "${bookingCost?.finalPrice?.formatted}"
-                                          : "${bookingCost?.totalPrice?.formatted}",
-                                      isAmount: true,
-                                      alignment: Alignment.center,
-                                    ),
-                                  TripInfo(
-                                    title: "Seats",
-                                    value: "${summary.passengerSeats ?? 0}",
-                                    alignment: Alignment.centerRight,
-                                  ),
-                                ],
+                          tripInfos: [
+                            TripInfo(
+                              title: "Departure",
+                              value: summary.departureTime,
+                            ),
+                            if (bookingCost != null)
+                              TripInfo(
+                                title: "Price",
+                                value:
+                                bookingCost!
+                                    .surgePercentageFormatted !=
+                                    null
+                                    ? "${bookingCost?.finalPrice?.formatted}"
+                                    : "${bookingCost?.totalPrice?.formatted}",
+                                isAmount: true,
+                                alignment: Alignment.center,
                               ),
+                            TripInfo(
+                              title: "Seats",
+                              value: "${summary.passengerSeats ?? 0}",
+                              alignment: Alignment.centerRight,
+                            ),
+                          ],
+                        ),
                       ],
                     ),
                   ),
@@ -184,49 +183,41 @@ class ApproveStatusWidget extends StatelessWidget {
                               driver: summary.driver!,
                               vehicle: summary.vehicle!,
                               tripId: summary.id,
-                              showTruckCapacity:
-                                  summary.packagesAllowed ?? false,
+                              // showTruckCapacity: summary.packagesAllowed ?? false,
+                              showTruckCapacity: false,
                             ),
                           ),
-
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                          child: RouteStopTimelineWidget(
-                            headerTitle: 'Route',
-                            steps: _buildTimelineSteps(summary),
-                          ),
-                        ),
+                        DynamicRouteTimeline(summary: summary),
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 16.0),
                           child: Column(
                             children: [
                               Container(
                                 decoration:
-                                    AppDecoration.roundedOutlinedRadius16,
+                                AppDecoration.roundedOutlinedRadius16,
                                 padding: const EdgeInsets.all(16),
                                 child: Container(
                                   padding: const EdgeInsets.all(12),
                                   decoration: AppDecoration
                                       .roundedOutlinedRadius16
                                       .copyWith(
-                                        borderRadius: BorderRadius.circular(16),
-                                        color: const Color(
-                                          0xffF59F0A,
-                                        ).withOpacity(.10),
-                                      ),
+                                    borderRadius: BorderRadius.circular(16),
+                                    color: const Color(
+                                      0xffF59F0A,
+                                    ).withOpacity(.10),
+                                  ),
                                   child: Row(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       SvgWidget(assetName: AppIcons.warning),
                                       const SizedBox(width: 12),
                                       Expanded(
                                         child: Text.rich(
                                           TextSpan(
-                                            text: "Your Safety PIN is ",
+                                            text: "",
                                             children: [
                                               TextSpan(
-                                                text: "${summary.safetyPin} ",
+                                                text: "Your Safety PIN is: ${summary.safetyPin} ",
                                                 style: TextStyle(
                                                   fontSize: 14,
                                                   fontWeight: FontWeight.w700,
@@ -234,7 +225,7 @@ class ApproveStatusWidget extends StatelessWidget {
                                               ),
                                               TextSpan(
                                                 text:
-                                                    "Share with driver when boarding.",
+                                                "Share this PIN with your driver to begin your trip.",
                                               ),
                                             ],
                                           ),
@@ -247,9 +238,10 @@ class ApproveStatusWidget extends StatelessWidget {
                               const SizedBox(height: 22),
                               ScButton(
                                 bgColor: const Color(0xffECF3FE),
-                                onClick: () => SocialHelper.sendEmail(
-                                  "support@getryto.com",
-                                ),
+                                onClick: () =>
+                                    SocialHelper.sendEmail(
+                                      "support@getryto.com",
+                                    ),
                                 // onClick: () => router.push(
                                 //   Paths.CHATSUPPORT,
                                 //   extra: TicketChatMessages(
@@ -285,18 +277,18 @@ class ApproveStatusWidget extends StatelessWidget {
               child: Button.outline(
                 buttonColor: const Color(0xffECF3FE),
                 onTap: () async =>
-                    await sl<BottomSheetService>().showCustomBottomSheet(
-                      variant: BottomSheetType.chat,
-                      data: {
-                        "tripId": summary.id,
-                        'participantId': summary.driver?.id,
-                      },
-                    ),
+                await sl<BottomSheetService>().showCustomBottomSheet(
+                  variant: BottomSheetType.chat,
+                  data: {
+                    "tripId": summary.id,
+                    'participantId': summary.driver?.id,
+                  },
+                ),
                 text: "Message",
                 textStyle: const TextStyle(color: Color(0xff0846AA)),
               ),
             ),
-            const SizedBox(width: 8),
+            // const SizedBox(width: 8),
             // Expanded(
             //   flex: 1,
             //   child: Button(
@@ -312,68 +304,5 @@ class ApproveStatusWidget extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  List<RouteStopTimeline> _buildTimelineSteps(RideSummary ride) {
-    List<RouteStopTimeline> steps = [];
-
-    // 1. Always start with the Main Trip Origin
-    steps.add(
-      RouteStopTimeline(
-        title: 'Trip Started',
-        subtitle: ride.originCity,
-        indicatorColor: Colors.grey,
-      ),
-    );
-
-    // 2. The Current User's Pickup Point
-    steps.add(
-      RouteStopTimeline(
-        title: 'Your Pickup',
-        subtitle: 'Coordinates: ${ride.pickupLat}, ${ride.pickupLng}',
-        indicatorColor: Colors.green, // Highlighted for the current user
-        // If safetyPin is available, you can pass it here as a trailing widget or subtitle note
-        // trailing: ride.safetyPin != null
-        //     ? Text('PIN: ${ride.safetyPin}')
-        //     : null,
-      ),
-    );
-
-    // 3. Intercept and add other passengers as "Short Stops"
-    if (ride.passengers != null) {
-      for (var passenger in ride.passengers!) {
-        // Skip checking if it's the current user's own record to avoid duplication
-        if (passenger.id == ride.booking?.id) continue;
-
-        // Show a unified "Short Stop" for intercepting passengers
-        steps.add(
-          RouteStopTimeline(
-            title: 'Short Stop',
-            subtitle: 'Passenger pickup/drop-off point',
-            indicatorColor: Colors.amber,
-          ),
-        );
-      }
-    }
-
-    // 4. The Current User's Drop-off Point
-    steps.add(
-      RouteStopTimeline(
-        title: 'Your Drop-off',
-        subtitle: 'Coordinates: ${ride.dropoffLat}, ${ride.dropoffLng}',
-        indicatorColor: Colors.orange,
-      ),
-    );
-
-    // 5. Overall Trip End
-    steps.add(
-      RouteStopTimeline(
-        title: 'Final Destination',
-        subtitle: ride.destinationCity,
-        indicatorColor: Colors.grey,
-      ),
-    );
-
-    return steps;
   }
 }

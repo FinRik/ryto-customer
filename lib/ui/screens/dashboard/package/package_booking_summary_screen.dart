@@ -10,7 +10,7 @@ import '../../../widgets/arrival_time_widget.dart';
 import '../../../widgets/buttons/button.dart';
 import '../../../widgets/texts/header_text.dart';
 import '../../../widgets/customs/custom_card_widget.dart';
-import '../trip_setup/widgets/trip_stop_timeline.dart';
+import '../trip_setup/widgets/trip_stop_timeline_item.dart';
 import 'widgets/location_detail_card.dart';
 
 class PackageBookingSummaryScreen extends StatelessWidget {
