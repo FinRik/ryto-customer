@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -27,39 +26,27 @@ class BookingDetailsScreen extends StatefulWidget {
 
 class _BookingDetailsScreenState extends State<BookingDetailsScreen>
     with WidgetsBindingObserver {
-  final region = sl<RegionIdentity>();
+  final _region = sl<RegionIdentity>();
   Timer? _pollingTimer;
 
   @override
   void initState() {
     super.initState();
-    // 2. Register the observer to listen for lifecycle changes
     WidgetsBinding.instance.addObserver(this);
-
-    // Initial fetch
     WidgetsBinding.instance.addPostFrameCallback((_) => _fetchSummary());
-
     _startPolling();
   }
 
-  // 3. Listen to system lifecycle states
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     super.didChangeAppLifecycleState(state);
-
-    switch (state) {
-      case AppLifecycleState.resumed:
-        // App is back in focus -> resume polling and fetch immediately
-        _fetchSummary();
-        _startPolling();
-        break;
-      case AppLifecycleState.inactive:
-      case AppLifecycleState.paused:
-      case AppLifecycleState.detached:
-      case AppLifecycleState.hidden:
-        // App went to background -> stop timers to save resources
-        _stopPolling();
-        break;
+    if (state == AppLifecycleState.resumed) {
+      _fetchSummary();
+      _startPolling();
+    } else if (state == AppLifecycleState.paused ||
+        state == AppLifecycleState.detached ||
+        state == AppLifecycleState.hidden) {
+      _stopPolling();
     }
   }
 
@@ -81,7 +68,7 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen>
             dropoffLocation: summary.dropOffCoord,
             originLocation: summary.originCoord,
             destinationLocation: summary.destCoord,
-            bookingLocation: region.country,
+            bookingLocation: _region.country,
           ),
         ),
       );
@@ -89,10 +76,8 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen>
   }
 
   void _startPolling() {
-    // Avoid creating multiple parallel timers
     if (_pollingTimer?.isActive ?? false) return;
-
-    _pollingTimer = Timer.periodic(const Duration(seconds: 15), (timer) {
+    _pollingTimer = Timer.periodic(const Duration(seconds: 15), (_) {
       _fetchSummary();
     });
   }
@@ -113,8 +98,8 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen>
   Widget build(BuildContext context) {
     return BlocConsumer<BookingsBloc, BookingsState>(
       listenWhen: (prev, curr) =>
-          (curr.summaryStatus == SummaryStatus.success &&
-              prev.tripSummary?.id != curr.tripSummary?.id) ||
+      (curr.summaryStatus == SummaryStatus.success &&
+          prev.tripSummary?.id != curr.tripSummary?.id) ||
           (prev.status != curr.status),
       listener: (ctx, state) {
         if (state.summaryStatus == SummaryStatus.success &&
@@ -123,16 +108,16 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen>
         }
 
         if (state.status == BookingsStatus.canceled) {
+          final messenger = ScaffoldMessenger.of(ctx);
           if (Navigator.canPop(ctx)) {
             Navigator.of(ctx).pop();
           }
-          ScaffoldMessenger.of(ctx).showSnackBar(
+          messenger.showSnackBar(
             const SnackBar(
               content: Text("Booking canceled successfully"),
               backgroundColor: Colors.green,
             ),
           );
-          _fetchSummary();
         }
 
         if (state.status == BookingsStatus.failure) {
@@ -144,14 +129,6 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen>
           );
         }
       },
-      buildWhen: (prev, curr) =>
-          prev.summaryStatus != curr.summaryStatus ||
-          prev.status != curr.status ||
-          prev.tripSummary?.isTripPending != curr.tripSummary?.isTripPending ||
-          prev.tripSummary?.isTripRejected !=
-              curr.tripSummary?.isTripRejected ||
-          prev.bookingCost != curr.bookingCost ||
-          prev.costStatus != curr.costStatus,
       builder: (ctx, state) {
         if (state.summaryStatus == SummaryStatus.loading) {
           return BaseScaffoldWidget(
@@ -183,7 +160,7 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen>
             child: Center(
               child: ErrorStateWidget(
                 message: state.errorMessage ?? "Something went wrong",
-                onRetry: () => _fetchSummary(),
+                onRetry: _fetchSummary,
               ),
             ),
           );
@@ -204,14 +181,13 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen>
             child: Center(
               child: ErrorStateWidget(
                 message: "Trip not found",
-                onRetry: () => _fetchSummary(),
+                onRetry: _fetchSummary,
               ),
             ),
           );
         }
 
-        final isPollingRefresh =
-            state.summaryStatus == SummaryStatus.refreshing;
+        final isPollingRefresh = state.summaryStatus == SummaryStatus.refreshing;
         final isActionLoading = state.status == BookingsStatus.loading;
 
         return BaseScaffoldWidget(
@@ -219,20 +195,15 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen>
           bgColor: Colors.white,
           child: Column(
             children: [
-              Container(
-                child: isPollingRefresh
-                    ? const PreferredSize(
-                        preferredSize: Size.fromHeight(4.0),
-                        child: LinearProgressIndicator(
-                          backgroundColor: Color(0xFFF4F7FE),
-                          valueColor: AlwaysStoppedAnimation<Color>(
-                            Color(0xFF0061FF),
-                          ),
-                          minHeight: 4.0,
-                        ),
-                      )
-                    : null,
-              ),
+              if (isPollingRefresh)
+                const PreferredSize(
+                  preferredSize: Size.fromHeight(4.0),
+                  child: LinearProgressIndicator(
+                    backgroundColor: Color(0xFFF4F7FE),
+                    valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF0061FF)),
+                    minHeight: 4.0,
+                  ),
+                ),
               Expanded(
                 child: _buildStateContent(
                   summary: summary,
@@ -255,7 +226,6 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen>
     if (summary.isBookingCanceled || summary.isBookingRejected) {
       return CanceledStatusWidget(
         summary: summary,
-        // bookingCost: state.bookingCost,
         isCostLoading: state.costStatus == CostStatus.loading,
       );
     }
@@ -271,7 +241,7 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen>
 
     return ApproveStatusWidget(
       summary: summary,
-      bookingCost: summary.isTripCompleted  ? null : state.bookingCost,
+      bookingCost: summary.isTripCompleted ? null : state.bookingCost,
       isCostLoading: state.costStatus == CostStatus.loading,
     );
   }

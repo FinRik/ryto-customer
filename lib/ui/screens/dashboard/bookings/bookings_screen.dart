@@ -85,8 +85,8 @@ class _TripsScreenState extends State<BookingsScreen>
               indicatorWeight: .5,
               tabs: const [
                 Tab(text: "Pending"),
-                Tab(text: "Upcoming"),
-                Tab(text: "Past"),
+                Tab(text: "Completed"),
+                Tab(text: "Canceled"),
               ],
             ),
 

@@ -8,15 +8,25 @@ import '../../../../widgets/location_fetch_builder.dart';
 
 class StatusIndicatorHeader extends StatelessWidget {
   final String statusText;
+  final bool showIcon;
 
-  const StatusIndicatorHeader({super.key, required this.statusText});
+  const StatusIndicatorHeader({
+    super.key,
+    required this.statusText,
+    this.showIcon = true,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Column(
+      crossAxisAlignment: !showIcon
+          ? CrossAxisAlignment.start
+          : CrossAxisAlignment.center,
       children: [
-        SvgWidget(assetName: AppSvgs.hourGlass),
-        const SizedBox(height: 16),
+        if (showIcon) ...[
+          SvgWidget(assetName: AppSvgs.hourGlass),
+          const SizedBox(height: 16),
+        ],
         Text(
           statusText,
           textAlign: TextAlign.center,

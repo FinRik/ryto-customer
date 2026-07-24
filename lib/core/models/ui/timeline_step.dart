@@ -24,7 +24,7 @@ class TimelineStep {
     final isRejected = bookingStatus == "DRIVER_REJECTED";
     final isAccepted = bookingStatus == "DRIVER_ACCEPTED";
     final isStarted = parentStatus == "TRIP_STARTED" || bookingStatus == "TRIP_STARTED";
-    final isCompleted = parentStatus == "TRIP_COMPLETED" || bookingStatus == "TRIP_COMPLETED";
+    final isCompleted = parentStatus == "COMPLETED" || bookingStatus == "TRIP_COMPLETED";
 
     // 2. Map structural execution indices (0 to 4)
     int currentStepIndex = 0;
