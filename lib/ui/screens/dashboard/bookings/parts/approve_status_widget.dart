@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
+import '../../../../../app/app_setup_locator.dart';
 import '../../../../../app/res/icons.dart';
+import '../../../../../core/enums/bottom_sheet_type.dart';
 import '../../../../../core/models/booking/booking_cost.dart';
 import '../../../../../core/models/ride/ride_summary.dart';
 import '../../../../../core/models/ui/timeline_step.dart';
+import '../../../../../core/services/bottom_sheet_service.dart';
 import '../../../../../utils/helpers/socials_helper.dart';
 import '../../../../styles/app_decorations.dart';
 import '../../../../widgets/buttons/back_arrow_button.dart';
@@ -26,13 +29,13 @@ class ApproveStatusWidget extends StatelessWidget {
     required this.summary,
     this.bookingCost,
     required this.isCostLoading,
-    this.onMessageTap,
+    // this.onMessageTap,
   });
 
   final RideSummary summary;
   final BookingCost? bookingCost;
   final bool isCostLoading;
-  final VoidCallback? onMessageTap;
+  // final VoidCallback? onMessageTap;
 
   // Cached constant colors to avoid allocation during frame rebuilds
   static const Color _warningBgColor = Color(0x1AF59F0A); // 10% opacity
@@ -264,7 +267,16 @@ class ApproveStatusWidget extends StatelessWidget {
               Expanded(
                 child: Button.outline(
                   buttonColor: _buttonBgColor,
-                  onTap: onMessageTap,
+                  onTap: () async {
+                    await sl<BottomSheetService>()
+                    .showCustomBottomSheet(
+                    variant: BottomSheetType.chat,
+                    data: {
+                    "tripId": summary.id,
+                    'participantId': summary.driver?.id,
+                    },
+                    );
+                  },
                   text: "Message",
                   textStyle: const TextStyle(color: _primaryBlueColor),
                 ),
