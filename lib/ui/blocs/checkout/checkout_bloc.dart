@@ -60,9 +60,83 @@ class CheckoutBloc extends Bloc<CheckoutEvent, CheckoutState> {
   ) async {
     emit(state.copyWith(status: CheckoutStatus.checkoutLoading));
 
-    final txResult = await paymentRepo.makePayment(
-      isRegionUS: event.isRegionUs,
-      request: event.paymentMeta,
+    if (event.isRegionUs) {
+      await _confirmAndPayWithStripe(event, emit);
+    } else {
+      await _confirmAndPayWithPaystack(event, emit);
+    }
+  }
+
+  /// US/USD flow: the booking must exist before a PaymentIntent can be
+  /// created, since the backend ties the intent (and its amount) to the
+  /// booking's transactionId. `CheckoutStatus.success` is only emitted once
+  /// StripePaymentService confirms the backend verified the payment, so the
+  /// UI never shows "Trip Booked" ahead of that.
+  Future<void> _confirmAndPayWithStripe(
+    ConfirmAndPayTrip event,
+    Emitter<CheckoutState> emit,
+  ) async {
+    BookingResponse? bookingDetails;
+    try {
+      bookingDetails = await repo.scheduleTrip(event.bookingRequest);
+      if (bookingDetails == null ||
+          bookingDetails.bookingId == null ||
+          bookingDetails.transactionId == null) {
+        throw Exception("Invalid backend application register payload data.");
+      }
+    } catch (bookingError) {
+      emit(
+        state.copyWith(
+          status: CheckoutStatus.failure,
+          errorMessage: () =>
+              "Unable to create your booking. Please try again.",
+        ),
+      );
+      return;
+    }
+
+    final txResult = await paymentRepo.payForBookingWithStripe(
+      transactionId: bookingDetails.transactionId!,
+    );
+
+    if (!txResult.isSuccess) {
+      final msg = txResult.isCancelled
+          ? "Payment was cancelled."
+          : txResult.reference != null
+          ? "Payment was processed, but we couldn't confirm it automatically. Please contact support with reference ${txResult.reference}."
+          : "Payment was declined.";
+      emit(
+        state.copyWith(
+          status: CheckoutStatus.failure,
+          verificationStatus: txResult.reference != null
+              ? PaymentVerificationStatus.failure
+              : state.verificationStatus,
+          errorMessage: () => msg,
+          bookingResponse: bookingDetails,
+        ),
+      );
+      return;
+    }
+
+    emit(
+      state.copyWith(
+        status: CheckoutStatus.success,
+        verificationStatus: PaymentVerificationStatus.success,
+        verificationMessage: () => "Payment verified successfully!",
+        bookingResponse: bookingDetails,
+      ),
+    );
+  }
+
+  /// NGN/Paystack flow: unchanged — payment happens first, then booking is
+  /// created, and verification against `/booking/verify-payment` runs in the
+  /// background via [VerifyPayment].
+  Future<void> _confirmAndPayWithPaystack(
+    ConfirmAndPayTrip event,
+    Emitter<CheckoutState> emit,
+  ) async {
+    final txResult = await paymentRepo.makePaymentWithPaystack(
+      event.paymentMeta,
     );
 
     if (!txResult.isSuccess) {
@@ -123,44 +197,8 @@ class CheckoutBloc extends Bloc<CheckoutEvent, CheckoutState> {
     );
   }
 
-  // Future<void> _onVerifyPayment(
-  //   VerifyPayment event,
-  //   Emitter<CheckoutState> emit,
-  // ) async {
-  //   emit(
-  //     state.copyWith(
-  //       paymentStatus: PaymentStatus.processing,
-  //       verificationMessage: () => null,
-  //     ),
-  //   );
-  //
-  //   try {
-  //     await repo.verifyPayment(
-  //       transactionId: event.transactionId,
-  //       bookingId: int.parse(event.bookingId),
-  //       reference: event.reference,
-  //     );
-  //
-  //     emit(
-  //       state.copyWith(
-  //         paymentStatus: PaymentStatus.success,
-  //         verificationMessage: () => "Payment verified successfully!",
-  //       ),
-  //     );
-  //   } catch (verificationError) {
-  //     emit(
-  //       state.copyWith(
-  //         paymentStatus: PaymentStatus.failure,
-  //         verificationMessage: () =>
-  //             "Booking recorded, but validation is pending. Please check active bookings shortly.",
-  //       ),
-  //     );
-  //   }
-  // }
-
-  // inside CheckoutBloc mapping register constructor:
-  // on<VerifyPayment>(_onVerifyPayment);
-
+  /// NGN/Paystack only — never used for US/USD bookings, which are verified
+  /// synchronously inside [_confirmAndPayWithStripe].
   Future<void> _onVerifyPayment(
     VerifyPayment event,
     Emitter<CheckoutState> emit,
