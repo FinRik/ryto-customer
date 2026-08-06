@@ -29,7 +29,7 @@ class DioService {
     _dio.interceptors.addAll([
       ApiInterceptor(),
       ErrorInterceptor(_dio),
-      LoggingInterceptor(),
+      // LoggingInterceptor(),
     ]);
     print("Done setting client");
   }

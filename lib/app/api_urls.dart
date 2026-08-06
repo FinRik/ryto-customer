@@ -50,6 +50,8 @@ class ApiUrls {
   static const String bookPackage = "/booking";
   static const String scheduleTrip = "/booking";
   static const String verifyPayment = "/booking/verify-payment";
+  static const String stripePaymentIntent = "/booking/stripe/payment-intent";
+  static const String stripeVerifyPayment = "/booking/stripe/verify-payment";
   static const String cancelTrip = "/booking/cancel";
 
   // Onboarding flow
