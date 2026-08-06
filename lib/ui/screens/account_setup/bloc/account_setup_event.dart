@@ -33,11 +33,3 @@ class UpdateProfileRequested extends AccountSetupEvent {
   @override
   List<Object?> get props => [request];
 }
-
-// class UserProfileRequested extends AccountSetupEvent {
-//
-//   const UserProfileRequested();
-//
-//   @override
-//   List<Object?> get props => [];
-// }
