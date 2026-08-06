@@ -144,6 +144,9 @@ class BookingCost {
   final double? surgePercentageRaw;
   final String? surgePercentageFormatted;
 
+  final double? discountPercentageRaw;
+  final String? discountPercentageFormatted;
+
   BookingCost({
     this.offsetDistanceRaw,
     this.offsetDistanceFormatted,
@@ -158,6 +161,8 @@ class BookingCost {
     this.surgePrice,
     this.surgePercentageRaw,
     this.surgePercentageFormatted,
+    this.discountPercentageRaw,
+    this.discountPercentageFormatted,
   });
 
   factory BookingCost.fromJson(Map<String, dynamic> json) {
@@ -182,6 +187,10 @@ class BookingCost {
       surgePercentageRaw: toDouble(raw['surge']),
       surgePercentageFormatted: formatted['surge']?.toString(),
 
+      // discount percentages
+      discountPercentageRaw: toDouble(raw['discount']),
+      discountPercentageFormatted: formatted['discount']?.toString(),
+
       // Financial details mapping raw and formatted together
       basePricePerSeat: PriceDetail.fromValues(raw['basePricePerSeat'], formatted['basePricePerSeat']),
       basePrice: PriceDetail.fromValues(raw['basePrice'], formatted['basePrice']),
@@ -199,6 +208,7 @@ class BookingCost {
         'offsetDistance': offsetDistanceRaw,
         'tripDistance': tripDistanceRaw,
         'surge': surgePercentageRaw,
+        'discount': discountPercentageRaw,
         'basePricePerSeat': basePricePerSeat?.raw,
         'basePrice': basePrice?.raw,
         'totalPrice': totalPrice?.raw,
@@ -211,6 +221,7 @@ class BookingCost {
         'offsetDistance': offsetDistanceFormatted,
         'tripDistance': tripDistanceFormatted,
         'surge': surgePercentageFormatted,
+        'discount': discountPercentageFormatted,
         'basePricePerSeat': basePricePerSeat?.formatted,
         'basePrice': basePrice?.formatted,
         'totalPrice': totalPrice?.formatted,

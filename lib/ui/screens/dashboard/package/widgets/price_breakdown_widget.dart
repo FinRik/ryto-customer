@@ -33,12 +33,16 @@ class PriceBreakdownWidget extends StatelessWidget {
         ],
         if (summary.surgePercentageFormatted != null) ...[
           const SizedBox(height: 12),
-          _PriceRow(label: "Surge %", value: summary.surgePercentageFormatted!, isAmount: false),
-          const SizedBox(height: 12),
           _PriceRow(
             label: "Service Fee",
             value: summary.surgePrice!.formatted!,
             isAmount: true,
+          ),
+          const SizedBox(height: 12),
+          _PriceRow(
+            label: "Discount %",
+            value: summary.discountPercentageFormatted!,
+            isAmount: false,
           ),
         ],
         const SizedBox(height: 12),
@@ -52,7 +56,9 @@ class PriceBreakdownWidget extends StatelessWidget {
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
             ),
             CurrencyFormatterWidget(
-              amount: summary.surgePercentageFormatted != null || summary.surgePercentageFormatted!.isNotEmpty
+              amount:
+                  summary.surgePercentageFormatted != null ||
+                      summary.surgePercentageFormatted!.isNotEmpty
                   ? summary.finalPrice!.formatted!
                   : summary.totalPrice!.formatted!,
               builder: (ctx, value, rawAmount) => Text(
