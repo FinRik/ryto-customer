@@ -42,6 +42,7 @@ class ApiUrls {
   // Trips
   static const String trips = "/customer/trips";
   static const String tripSummary = "/customer/trips/{id}";
+  static const String tripReview = "/reviews";
 
   // Booking flow
   static const String popularRoutes = "/customer/trips/popular-routes";

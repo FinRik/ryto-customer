@@ -5,4 +5,5 @@ enum BottomSheetType {
   chat,
   paystackPayment,
   cancelTrip,
+  tripReview,
 }

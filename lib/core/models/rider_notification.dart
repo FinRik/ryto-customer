@@ -9,6 +9,7 @@ class RiderNotification {
   final int? tripId;
   final int? bookingId;
   final int? chatId;
+  final int? driverId;
   final double? amount;
 
   RiderNotification({
@@ -19,6 +20,7 @@ class RiderNotification {
     this.tripId,
     this.bookingId,
     this.chatId,
+    this.driverId,
     this.amount,
   });
 
@@ -31,6 +33,7 @@ class RiderNotification {
       tripId: json['trip_id'] != null ? int.tryParse(json['trip_id'].toString()) : null,
       bookingId: json['booking_id'] != null ? int.tryParse(json['booking_id'].toString()) : null,
       chatId: json['chat_id'] != null ? int.tryParse(json['chat_id'].toString()) : null,
+      driverId: json['driver_id'] != null ? int.tryParse(json['driver_id'].toString()) : null,
       amount: json['amount'] != null ? double.tryParse(json['amount'].toString()) : null,
     );
   }

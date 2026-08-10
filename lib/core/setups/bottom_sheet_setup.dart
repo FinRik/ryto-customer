@@ -4,6 +4,7 @@ import '../../ui/bottom_sheets/cities_bottom_sheet.dart';
 import '../../ui/bottom_sheets/paystack_bottom_sheet.dart';
 import '../../ui/bottom_sheets/region_selector_bottom_sheet.dart';
 import '../../ui/bottom_sheets/states_bottom_sheet.dart';
+import '../../ui/bottom_sheets/trip_review_bottom_sheet.dart';
 import '../enums/bottom_sheet_type.dart';
 import '../services/bottom_sheet_service.dart';
 
@@ -18,6 +19,7 @@ Future<void> setupBottomSheetUi() async {
     BottomSheetType.fetchCities: (request, completer) => CitiesBottomSheet(request: request, completer: completer),
     BottomSheetType.chat: (request, completer) => ChatBottomSheet(request: request, completer: completer),
     BottomSheetType.paystackPayment: (request, completer) => PaystackBottomSheet(request: request, completer: completer),
+    BottomSheetType.tripReview: (request, completer) => TripReviewBottomSheet(request: request, completer: completer),
   };
 
   bottomSheetService.setCustomSheetBuilders(builders);

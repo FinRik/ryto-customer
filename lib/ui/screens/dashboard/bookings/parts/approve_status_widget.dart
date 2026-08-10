@@ -84,7 +84,7 @@ class ApproveStatusWidget extends StatelessWidget {
                         ),
                       ),
 
-                      const Positioned(
+                      Positioned(
                         top: 12,
                         left: 8,
                         right: 8,
@@ -92,6 +92,20 @@ class ApproveStatusWidget extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             BackArrowButton(),
+
+                            if (summary.isTripCompleted &&
+                                summary.driver != null)
+                              TextButton(
+                                onPressed: () => sl<BottomSheetService>()
+                                    .showCustomBottomSheet(
+                                      variant: BottomSheetType.tripReview,
+                                      data: {
+                                        "tripId": summary.id,
+                                        "driverId": summary.driver!.id,
+                                      },
+                                    ),
+                                child: const Text("Review Trip"),
+                              ),
                           ],
                         ),
                       ),
