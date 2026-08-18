@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 
 import '../../../../app/api_urls.dart';
+import '../../../../app/app_setup_locator.dart';
+import '../../../../core/enums/bottom_sheet_type.dart';
 import '../../../../core/models/tickets/ticket_chat_messages.dart';
 import '../../../../core/routes/router.dart';
 import '../../../../core/routes/routes.dart';
-import '../../../../utils/helpers/socials_helper.dart';
+import '../../../../core/services/bottom_sheet_service.dart';
 import '../../../widgets/buttons/back_arrow_header.dart';
 import '../../../widgets/layouts/base_scaffold_widget.dart';
 import 'widgets/support_action_tile.dart';
@@ -62,7 +64,9 @@ class HelpSupportScreen extends StatelessWidget {
                   icon: Icons.person_outline,
                   label: "Account & Profile",
                   iconColor: Colors.blue,
-                  onTap: () => SocialHelper.sendEmail("support@getryto.com"),
+                  onTap: () => sl<BottomSheetService>().showCustomBottomSheet(
+                    variant: BottomSheetType.contactSupport,
+                  ),
                   // onTap: () => router.push(
                   //   Paths.CHATSUPPORT,
                   //   extra: TicketChatMessages(
@@ -81,7 +85,9 @@ class HelpSupportScreen extends StatelessWidget {
                   icon: Icons.car_rental,
                   label: "Trip Issues",
                   iconColor: Colors.orange,
-                  onTap: () => SocialHelper.sendEmail("support@getryto.com"),
+                  onTap: () => sl<BottomSheetService>().showCustomBottomSheet(
+                    variant: BottomSheetType.contactSupport,
+                  ),
                   // onTap: () => router.push(
                   //   Paths.CHATSUPPORT,
                   //   extra: TicketChatMessages(
@@ -94,7 +100,9 @@ class HelpSupportScreen extends StatelessWidget {
                   icon: Icons.phonelink_setup,
                   label: "App Technical Support",
                   iconColor: Colors.purple,
-                  onTap: () => SocialHelper.sendEmail("support@getryto.com"),
+                  onTap: () => sl<BottomSheetService>().showCustomBottomSheet(
+                    variant: BottomSheetType.contactSupport,
+                  ),
                   // onTap: () => router.push(
                   //   Paths.CHATSUPPORT,
                   //   extra: TicketChatMessages(
@@ -145,7 +153,7 @@ class HelpSupportScreen extends StatelessWidget {
             const SizedBox(height: 40),
             const Center(
               child: Text(
-                "APP VERSION 2.4.1\n(102)",
+                "APP VERSION 1.0.0\n(4)",
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   color: Color(0xFF8F9BBA),

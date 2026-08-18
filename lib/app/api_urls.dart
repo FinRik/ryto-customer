@@ -22,6 +22,7 @@ class ApiUrls {
   static const String twitter = "https://www.x.com/rytoapp";
   static const String faq = "https://getryto.com/faqs";
   static const String privacy = "https://getryto.com/privacy";
+  static const String supportEmail = "support@getryto.com";
   static const String terms = "https://getryto.com/terms";
   static const String website = "https://getryto.com";
 

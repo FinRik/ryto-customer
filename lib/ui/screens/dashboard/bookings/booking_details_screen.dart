@@ -1,10 +1,12 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:geolocator/geolocator.dart';
 
 import '../../../../app/app_setup_locator.dart';
 import '../../../../core/models/booking/booking_request.dart';
 import '../../../../core/models/ride/ride_summary.dart';
+import '../../../../core/services/arrival_time_service.dart';
 import '../../../../core/setups/region_identity_setup.dart';
 import '../../../widgets/buttons/back_arrow_button.dart';
 import '../../../widgets/customs/event_state_widgets.dart';
@@ -28,6 +30,10 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen>
     with WidgetsBindingObserver {
   final _region = sl<RegionIdentity>();
   Timer? _pollingTimer;
+
+  StreamSubscription<Position>? _positionStream;
+  Position? _currentPosition;
+  int? _etaDurationSeconds;
 
   @override
   void initState() {
@@ -90,8 +96,84 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen>
   @override
   void dispose() {
     _stopPolling();
+    _positionStream?.cancel();
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
+  }
+
+  Future<void> _startLiveLocationTracking() async {
+    if (_positionStream != null) return;
+
+    final serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) return;
+
+    LocationPermission permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+    }
+    if (permission == LocationPermission.denied ||
+        permission == LocationPermission.deniedForever) {
+      return;
+    }
+
+    _positionStream = Geolocator.getPositionStream(
+      locationSettings: const LocationSettings(
+        accuracy: LocationAccuracy.high,
+        distanceFilter: 10,
+      ),
+    ).listen((position) {
+      if (mounted) setState(() => _currentPosition = position);
+    });
+  }
+
+  Future<void> _fetchEtaFallback(RideSummary summary) async {
+    if (_etaDurationSeconds != null) return;
+    try {
+      final estimate = await sl<ArrivalTimeService>().fetchEstimate(
+        sLat: summary.originLat,
+        sLng: summary.originLng,
+        eLat: summary.destinationLat,
+        eLng: summary.destinationLng,
+        startTime: summary.departureDateTime,
+      );
+      if (mounted) setState(() => _etaDurationSeconds = estimate.durationSeconds);
+    } catch (_) {
+      // ETA fallback unavailable; progress calc simply returns 0.0 until GPS arrives.
+    }
+  }
+
+  double _calculateTripProgress(RideSummary summary) {
+    if (summary.isTripPending) return 0.0;
+    if (summary.isTripCompleted) return 1.0;
+    if (!summary.isTripStarted) return 0.0;
+
+    final currentPosition = _currentPosition;
+    if (currentPosition != null) {
+      final remainingMeters = Geolocator.distanceBetween(
+        currentPosition.latitude,
+        currentPosition.longitude,
+        summary.destinationLat,
+        summary.destinationLng,
+      );
+      final totalMeters = Geolocator.distanceBetween(
+        summary.originLat,
+        summary.originLng,
+        summary.destinationLat,
+        summary.destinationLng,
+      );
+      if (totalMeters > 0) {
+        return (1 - remainingMeters / totalMeters).clamp(0.0, 1.0);
+      }
+    }
+
+    final etaDurationSeconds = _etaDurationSeconds;
+    if (etaDurationSeconds != null && etaDurationSeconds > 0) {
+      final elapsedSeconds =
+          DateTime.now().difference(summary.departureDateTime).inSeconds;
+      return (elapsedSeconds / etaDurationSeconds).clamp(0.0, 1.0);
+    }
+
+    return 0.0;
   }
 
   @override
@@ -100,11 +182,17 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen>
       listenWhen: (prev, curr) =>
       (curr.summaryStatus == SummaryStatus.success &&
           prev.tripSummary?.id != curr.tripSummary?.id) ||
-          (prev.status != curr.status),
+          (prev.status != curr.status) ||
+          (prev.tripSummary?.status != curr.tripSummary?.status),
       listener: (ctx, state) {
         if (state.summaryStatus == SummaryStatus.success &&
             state.tripSummary != null) {
           _fetchBookingCost(state.tripSummary!);
+        }
+
+        if (state.tripSummary?.isTripStarted == true) {
+          _startLiveLocationTracking();
+          _fetchEtaFallback(state.tripSummary!);
         }
 
         if (state.status == BookingsStatus.canceled) {
@@ -243,6 +331,7 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen>
       summary: summary,
       bookingCost: summary.isTripCompleted ? null : state.bookingCost,
       isCostLoading: state.costStatus == CostStatus.loading,
+      progress: _calculateTripProgress(summary),
     );
   }
 }

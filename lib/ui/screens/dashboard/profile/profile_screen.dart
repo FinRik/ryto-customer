@@ -2,10 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ryto_customer/app/api_urls.dart';
 
+import '../../../../app/app_setup_locator.dart';
 import '../../../../app/res/icons.dart';
 import '../../../../app/res/images.dart';
+import '../../../../core/enums/bottom_sheet_type.dart';
 import '../../../../core/routes/router.dart';
 import '../../../../core/routes/routes.dart';
+import '../../../../core/services/bottom_sheet_service.dart';
 import '../../../../utils/helpers/socials_helper.dart';
 import '../../../blocs/profile/profile_bloc.dart';
 import '../../../styles/app_spacing.dart';
@@ -133,6 +136,13 @@ class ProfileScreen extends StatelessWidget {
                       SettingItem(
                         title: "Help Center / FAQ",
                         onTap: () => router.push(Paths.SUPPORT),
+                      ),
+                      SettingItem(
+                        title: "Contact Support",
+                        onTap: () => sl<BottomSheetService>()
+                            .showCustomBottomSheet(
+                              variant: BottomSheetType.contactSupport,
+                            ),
                       ),
                       SettingItem(
                         title: "Privacy Policy",

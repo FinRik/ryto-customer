@@ -8,7 +8,6 @@ import '../../../../../core/models/booking/booking_cost.dart';
 import '../../../../../core/models/ride/ride_summary.dart';
 import '../../../../../core/models/ui/timeline_step.dart';
 import '../../../../../core/services/bottom_sheet_service.dart';
-import '../../../../../utils/helpers/socials_helper.dart';
 import '../../../../styles/app_decorations.dart';
 import '../../../../widgets/buttons/back_arrow_button.dart';
 import '../../../../widgets/buttons/button.dart';
@@ -29,12 +28,14 @@ class ApproveStatusWidget extends StatelessWidget {
     required this.summary,
     this.bookingCost,
     required this.isCostLoading,
+    this.progress = 0.0,
     // this.onMessageTap,
   });
 
   final RideSummary summary;
   final BookingCost? bookingCost;
   final bool isCostLoading;
+  final double progress;
   // final VoidCallback? onMessageTap;
 
   // Cached constant colors to avoid allocation during frame rebuilds
@@ -150,6 +151,7 @@ class ApproveStatusWidget extends StatelessWidget {
                                   alignment: Alignment.centerRight,
                                 ),
                               ],
+                              progress: progress,
                             ),
                           ],
                         ),
@@ -242,10 +244,11 @@ class ApproveStatusWidget extends StatelessWidget {
                               const SizedBox(height: 22),
                               ScButton(
                                 bgColor: _buttonBgColor,
-                                onClick: () => SocialHelper.sendEmail(
-                                  "support@getryto.com",
-                                ),
-                                btnText: "Emergency Support",
+                                onClick: () => sl<BottomSheetService>()
+                                    .showCustomBottomSheet(
+                                      variant: BottomSheetType.contactSupport,
+                                    ),
+                                btnText: "Contact Support",
                                 btnTextStyle: const TextStyle(
                                   color: _primaryBlueColor,
                                 ),

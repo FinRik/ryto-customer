@@ -6,4 +6,5 @@ enum BottomSheetType {
   paystackPayment,
   cancelTrip,
   tripReview,
+  contactSupport,
 }
