@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
 
@@ -278,28 +279,35 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen>
         final isPollingRefresh = state.summaryStatus == SummaryStatus.refreshing;
         final isActionLoading = state.status == BookingsStatus.loading;
 
-        return BaseScaffoldWidget(
-          removePadding: true,
-          bgColor: Colors.white,
-          child: Column(
-            children: [
-              if (isPollingRefresh)
-                const PreferredSize(
-                  preferredSize: Size.fromHeight(4.0),
-                  child: LinearProgressIndicator(
-                    backgroundColor: Color(0xFFF4F7FE),
-                    valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF0061FF)),
-                    minHeight: 4.0,
+        return AnnotatedRegion<SystemUiOverlayStyle>(
+          value: const SystemUiOverlayStyle(
+            statusBarIconBrightness: Brightness.light, // Android
+            statusBarBrightness: Brightness.dark,       // iOS
+            statusBarColor: Colors.transparent,
+          ),
+          child: BaseScaffoldWidget(
+            removePadding: true,
+            bgColor: Colors.white,
+            child: Column(
+              children: [
+                if (isPollingRefresh)
+                  const PreferredSize(
+                    preferredSize: Size.fromHeight(4.0),
+                    child: LinearProgressIndicator(
+                      backgroundColor: Color(0xFFF4F7FE),
+                      valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF0061FF)),
+                      minHeight: 4.0,
+                    ),
+                  ),
+                Expanded(
+                  child: _buildStateContent(
+                    summary: summary,
+                    state: state,
+                    isBusy: isActionLoading,
                   ),
                 ),
-              Expanded(
-                child: _buildStateContent(
-                  summary: summary,
-                  state: state,
-                  isBusy: isActionLoading,
-                ),
-              ),
-            ],
+              ],
+            ),
           ),
         );
       },
