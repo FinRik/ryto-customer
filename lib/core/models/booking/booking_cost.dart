@@ -137,9 +137,10 @@ class BookingCost {
   final PriceDetail? basePrice;
   final PriceDetail? totalPrice;
   final PriceDetail? finalPrice;
+  final PriceDetail? discountPrice;
+  final PriceDetail? surgePrice;
   final PriceDetail? seatPrice;
   final PriceDetail? packagePrice;
-  final PriceDetail? surgePrice;
 
   final double? surgePercentageRaw;
   final String? surgePercentageFormatted;
@@ -156,9 +157,10 @@ class BookingCost {
     this.basePrice,
     this.totalPrice,
     this.finalPrice,
+    this.discountPrice,
+    this.surgePrice,
     this.seatPrice,
     this.packagePrice,
-    this.surgePrice,
     this.surgePercentageRaw,
     this.surgePercentageFormatted,
     this.discountPercentageRaw,
@@ -196,9 +198,10 @@ class BookingCost {
       basePrice: PriceDetail.fromValues(raw['basePrice'], formatted['basePrice']),
       totalPrice: PriceDetail.fromValues(raw['totalPrice'], formatted['totalPrice']),
       finalPrice: PriceDetail.fromValues(raw['finalPrice'], formatted['finalPrice']),
+      discountPrice: PriceDetail.fromValues(raw['discountPrice'], formatted['discountPrice']),
+      surgePrice: PriceDetail.fromValues(raw['surgePrice'], formatted['surgePrice']),
       seatPrice: PriceDetail.fromValues(raw['seatPrice'], formatted['seatPrice']),
       packagePrice: PriceDetail.fromValues(raw['packagePrice'], formatted['packagePrice']),
-      surgePrice: PriceDetail.fromValues(raw['surgePrice'], formatted['surgePrice']),
     );
   }
 
@@ -213,6 +216,7 @@ class BookingCost {
         'basePrice': basePrice?.raw,
         'totalPrice': totalPrice?.raw,
         'finalPrice': finalPrice?.raw,
+        'discountPrice': discountPrice?.raw,
         'seatPrice': seatPrice?.raw,
         'packagePrice': packagePrice?.raw,
         'surgePrice': surgePrice?.raw,
@@ -226,6 +230,7 @@ class BookingCost {
         'basePrice': basePrice?.formatted,
         'totalPrice': totalPrice?.formatted,
         'finalPrice': finalPrice?.formatted,
+        'discountPrice': discountPrice?.formatted,
         'seatPrice': seatPrice?.formatted,
         'packagePrice': packagePrice?.formatted,
         'surgePrice': surgePrice?.formatted,

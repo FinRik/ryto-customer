@@ -40,9 +40,11 @@ class PriceBreakdownWidget extends StatelessWidget {
           ),
           const SizedBox(height: 12),
           _PriceRow(
-            label: "Discount %",
-            value: summary.discountPercentageFormatted!,
-            isAmount: false,
+            // label: "Discount ${summary.discountPercentageFormatted!}",
+            label: "Discount",
+            value: summary.discountPrice!.formatted!,
+            isAmount: true,
+            isDebit: true,
           ),
         ],
         const SizedBox(height: 12),
@@ -82,10 +84,12 @@ class _PriceRow extends StatelessWidget {
   final String label;
   final String value;
   final bool isAmount;
+  final bool isDebit;
   const _PriceRow({
     required this.label,
     required this.value,
     this.isAmount = true,
+    this.isDebit = false,
   });
 
   @override
@@ -98,12 +102,13 @@ class _PriceRow extends StatelessWidget {
           CurrencyFormatterWidget(
             amount: value,
             builder: (ctx, value, rawAmount) => Text(
-              value,
-              style: const TextStyle(
+              style: TextStyle(
                 fontFamily: "Roboto",
                 fontSize: 14,
                 fontWeight: FontWeight.w500,
+                color: isDebit == true ? Colors.red : Colors.black,
               ),
+              isDebit == true ? "- $value" : value,
             ),
           )
         else
