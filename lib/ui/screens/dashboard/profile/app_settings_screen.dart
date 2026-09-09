@@ -165,7 +165,7 @@ class AppSettingsScreen extends StatelessWidget {
               const Align(
                 alignment: Alignment.center,
                 child: Text(
-                  "Version 2.4.12 (Build 883)",
+                  "Version 1.0.0 (Build 12)",
                   style: TextStyle(color: Color(0xFF8F9BBA), fontSize: 12),
                 ),
               ),

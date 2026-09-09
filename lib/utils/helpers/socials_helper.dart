@@ -20,6 +20,8 @@ class SocialHelper {
   }
 
   // Pre-defined social methods
+  static Future<void> openWebsite() => _launchUrl(ApiUrls.website);
+
   static Future<void> openTwitter() => _launchUrl(ApiUrls.twitter);
 
   static Future<void> openLinkedIn() => _launchUrl(ApiUrls.linkedIn);
