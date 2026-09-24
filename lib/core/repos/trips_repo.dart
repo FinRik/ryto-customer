@@ -25,6 +25,11 @@ abstract class TripsRepo {
     required String reference,
   });
   Future<bool> cancelTrip({required String reason, required int bookingId});
+  Future<bool> reviewTrip({
+    required int rating,
+    required int driverId,
+    required String review,
+  });
 }
 
 class TripsRepoImpl implements TripsRepo {
@@ -96,6 +101,16 @@ class TripsRepoImpl implements TripsRepo {
     required int bookingId,
   }) async {
     final res = await _service.cancelTrip(reason, bookingId);
+    return res.code == 200;
+  }
+
+  @override
+  Future<bool> reviewTrip({
+    required int rating,
+    required int driverId,
+    required String review,
+  }) async {
+    final res = await _service.reviewTrip(rating, driverId, review);
     return res.code == 200;
   }
 }

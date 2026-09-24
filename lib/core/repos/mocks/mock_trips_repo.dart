@@ -60,4 +60,10 @@ class MockTripsRepo implements TripsRepo {
     required String reason,
     required int bookingId,
   }) async => true;
+  @override
+  Future<bool> reviewTrip({
+    required int rating,
+    required int driverId,
+    required String review,
+  }) async => true;
 }

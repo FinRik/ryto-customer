@@ -10,6 +10,7 @@ import '../../ui/screens/account_setup/bloc/account_setup_bloc.dart';
 import '../../ui/screens/auth/bloc/auth_bloc.dart';
 import '../../ui/screens/chat/bloc/chat_bloc.dart';
 import '../../ui/screens/dashboard/bookings/bloc/bookings_bloc.dart';
+import '../../ui/blocs/trip_review/trip_review_bloc.dart';
 import '../repos/auth_repo.dart';
 import '../repos/bookings_repo.dart';
 import '../repos/chat_repo.dart';
@@ -78,6 +79,10 @@ class MultiBlocsProvider extends StatelessWidget {
         BlocProvider<BottomNavLayoutCubit>(
           create: (_) => BottomNavLayoutCubit(),
           lazy: false,
+        ),
+        BlocProvider<TripReviewBloc>(
+          lazy: true,
+          create: (cxt) => TripReviewBloc(cxt.read<TripsRepo>()),
         ),
       ],
       child: child,

@@ -124,6 +124,13 @@ abstract class ApiService {
     @Field("reason") String reason,
     @Field("bookingId") int bookingId,
   );
+
+  @POST(ApiUrls.tripReview)
+  Future<BaseModel> reviewTrip(
+    @Field("rating") int rating,
+    @Field("driverId") int driverId,
+    @Field("review") String review,
+  );
 }
 
 // _data.fields.addAll(checkoutRequest

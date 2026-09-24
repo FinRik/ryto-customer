@@ -6,6 +6,8 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 import '../../utils/storage/fcm_token_storage.dart';
 import '../models/rider_notification.dart';
+import '../routes/router.dart';
+import '../routes/routes.dart';
 
 @pragma('vm:entry-point')
 void onLocalNotificationTapBackground(NotificationResponse response) {
@@ -110,11 +112,21 @@ class PushNotificationService {
       importance: Importance.max,
     );
 
-    await _notificationPlugin
+    final androidLocalNotifications = _notificationPlugin
         .resolvePlatformSpecificImplementation<
           AndroidFlutterLocalNotificationsPlugin
-        >()
-        ?.createNotificationChannel(channel);
+        >();
+
+    await androidLocalNotifications?.createNotificationChannel(channel);
+
+    // Explicitly trigger the Android 13+ POST_NOTIFICATIONS system prompt.
+    // firebase_messaging's requestPermission() above can silently no-op on
+    // Android when it runs before the engine has finished attaching to the
+    // Activity (e.g. during pre-runApp init), so flutter_local_notifications'
+    // own request is used as the reliable, documented path for Android.
+    final notificationsGranted = await androidLocalNotifications
+        ?.requestNotificationsPermission();
+    debugPrint('Android POST_NOTIFICATIONS granted: $notificationsGranted');
 
     // Handle foreground messages
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
@@ -211,6 +223,12 @@ class PushNotificationService {
         if (notification.chatId != null) {
           // Example navigation:
           // router.push('/chat', extra: notification.chatId);
+        }
+        break;
+
+      case 'trip_completed':
+        if (notification.tripId != null) {
+          router.push(Paths.BOOKINGDETAIL, extra: "${notification.tripId}");
         }
         break;
     }
