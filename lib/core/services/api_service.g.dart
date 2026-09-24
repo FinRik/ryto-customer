@@ -723,54 +723,6 @@ class _ApiService implements ApiService {
     );
   }
 
-  Future<BaseModel<dynamic>> _verifyPayment(
-    int transactionId,
-    int bookingId,
-    String reference,
-  ) async {
-    final _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{};
-    final _headers = <String, dynamic>{};
-    final _data = {
-      'transactionId': transactionId,
-      'bookingId': bookingId,
-      'reference': reference,
-    };
-    final _options = _setStreamType<BaseModel<dynamic>>(
-      Options(method: 'POST', headers: _headers, extra: _extra)
-          .compose(
-            _dio.options,
-            '/booking/verify-payment',
-            queryParameters: queryParameters,
-            data: _data,
-          )
-          .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
-    );
-    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late BaseModel<dynamic> _value;
-    try {
-      _value = BaseModel<dynamic>.fromJson(
-        _result.data!,
-        (json) => json as dynamic,
-      );
-    } on Object catch (e, s) {
-      errorLogger?.logError(e, s, _options, response: _result);
-      rethrow;
-    }
-    return _value;
-  }
-
-  @override
-  Future<BaseModel<dynamic>> verifyPayment(
-    int transactionId,
-    int bookingId,
-    String reference,
-  ) {
-    return ErrorAdapter<BaseModel<dynamic>>().adapt(
-      () => _verifyPayment(transactionId, bookingId, reference),
-    );
-  }
-
   Future<BaseModel<dynamic>> _cancelTrip(String reason, int bookingId) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};

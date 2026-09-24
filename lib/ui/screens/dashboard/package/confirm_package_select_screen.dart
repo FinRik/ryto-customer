@@ -22,98 +22,6 @@ import '../trip_setup/widgets/payment_option_widget.dart';
 import 'widgets/location_detail_card.dart';
 import 'widgets/price_breakdown_widget.dart';
 
-//           bottomNavigationBar: BlocBuilder<ProfileBloc, ProfileState>(
-//             builder: (context, userState) {
-//               return BlocBuilder<PackageBloc, PackageState>(
-//                 builder: (ctx, state) {
-//                   return CurrencyFormatterWidget(
-//                     amount: state.costSummary?.surgePrice != null
-//                         ? "${state.costSummary?.finalPrice!.formatted}"
-//                         : "${state.costSummary?.totalPrice!.formatted}",
-//                     builder: (ctx, formattedAmount, rawAmount) =>
-//                         _buildBottomBar(
-//                           state.costSummary,
-//                           isLoading,
-//                           PaymentMetaData(
-//                             email: "${userState.user?.email}",
-//                             name: "${userState.user?.fullname}",
-//                             tripId: "${widget.args.ride.id}",
-//                             amount: rawAmount,
-//                           ),
-//                         ),
-//                   );
-//                 },
-//               );
-//             },
-//           ),
-//         );
-//       },
-//     );
-//   }
-//
-//   Widget _buildBottomBar(
-//     BookingCost? summary,
-//     bool isLoading,
-//     PaymentMetaData request,
-//   ) {
-//     return ClipRRect(
-//       borderRadius: const BorderRadius.only(
-//         topLeft: Radius.circular(24),
-//         topRight: Radius.circular(24),
-//       ),
-//       child: Container(
-//         height: 140,
-//         color: Colors.white,
-//         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-//         child: Column(
-//           children: [
-//             Row(
-//               children: [
-//                 Checkbox(
-//                   value: isChecked,
-//                   onChanged: (val) => setState(() => isChecked = val ?? false),
-//                 ),
-//                 const Expanded(
-//                   child: Text(
-//                     "I agree and accept the terms of service",
-//                     style: TextStyle(fontSize: 12),
-//                   ),
-//                 ),
-//               ],
-//             ),
-//             const SizedBox(height: 8),
-//             Row(
-//               children: [
-//                 CurrencyFormatterWidget(
-//                   amount: "${summary?.finalPrice?.formatted}",
-//                   builder: (context, value, rawAmount) => Expanded(
-//                     child: Text(
-//                       value,
-//                       style: const TextStyle(
-//                         fontFamily: "Roboto",
-//                         fontSize: 20,
-//                         fontWeight: FontWeight.bold,
-//                       ),
-//                     ),
-//                   ),
-//                 ),
-//                 Expanded(
-//                   child: Button(
-//                     isBusy: isLoading,
-//                     enabled: isChecked,
-//                     onTap: () => _onConfirmAndPay(request),
-//                     text: "Confirm & Pay",
-//                   ),
-//                 ),
-//               ],
-//             ),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }
-
 class ConfirmPackageSelectScreen extends StatefulWidget {
   const ConfirmPackageSelectScreen({super.key, required this.args});
   final TripBookingSummaryArgs args;
@@ -131,6 +39,7 @@ class _KeepPackageConfirmationState extends State<ConfirmPackageSelectScreen> {
   void _processPaymentSequence(
     String fullname,
     String email,
+    String userPhone,
     double finalAmount,
   ) {
     if (_paymentMethod == null || _paymentMethod == PaymentOption.none) {
@@ -149,6 +58,7 @@ class _KeepPackageConfirmationState extends State<ConfirmPackageSelectScreen> {
       tripId: "${widget.args.ride?.id}",
       name: fullname,
       email: email,
+      phone: userPhone,
       amount: finalAmount,
     );
 
@@ -437,6 +347,7 @@ class _KeepPackageConfirmationState extends State<ConfirmPackageSelectScreen> {
                             : () => _processPaymentSequence(
                                 profile.user!.fullname,
                                 profile.user!.email!,
+                                profile.user!.phone!,
                                 rawDoubleAmount,
                               ),
                         text: "Confirm & Pay",

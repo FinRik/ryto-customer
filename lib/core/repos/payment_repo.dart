@@ -5,16 +5,16 @@ import '../services/stripe_payment_service.dart';
 
 abstract class PaymentRepo {
   /// NGN/Paystack — charges [request] directly, ahead of booking creation.
-  Future<PaymentTransactionResult> makePaymentWithPaystack(
+  Future<PaymentTransactionResult> makePaymentWithPaystack({
+    required PaymentMetaData request,
+    required int transactionId,
+    required int bookingId,
+  });
+
+  /// US/Stripe — must be called after the booking is created
+  Future<PaymentTransactionResult> payForBookingWithStripe(
     PaymentMetaData request,
   );
-
-  /// US/Stripe — must be called after the booking is created, using its
-  /// transactionId. Handles PaymentIntent creation, the payment sheet, and
-  /// backend verification internally.
-  Future<PaymentTransactionResult> payForBookingWithStripe({
-    required int transactionId,
-  });
 }
 
 class PaymentRepoImpl implements PaymentRepo {
@@ -28,16 +28,22 @@ class PaymentRepoImpl implements PaymentRepo {
        _stripeService = stripeService;
 
   @override
-  Future<PaymentTransactionResult> makePaymentWithPaystack(
-    PaymentMetaData request,
-  ) {
-    return _payStackService.makePayment(request);
+  Future<PaymentTransactionResult> makePaymentWithPaystack({
+    required PaymentMetaData request,
+    required int transactionId,
+    required int bookingId,
+  }) {
+    return _payStackService.payForBooking(
+      request: request,
+      transactionId: transactionId,
+      bookingId: bookingId,
+    );
   }
 
   @override
-  Future<PaymentTransactionResult> payForBookingWithStripe({
-    required int transactionId,
-  }) {
-    return _stripeService.payForBooking(transactionId: transactionId);
+  Future<PaymentTransactionResult> payForBookingWithStripe(
+    PaymentMetaData request,
+  ) {
+    return _stripeService.payForBooking(request);
   }
 }

@@ -5,6 +5,7 @@ class ApiUrls {
   static const String countryBaseUrl = "https://countriesnow.space/api/v0.1";
   static const String paystackUrl = "https://api.paystack.co";
   static const String stripeBaseUrl = "https://api.stripe.com/v1";
+  static const String deleteAccount = "https://getryto.com/delete-account";
 
   static const String states = "/countries/states";
   static const String cities = "/countries";
@@ -51,7 +52,7 @@ class ApiUrls {
   static const String bookingCost = "/booking/summary";
   static const String bookPackage = "/booking";
   static const String scheduleTrip = "/booking";
-  static const String verifyPayment = "/booking/verify-payment";
+  static const String paystackVerifyPayment = "/booking/verify-payment";
   static const String stripePaymentIntent = "/booking/stripe/payment-intent";
   static const String stripeVerifyPayment = "/booking/stripe/verify-payment";
   static const String cancelTrip = "/booking/cancel";

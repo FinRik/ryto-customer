@@ -85,9 +85,9 @@ class TripListItem extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     // REFACTORED: Stripped away BookingCostSelector wrapper tree entirely
-                    if (cost?.seatPrice?.formatted != null)
+                    if (cost?.finalPrice?.formatted != null)
                       CurrencyFormatterWidget(
-                        amount: cost!.seatPrice!.formatted!,
+                        amount: cost!.finalPrice!.formatted!,
                         textColor: AppColors.primary,
                         symbolStyle: const TextStyle(
                           fontSize: 18,
