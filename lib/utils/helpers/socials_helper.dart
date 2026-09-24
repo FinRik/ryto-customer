@@ -20,6 +20,8 @@ class SocialHelper {
   }
 
   // Pre-defined social methods
+  static Future<void> openWebsite() => _launchUrl(ApiUrls.website);
+
   static Future<void> openTwitter() => _launchUrl(ApiUrls.twitter);
 
   static Future<void> openLinkedIn() => _launchUrl(ApiUrls.linkedIn);
@@ -28,4 +30,6 @@ class SocialHelper {
 
   static Future<void> sendEmail(String email, {String subject = ''}) =>
       _launchUrl('mailto:$email?subject=${Uri.encodeComponent(subject)}');
+
+  static Future<void> openWhatsApp(String link) => _launchUrl(link);
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
@@ -51,7 +52,12 @@ class _TripsScreenState extends State<BookingsScreen>
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
+    return  AnnotatedRegion<SystemUiOverlayStyle>(
+        value: const SystemUiOverlayStyle(
+          statusBarIconBrightness: Brightness.dark, // Android
+          statusBarBrightness: Brightness.dark,       // iOS
+          statusBarColor: Colors.transparent,
+        ),
       child: Scaffold(
         appBar: CustomAppBar(removeHorizPadding: true),
         body: Column(

@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../../app/app_setup_locator.dart';
 import '../../../../../app/res/icons.dart';
+import '../../../../../core/enums/bottom_sheet_type.dart';
 import '../../../../../core/models/booking/booking_cost.dart';
 import '../../../../../core/models/ride/ride_summary.dart';
-import '../../../../../utils/helpers/socials_helper.dart';
+import '../../../../../core/services/bottom_sheet_service.dart';
 import '../../../../bottom_sheets/cancel_bottom_sheet.dart';
 import '../../../../styles/app_decorations.dart';
 import '../../../../widgets/buttons/back_arrow_button.dart';
@@ -140,7 +142,9 @@ class PendingStatusWidget extends StatelessWidget {
             SizedBox(
               width: double.infinity,
               child: OutlinedButton.icon(
-                onPressed: () => SocialHelper.sendEmail("support@getryto.com"),
+                onPressed: () => sl<BottomSheetService>().showCustomBottomSheet(
+                  variant: BottomSheetType.contactSupport,
+                ),
                 icon: const Icon(Icons.headset_mic_outlined),
                 label: const Text("Contact Support"),
                 style: OutlinedButton.styleFrom(
