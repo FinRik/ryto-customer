@@ -36,6 +36,7 @@ class _PayForTripScreenState extends State<PayForTripScreen> {
   void _executePaymentSequence(
     String userFullname,
     String userEmail,
+    String userPhone,
     double rawAmount,
   ) {
     if (_paymentOption == null || _paymentOption == PaymentOption.none) {
@@ -53,6 +54,7 @@ class _PayForTripScreenState extends State<PayForTripScreen> {
       tripId: "${widget.args.ride?.id}",
       name: userFullname,
       email: userEmail,
+      phone: userPhone,
       amount: rawAmount,
     );
 
@@ -172,6 +174,7 @@ class _PayForTripScreenState extends State<PayForTripScreen> {
                             : () => _executePaymentSequence(
                                 profileState.user!.fullname,
                                 profileState.user!.email!,
+                                profileState.user!.phone!,
                                 rawDoubleAmount,
                               ),
                         text: "Confirm & Pay",

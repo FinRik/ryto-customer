@@ -112,13 +112,6 @@ abstract class ApiService {
     @Body() BookingRequest request,
   );
 
-  @POST(ApiUrls.verifyPayment)
-  Future<BaseModel> verifyPayment(
-    @Field("transactionId") int transactionId,
-    @Field("bookingId") int bookingId,
-    @Field("reference") String reference,
-  );
-
   @PATCH(ApiUrls.cancelTrip)
   Future<BaseModel> cancelTrip(
     @Field("reason") String reason,

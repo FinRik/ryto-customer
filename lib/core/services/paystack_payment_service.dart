@@ -7,6 +7,7 @@ import 'package:uuid/uuid.dart';
 import '../../app/app_setup_locator.dart';
 import '../../ui/bottom_sheets/paystack_bottom_sheet.dart';
 import '../enums/bottom_sheet_type.dart';
+import '../models/base.dart';
 import '../models/payment_meta_data.dart';
 import '../enums/payment_status.dart';
 import '../../app/api_urls.dart';
@@ -19,7 +20,7 @@ class PayStackPaymentService {
 
   static const String _initializeUrl =
       "${ApiUrls.paystackUrl}/transaction/initialize";
-  static const String _verifyUrl = "${ApiUrls.paystackUrl}/transaction/verify/";
+  // static const String _verifyUrl = "${ApiUrls.paystackUrl}/transaction/verify/";
 
   String get _secretKey => dotenv.env['PAYSTACK_LIVE_SECRET_KEY']!;
   String get _callbackUrl => dotenv.env['PAYSTACK_CALLBACK_URL']!;
@@ -36,44 +37,11 @@ class PayStackPaymentService {
   /// 1. Initialize transaction with Paystack API
   /// 2. Show authorization URL in a bottom sheet WebView
   /// 3. Verify on callback intercept
-  // Future<PaymentStatus> makePayment(
-  //   BuildContext context,
-  //   PaymentMetaData request,
-  // ) async {
-  //   try {
-  //     final initResult = await _initializeTransaction(request);
-  //     if (initResult == null) return PaymentStatus.failed;
-  //
-  //     final authUrl = initResult['authorization_url'] as String;
-  //     final reference = initResult['reference'] as String;
-  //
-  //     if (!context.mounted) return PaymentStatus.failed;
-  //
-  //     // Show bottom sheet and wait for result
-  //     final result = await showModalBottomSheet<WebViewResult>(
-  //       context: context,
-  //       isScrollControlled: true,
-  //       isDismissible: true,
-  //       enableDrag: false,
-  //       backgroundColor: Colors.transparent,
-  //       builder: (_) => PaystackBottomSheet(
-  //         authorizationUrl: authUrl,
-  //         reference: reference,
-  //       ),
-  //     );
-  //
-  //     if (result == null || result == WebViewResult.cancelled) {
-  //       return PaymentStatus.cancelled;
-  //     }
-  //
-  //     return await verifyPayment(reference);
-  //   } catch (e) {
-  //     debugPrint("==> makePayment error: $e");
-  //     return PaymentStatus.failed;
-  //   }
-  // }
-
-  Future<PaymentTransactionResult> makePayment(PaymentMetaData request) async {
+  Future<PaymentTransactionResult> payForBooking({
+    required PaymentMetaData request,
+    required int transactionId,
+    required int bookingId,
+  }) async {
     try {
       final initResult = await _initializeTransaction(request);
       if (initResult == null) {
@@ -93,7 +61,11 @@ class PayStackPaymentService {
         return const PaymentTransactionResult(status: PaymentStatus.cancelled);
       }
 
-      final verificationStatus = await verifyPayment(reference);
+      final verificationStatus = await verifyPayment(
+        reference,
+        transactionId,
+        bookingId,
+      );
       return PaymentTransactionResult(
         status: verificationStatus,
         reference: reference,
@@ -121,6 +93,7 @@ class PayStackPaymentService {
           'metadata': {
             'customer_name': request.name,
             'customer_email': request.email,
+            'customer_phone': request.phone,
             'trip_id': request.tripId,
           },
         },
@@ -138,33 +111,88 @@ class PayStackPaymentService {
     }
   }
 
-  Future<PaymentStatus> verifyPayment(String reference) async {
+  Future<PaymentStatus> verifyPayment(
+    String reference,
+    int transactionId,
+    int bookingId,
+  ) async {
     try {
-      final response = await _dio.get(
-        '$_verifyUrl$reference',
-        options: _authHeaders,
+      final result = await _dio.post<Map<String, dynamic>>(
+        ApiUrls.paystackVerifyPayment,
+        options: Options(method: "POST", extra: {'isPublic': false}),
+        data: {
+          'transactionId': transactionId,
+          'bookingId': bookingId,
+          'reference': reference,
+        },
       );
 
-      if (response.statusCode == 200) {
-        final paystackStatus = response.data['data']?['status'] as String?;
+      if (result.statusCode != 200 || result.data == null) {
+        debugPrint(
+          '==> Payment verification failed: '
+          'HTTP ${result.statusCode}',
+        );
 
-        debugPrint("==> Paystack verify status: $paystackStatus");
-
-        switch (paystackStatus) {
-          case 'success':
-            return PaymentStatus.success;
-          case 'abandoned':
-            return PaymentStatus.cancelled;
-          case 'failed':
-          default:
-            return PaymentStatus.failed;
-        }
+        return PaymentStatus.failed;
       }
 
-      return PaymentStatus.failed;
+      final value = BaseModel<PaystackPaymentVerification>.fromJson(
+        result.data!,
+        (json) =>
+            PaystackPaymentVerification.fromJson(json as Map<String, dynamic>),
+      );
+
+      final paystackStatus = value.data?.transactionStatus.toLowerCase();
+
+      debugPrint('==> Paystack verify status: $paystackStatus');
+
+      switch (paystackStatus) {
+        case 'success':
+        case 'completed':
+          return PaymentStatus.success;
+
+        case 'abandoned':
+        case 'canceled':
+        case 'cancelled':
+          return PaymentStatus.cancelled;
+
+        case 'failed':
+        default:
+          return PaymentStatus.failed;
+      }
     } catch (e) {
       debugPrint("==> verifyPayment error: $e");
       return PaymentStatus.failed;
     }
   }
+
+  // Future<PaymentStatus> verifyPayment(String reference) async {
+  //   try {
+  //     final response = await _dio.get(
+  //       '$_verifyUrl$reference',
+  //       options: _authHeaders,
+  //     );
+  //
+  //     if (response.statusCode == 200) {
+  //       final paystackStatus = response.data['data']?['status'] as String?;
+  //
+  //       debugPrint("==> Paystack verify status: $paystackStatus");
+  //
+  //       switch (paystackStatus) {
+  //         case 'success':
+  //           return PaymentStatus.success;
+  //         case 'abandoned':
+  //           return PaymentStatus.cancelled;
+  //         case 'failed':
+  //         default:
+  //           return PaymentStatus.failed;
+  //       }
+  //     }
+  //
+  //     return PaymentStatus.failed;
+  //   } catch (e) {
+  //     debugPrint("==> verifyPayment error: $e");
+  //     return PaymentStatus.failed;
+  //   }
+  // }
 }

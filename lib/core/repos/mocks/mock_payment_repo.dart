@@ -6,9 +6,11 @@ import '../../../../core/repos/payment_repo.dart';
 
 class MockPaymentRepo implements PaymentRepo {
   @override
-  Future<PaymentTransactionResult> makePaymentWithPaystack(
-    PaymentMetaData request,
-  ) async {
+  Future<PaymentTransactionResult> makePaymentWithPaystack({
+    required PaymentMetaData request,
+    required int transactionId,
+    required int bookingId,
+  }) async {
     // Simulate a brief network delay for the payment step
     await Future.delayed(const Duration(milliseconds: 800));
 
@@ -20,9 +22,9 @@ class MockPaymentRepo implements PaymentRepo {
   }
 
   @override
-  Future<PaymentTransactionResult> payForBookingWithStripe({
-    required int transactionId,
-  }) async {
+  Future<PaymentTransactionResult> payForBookingWithStripe(
+    PaymentMetaData request,
+  ) async {
     // Simulate PaymentIntent creation + payment sheet + backend verification
     await Future.delayed(const Duration(milliseconds: 800));
 
