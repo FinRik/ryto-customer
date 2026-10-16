@@ -15,11 +15,13 @@ class CheckoutBloc extends Bloc<CheckoutEvent, CheckoutState> {
   final TripsRepo repo;
   final PaymentRepo paymentRepo;
 
+  static const _failedPaymentReason = 'FAILED_PAYMENT';
+
   CheckoutBloc({required this.repo, required this.paymentRepo})
     : super(const CheckoutState()) {
     on<CalculateCheckoutCost>(_onCalculateCost);
     on<ConfirmAndPayTrip>(_onConfirmAndPay);
-    on<VerifyPayment>(_onVerifyPayment);
+    on<CancelBooking>(_onCancelBooking);
   }
 
   Future<void> _onCalculateCost(
@@ -58,6 +60,10 @@ class CheckoutBloc extends Bloc<CheckoutEvent, CheckoutState> {
     ConfirmAndPayTrip event,
     Emitter<CheckoutState> emit,
   ) async {
+    // Book-then-pay creates a booking on every attempt, so a double tap
+    // would create two bookings. Ignore taps while a checkout is running.
+    if (state.status == CheckoutStatus.checkoutLoading) return;
+
     emit(state.copyWith(status: CheckoutStatus.checkoutLoading));
 
     if (event.isRegionUs) {
@@ -67,168 +73,247 @@ class CheckoutBloc extends Bloc<CheckoutEvent, CheckoutState> {
     }
   }
 
-  /// US/USD flow: the booking must exist before a PaymentIntent can be
-  /// created, since the backend ties the intent (and its amount) to the
-  /// booking's transactionId. `CheckoutStatus.success` is only emitted once
-  /// StripePaymentService confirms the backend verified the payment, so the
-  /// UI never shows "Trip Booked" ahead of that.
+  // ---------------------------------------------------------------------------
+  // Shared helpers for the book -> pay -> cancel-on-failure flow
+  // ---------------------------------------------------------------------------
+
+  /// Step 1: create the booking. Returns null if it could not be created
+  /// (nothing has been charged at this point).
+  Future<BookingResponse?> _createBooking(BookingRequest request) async {
+    try {
+      final booking = await repo.scheduleTrip(request);
+      if (booking == null ||
+          booking.bookingId == null ||
+          booking.transactionId == null) {
+        throw Exception("Invalid booking payload.");
+      }
+      return booking;
+    } catch (e, st) {
+      addError(e, st);
+      return null;
+    }
+  }
+
+  /// Releases a booking whose payment definitively failed. Returns whether
+  /// the cancellation succeeded so the caller can tell the user.
+  Future<bool> _releaseBooking(String bookingId) async {
+    try {
+      return await repo.cancelTrip(
+        bookingId: int.parse(bookingId),
+        reason: _failedPaymentReason,
+      );
+    } catch (e, st) {
+      addError(e, st);
+      return false;
+    }
+  }
+
+  String _withReleaseNote(String message, bool released) => released
+      ? message
+      : "$message We couldn't release your reservation automatically. "
+            "If it still appears in your active bookings, please cancel it there.";
+
+  void _emitBookingFailure(Emitter<CheckoutState> emit) {
+    emit(
+      state.copyWith(
+        status: CheckoutStatus.failure,
+        errorMessage: () => "Unable to create your booking. Please try again.",
+      ),
+    );
+  }
+
+  void _emitUnconfirmedPayment(Emitter<CheckoutState> emit, String bookingId) {
+    emit(
+      state.copyWith(
+        status: CheckoutStatus.failure,
+        verificationStatus: PaymentVerificationStatus.failure,
+        errorMessage: () =>
+            "We couldn't confirm your payment. If you were charged, please "
+            "contact support with booking reference $bookingId.",
+      ),
+    );
+  }
+
+  // ---------------------------------------------------------------------------
+  // US / USD: Stripe
+  // ---------------------------------------------------------------------------
+
+  /// Book -> pay -> cancel if payment fails.
+  ///
+  /// The booking is created first because the backend ties the PaymentIntent
+  /// (and its amount) to the booking's transactionId. If the payment then
+  /// fails or is cancelled, the booking is cancelled so no unpaid reservation
+  /// is left behind.
+  ///
+  /// The booking is deliberately NOT cancelled when the outcome is ambiguous
+  /// (payment processed but unconfirmed, or an unexpected exception), because
+  /// the customer may already have been charged.
+  ///
+  /// `CheckoutStatus.success` is only emitted once the payment service
+  /// confirms the backend verified the payment.
   Future<void> _confirmAndPayWithStripe(
     ConfirmAndPayTrip event,
     Emitter<CheckoutState> emit,
   ) async {
-    BookingResponse? bookingDetails;
+    // 1. Book
+    final booking = await _createBooking(event.bookingRequest);
+    if (booking == null) {
+      _emitBookingFailure(emit);
+      return;
+    }
+
+    final bookingId = booking.bookingId!;
+
     try {
-      bookingDetails = await repo.scheduleTrip(event.bookingRequest);
-      if (bookingDetails == null ||
-          bookingDetails.bookingId == null ||
-          bookingDetails.transactionId == null) {
-        throw Exception("Invalid backend application register payload data.");
+      // 2. Pay
+      final txResult = await paymentRepo.payForBookingWithStripe(
+        event.paymentMeta,
+      );
+
+      if (!txResult.isSuccess) {
+        // Processed but not confirmed: money may have moved. Keep the booking.
+        if (txResult.reference != null) {
+          emit(
+            state.copyWith(
+              status: CheckoutStatus.failure,
+              verificationStatus: PaymentVerificationStatus.failure,
+              errorMessage: () =>
+                  "Payment was processed, but we couldn't confirm it automatically. "
+                  "Please contact support with reference ${txResult.reference}.",
+            ),
+          );
+          return;
+        }
+
+        // 3. Cancelled or declined: release the booking.
+        final released = await _releaseBooking(bookingId);
+        final base = txResult.isCancelled
+            ? "Payment was cancelled."
+            : "Payment was declined.";
+        emit(
+          state.copyWith(
+            status: CheckoutStatus.failure,
+            errorMessage: () => _withReleaseNote(base, released),
+          ),
+        );
+        return;
       }
-    } catch (bookingError) {
+
+      final reference = txResult.reference;
+      if (reference == null || reference.isEmpty) {
+        // Paid, but no reference to verify with. Never cancel a paid booking.
+        emit(
+          state.copyWith(
+            status: CheckoutStatus.failure,
+            errorMessage: () =>
+                "Your payment went through, but we're missing its verification "
+                "reference. Please contact support with booking reference $bookingId.",
+          ),
+        );
+        return;
+      }
+
       emit(
         state.copyWith(
-          status: CheckoutStatus.failure,
-          errorMessage: () =>
-              "Unable to create your booking. Please try again.",
+          status: CheckoutStatus.success,
+          verificationStatus: PaymentVerificationStatus.success,
+          verificationMessage: () => "Payment verified successfully!",
+          bookingResponse: booking,
         ),
       );
-      return;
+    } catch (e, st) {
+      // Unknown outcome: do not cancel, the charge may have gone through.
+      addError(e, st);
+      _emitUnconfirmedPayment(emit, bookingId);
     }
-
-    final txResult = await paymentRepo.payForBookingWithStripe(
-      transactionId: bookingDetails.transactionId!,
-    );
-
-    if (!txResult.isSuccess) {
-      final msg = txResult.isCancelled
-          ? "Payment was cancelled."
-          : txResult.reference != null
-          ? "Payment was processed, but we couldn't confirm it automatically. Please contact support with reference ${txResult.reference}."
-          : "Payment was declined.";
-      emit(
-        state.copyWith(
-          status: CheckoutStatus.failure,
-          verificationStatus: txResult.reference != null
-              ? PaymentVerificationStatus.failure
-              : state.verificationStatus,
-          errorMessage: () => msg,
-          bookingResponse: bookingDetails,
-        ),
-      );
-      return;
-    }
-
-    emit(
-      state.copyWith(
-        status: CheckoutStatus.success,
-        verificationStatus: PaymentVerificationStatus.success,
-        verificationMessage: () => "Payment verified successfully!",
-        bookingResponse: bookingDetails,
-      ),
-    );
   }
 
-  /// NGN/Paystack flow: unchanged — payment happens first, then booking is
-  /// created, and verification against `/booking/verify-payment` runs in the
-  /// background via [VerifyPayment].
+  // ---------------------------------------------------------------------------
+  // NGN: Paystack
+  // ---------------------------------------------------------------------------
+
+  /// Book -> pay -> cancel if payment fails, then verify in the background.
   Future<void> _confirmAndPayWithPaystack(
     ConfirmAndPayTrip event,
     Emitter<CheckoutState> emit,
   ) async {
-    final txResult = await paymentRepo.makePaymentWithPaystack(
-      event.paymentMeta,
-    );
-
-    if (!txResult.isSuccess) {
-      final msg = txResult.isCancelled
-          ? "Payment was cancelled."
-          : "Payment was declined.";
-      emit(
-        state.copyWith(status: CheckoutStatus.failure, errorMessage: () => msg),
-      );
+    // 1. Book
+    final booking = await _createBooking(event.bookingRequest);
+    if (booking == null) {
+      _emitBookingFailure(emit);
       return;
     }
+    final bookingId = booking.bookingId!;
+    final transactionId = booking.transactionId!;
 
-    BookingResponse? bookingDetails;
     try {
-      bookingDetails = await repo.scheduleTrip(event.bookingRequest);
-      if (bookingDetails == null || bookingDetails.bookingId == null) {
-        throw Exception("Invalid backend application register payload data.");
+      // 2. Pay
+      final txResult = await paymentRepo.makePaymentWithPaystack(
+        request: event.paymentMeta,
+        bookingId: int.parse(bookingId),
+        transactionId: transactionId,
+      );
+
+      if (!txResult.isSuccess) {
+        // 3. Cancelled or declined: release the booking.
+        final released = await _releaseBooking(bookingId);
+        final base = txResult.isCancelled
+            ? "Payment was cancelled."
+            : "Payment was declined.";
+        emit(
+          state.copyWith(
+            status: CheckoutStatus.failure,
+            errorMessage: () => _withReleaseNote(base, released),
+          ),
+        );
+        return;
       }
-    } catch (bookingError) {
-      emit(
-        state.copyWith(
-          status: CheckoutStatus.failure,
-          errorMessage: () =>
-              "Payment cleared, but booking registration timed out. Any deducted funds will be automatically reversed.",
-        ),
-      );
-      return;
-    }
 
-    final finalReference = txResult.reference;
-    final finalTransactionId = bookingDetails.transactionId;
-    final bookingId = bookingDetails.bookingId;
-
-    if (finalReference == null || finalReference.isEmpty) {
-      emit(
-        state.copyWith(
-          status: CheckoutStatus.failure,
-          errorMessage: () =>
-              "Booking recorded, but missing valid transaction verification reference tags. Please contact support.",
-        ),
-      );
-      return;
-    }
-
-    emit(
-      state.copyWith(
-        status: CheckoutStatus.success,
-        bookingResponse: bookingDetails,
-      ),
-    );
-
-    add(
-      VerifyPayment(
-        bookingId: bookingId!,
-        reference: finalReference,
-        transactionId: finalTransactionId!,
-      ),
-    );
-  }
-
-  /// NGN/Paystack only — never used for US/USD bookings, which are verified
-  /// synchronously inside [_confirmAndPayWithStripe].
-  Future<void> _onVerifyPayment(
-    VerifyPayment event,
-    Emitter<CheckoutState> emit,
-  ) async {
-    emit(
-      state.copyWith(
-        verificationStatus: PaymentVerificationStatus.processing,
-        verificationMessage: () => null,
-      ),
-    );
-
-    try {
-      await repo.verifyPayment(
-        transactionId: event.transactionId,
-        bookingId: int.parse(event.bookingId),
-        reference: event.reference,
-      );
+      final reference = txResult.reference;
+      if (reference == null || reference.isEmpty) {
+        // Paid, but no reference to verify with. Never cancel a paid booking.
+        emit(
+          state.copyWith(
+            status: CheckoutStatus.failure,
+            errorMessage: () =>
+                "Your payment went through, but we're missing its verification "
+                "reference. Please contact support with booking reference $bookingId.",
+          ),
+        );
+        return;
+      }
 
       emit(
         state.copyWith(
+          status: CheckoutStatus.success,
           verificationStatus: PaymentVerificationStatus.success,
           verificationMessage: () => "Payment verified successfully!",
+          bookingResponse: booking,
         ),
       );
-    } catch (verificationError) {
+    } catch (e, st) {
+      // Unknown outcome: do not cancel, the charge may have gone through.
+      addError(e, st);
+      _emitUnconfirmedPayment(emit, bookingId);
+    }
+  }
+
+  /// Explicit cancellation (e.g. user-initiated). Payment-failure cleanup is
+  /// done inline via [_releaseBooking] so it finishes before the failure is
+  /// shown.
+  Future<void> _onCancelBooking(
+    CancelBooking event,
+    Emitter<CheckoutState> emit,
+  ) async {
+    try {
+      await repo.cancelTrip(bookingId: event.bookingId, reason: event.reason);
+    } catch (e, st) {
+      addError(e, st);
       emit(
         state.copyWith(
-          verificationStatus: PaymentVerificationStatus.failure,
-          verificationMessage: () =>
-              "Booking recorded, but confirmation validation is pending. Please check active bookings shortly.",
+          status: CheckoutStatus.failure,
+          errorMessage: () =>
+              "We couldn't cancel your booking. Please try again.",
         ),
       );
     }

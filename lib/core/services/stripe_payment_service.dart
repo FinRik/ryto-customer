@@ -4,7 +4,9 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 
 import '../../app/api_urls.dart';
+import '../../utils/helpers/transaction_id_generator.dart';
 import '../enums/payment_status.dart';
+import '../models/payment_meta_data.dart';
 import '../models/payment_transaction_result.dart';
 import '../models/stripe_payment_intent_result.dart';
 
@@ -23,9 +25,10 @@ class StripePaymentService {
   ///
   /// The backend owns the amount and metadata for the PaymentIntent — the
   /// app only ever sends the transactionId.
-  Future<PaymentTransactionResult> payForBooking({
-    required int transactionId,
-  }) async {
+  Future<PaymentTransactionResult> payForBooking(
+    PaymentMetaData paymentMeta,
+  ) async {
+    final transactionId = TransactionIdGenerator.randomDigits();
     final intent = await _createPaymentIntent(transactionId);
     if (intent == null || intent.paymentIntentId == null) {
       return const PaymentTransactionResult(status: PaymentStatus.failed);
@@ -35,6 +38,16 @@ class StripePaymentService {
       await Stripe.instance.initPaymentSheet(
         paymentSheetParameters: SetupPaymentSheetParameters(
           paymentIntentClientSecret: intent.clientSecret,
+          billingDetails: BillingDetails(
+            name: paymentMeta.name,
+            email: paymentMeta.email,
+            phone: paymentMeta.phone,
+          ),
+          billingDetailsCollectionConfiguration: BillingDetailsCollectionConfiguration(
+            email: CollectionMode.always,
+            name: CollectionMode.always,
+            phone: CollectionMode.always
+          ),
           merchantDisplayName: 'Ryto Secure Checkout',
           style: ThemeMode.light,
         ),

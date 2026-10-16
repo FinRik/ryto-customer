@@ -28,17 +28,15 @@ class ConfirmAndPayTrip extends CheckoutEvent {
   List<Object?> get props => [isRegionUs, paymentMeta, bookingRequest];
 }
 
-class VerifyPayment extends CheckoutEvent {
-  final int transactionId;
-  final String bookingId;
-  final String reference;
+class CancelBooking extends CheckoutEvent {
+  final int bookingId;
+  final String reason;
 
-  const VerifyPayment({
-    required this.transactionId,
+  const CancelBooking({
     required this.bookingId,
-    required this.reference,
+    required this.reason,
   });
 
   @override
-  List<Object?> get props => [transactionId, bookingId, reference];
+  List<Object?> get props => [bookingId, reason];
 }

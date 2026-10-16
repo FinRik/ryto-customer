@@ -198,13 +198,22 @@ class ProfileScreen extends StatelessWidget {
                   ],
                 ),
 
-                // SizedBox(height: AppSpacing.sectionSpacing),
-                // SettingItem(
-                //   title: "Delete Ryto Account",
-                //   trailingType: TrailingType.external,
-                //   onTap: () {},
-                // ),
-
+                SizedBox(height: AppSpacing.sectionSpacing),
+                SettingItem(
+                  title: "Delete Ryto Account",
+                  trailingType: TrailingType.external,
+                  icon: AppIcons.logout,
+                  // subtitle: "Delete your driver profile",
+                  // titleColor: Colors.red,
+                  isDestructive: true,
+                  onTap: () => router.push(
+                    Paths.WEBVIEW,
+                    extra: WebviewArgs(
+                      url: ApiUrls.deleteAccount,
+                      title: "Delete Account",
+                    ),
+                  ),
+                ),
                 const SizedBox(height: 10),
                 BlocConsumer<AuthBloc, AuthState>(
                   listener: (context, state) {

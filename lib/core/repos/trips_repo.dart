@@ -19,11 +19,6 @@ abstract class TripsRepo {
   Future<BookingCost?> fetchBookingCost(BookingRequest request);
   Future<BookingResponse?> bookPackage(BookingRequest request);
   Future<BookingResponse?> scheduleTrip(BookingRequest request);
-  Future<bool> verifyPayment({
-    required int transactionId,
-    required int bookingId,
-    required String reference,
-  });
   Future<bool> cancelTrip({required String reason, required int bookingId});
   Future<bool> reviewTrip({
     required int rating,
@@ -78,20 +73,6 @@ class TripsRepoImpl implements TripsRepo {
   @override
   Future<BookingResponse?> scheduleTrip(BookingRequest request) async {
     final res = await _service.scheduleTrip(request);
-    return res.data;
-  }
-
-  @override
-  Future<bool> verifyPayment({
-    required int transactionId,
-    required int bookingId,
-    required String reference,
-  }) async {
-    final res = await _service.verifyPayment(
-      transactionId,
-      bookingId,
-      reference,
-    );
     return res.data;
   }
 
